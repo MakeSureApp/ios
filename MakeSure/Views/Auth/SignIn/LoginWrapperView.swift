@@ -1,0 +1,50 @@
+//
+//  LoginWrapperView.swift
+//  MakeSure
+//
+//  Created by andreydem on 21.04.2023.
+//
+
+import Foundation
+import SwiftUI
+
+struct LoginWrapperView: View {
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+    @ObservedObject var viewModel: LoginViewModel
+    
+    var body: some View {
+        VStack {
+            HStack {
+                BackButtonView(color: .black) {
+                    viewModel.moveToPreviousStep()
+                }
+                Spacer()
+            }
+            .padding()
+            
+            switch viewModel.currentStep {
+            case .initial:
+                let _ = self.onBackPressed()
+            case .phoneNumber:
+                NumberSignInView(viewModel: viewModel)
+            case .code:
+                CodeSignInView(viewModel: viewModel)
+            case .final:
+                let _ = self.authorizationCompleted()
+            }
+            
+            RoundedGradientButton(text: "CONTINUE", isEnabled: viewModel.canProceedToNextStep) {
+                viewModel.moveToNextStep()
+            }
+        }
+    }
+    
+    func onBackPressed() {
+        presentationMode.wrappedValue.dismiss()
+        viewModel.resetAllData()
+    }
+    
+    func authorizationCompleted() {
+        viewModel.completeAuthorization()
+    }
+}

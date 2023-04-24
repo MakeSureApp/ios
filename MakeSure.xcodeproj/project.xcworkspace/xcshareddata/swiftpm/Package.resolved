@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "swiftui-navigation-stack",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/biobeats/swiftui-navigation-stack",
+      "state" : {
+        "branch" : "develop",
+        "revision" : "78fb763be43d9becc1bdfaece5e8e78416d297f0"
+      }
+    }
+  ],
+  "version" : 2
+}
