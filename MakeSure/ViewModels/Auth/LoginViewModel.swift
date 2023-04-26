@@ -107,6 +107,7 @@ class LoginViewModel: NSObject, ObservableObject {
         partOfPhoneNumber = ""
         countryCode = .RU
         codeFields = Array<String>(repeating: "", count: 6)
+        canSendCode = false
         codeValidated = false
         codeSent = false
     }

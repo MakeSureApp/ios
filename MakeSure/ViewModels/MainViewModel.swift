@@ -9,19 +9,16 @@ import Foundation
 import SwiftUI
 
 enum MainNavigation: CaseIterable {
-    static var allCases: [MainNavigation] {
-        return [.home(viewModel: HomeViewModel(authService: AuthService())), .tests, .scanner, .contacts]
-    }
-    case home(viewModel: HomeViewModel)
+    case home
     case tests
     case scanner
     case contacts
     
     @ViewBuilder
-    var destinationView: some View {
+    func destinationView(viewModelFactory: ViewModelFactory) -> some View {
         switch self {
-        case .home(let viewModel):
-            HomeView(viewModel: viewModel)
+        case .home:
+            HomeView(viewModel: viewModelFactory.makeHomeViewModel())
         case .tests:
             TestsView()
         case .scanner:

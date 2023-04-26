@@ -14,6 +14,6 @@ class AuthService: ObservableObject {
         case isLoggedOut
     }
     
-    @Published var authState: AuthState = .isLoggedOut
+    @Published var authState: AuthState = .isLoggedIn
     
 }

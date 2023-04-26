@@ -7,6 +7,23 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE27C8DE29F7F7C0006ACFED /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8DD29F7F7C0006ACFED /* SettingsViewModel.swift */; };
+		CE27C8E029F80D07006ACFED /* LegalPoliciesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8DF29F80D07006ACFED /* LegalPoliciesView.swift */; };
+		CE27C8E229F80D1B006ACFED /* BlacklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8E129F80D1B006ACFED /* BlacklistView.swift */; };
+		CE27C8E629F8111C006ACFED /* OverlaySettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8E529F8111C006ACFED /* OverlaySettingsView.swift */; };
+		CE27C8E829F81D95006ACFED /* NumberSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8E729F81D95006ACFED /* NumberSettingsView.swift */; };
+		CE27C8EA29F81DAE006ACFED /* EmailSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8E929F81DAE006ACFED /* EmailSettingsView.swift */; };
+		CE27C8EC29F81EC3006ACFED /* NavigationViewHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8EB29F81EC3006ACFED /* NavigationViewHeight.swift */; };
+		CE27C8EE29F8F23E006ACFED /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8ED29F8F23E006ACFED /* HelpView.swift */; };
+		CE27C8F029F907D2006ACFED /* LanguageSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8EF29F907D2006ACFED /* LanguageSelectionView.swift */; };
+		CE27C8F329F91A53006ACFED /* ContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8F229F91A53006ACFED /* ContactsViewModel.swift */; };
+		CE27C8F529F91BF3006ACFED /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8F429F91BF3006ACFED /* User.swift */; };
+		CE27C8F929F92C80006ACFED /* CodeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8F829F92C80006ACFED /* CodeSettingsView.swift */; };
+		CE27C8FB29F92CBC006ACFED /* CongratulationsNumberSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8FA29F92CBC006ACFED /* CongratulationsNumberSettingsView.swift */; };
+		CE27C8FD29F92D43006ACFED /* CongratulationsEmailSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8FC29F92D43006ACFED /* CongratulationsEmailSettingsView.swift */; };
+		CE27C8FF29F9314B006ACFED /* NumberSettingsWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8FE29F9314B006ACFED /* NumberSettingsWrapperView.swift */; };
+		CE27C90129F93710006ACFED /* EmailSettingsWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C90029F93710006ACFED /* EmailSettingsWrapperView.swift */; };
+		CE27C90329F9383B006ACFED /* VerifyEmailSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C90229F9383B006ACFED /* VerifyEmailSettingsView.swift */; };
 		CE3BB3C929F1376800213B9E /* NavigationStack in Frameworks */ = {isa = PBXBuildFile; productRef = CE3BB3C829F1376800213B9E /* NavigationStack */; };
 		CE47D04D29F3BD9000AEC9DA /* CaseIterable+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE47D04C29F3BD9000AEC9DA /* CaseIterable+Ext.swift */; };
 		CE47D04F29F3C44400AEC9DA /* CountryCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE47D04E29F3C44400AEC9DA /* CountryCodes.swift */; };
@@ -78,6 +95,10 @@
 		CE99574E29F2B58B0079B39A /* LoginWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE99574D29F2B58B0079B39A /* LoginWrapperView.swift */; };
 		CE99575129F2D9870079B39A /* CustomColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE99575029F2D9870079B39A /* CustomColors.swift */; };
 		CE99575329F2DF430079B39A /* Text+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE99575229F2DF430079B39A /* Text+Ext.swift */; };
+		CE9ADC6529F7D77D00C5861A /* AppEnviroment.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6429F7D77D00C5861A /* AppEnviroment.swift */; };
+		CE9ADC6729F7DA4900C5861A /* ViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */; };
+		CE9ADC6A29F7EF0900C5861A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6929F7EF0900C5861A /* SettingsView.swift */; };
+		CE9ADC6C29F7EF7C00C5861A /* PrivacySafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6B29F7EF7C00C5861A /* PrivacySafetyView.swift */; };
 		CECCA89D29F1581800D6FC30 /* RegistrationWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECCA89C29F1581800D6FC30 /* RegistrationWrapperView.swift */; };
 		CED1D7DB29F6688C00693DC2 /* RoundedGradientButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED1D7DA29F6688C00693DC2 /* RoundedGradientButtonView.swift */; };
 		CED1D7DD29F6696200693DC2 /* BackButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED1D7DC29F6696200693DC2 /* BackButtonView.swift */; };
@@ -91,6 +112,23 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CE27C8DD29F7F7C0006ACFED /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		CE27C8DF29F80D07006ACFED /* LegalPoliciesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalPoliciesView.swift; sourceTree = "<group>"; };
+		CE27C8E129F80D1B006ACFED /* BlacklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlacklistView.swift; sourceTree = "<group>"; };
+		CE27C8E529F8111C006ACFED /* OverlaySettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlaySettingsView.swift; sourceTree = "<group>"; };
+		CE27C8E729F81D95006ACFED /* NumberSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberSettingsView.swift; sourceTree = "<group>"; };
+		CE27C8E929F81DAE006ACFED /* EmailSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSettingsView.swift; sourceTree = "<group>"; };
+		CE27C8EB29F81EC3006ACFED /* NavigationViewHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationViewHeight.swift; sourceTree = "<group>"; };
+		CE27C8ED29F8F23E006ACFED /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
+		CE27C8EF29F907D2006ACFED /* LanguageSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectionView.swift; sourceTree = "<group>"; };
+		CE27C8F229F91A53006ACFED /* ContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewModel.swift; sourceTree = "<group>"; };
+		CE27C8F429F91BF3006ACFED /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		CE27C8F829F92C80006ACFED /* CodeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeSettingsView.swift; sourceTree = "<group>"; };
+		CE27C8FA29F92CBC006ACFED /* CongratulationsNumberSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CongratulationsNumberSettingsView.swift; sourceTree = "<group>"; };
+		CE27C8FC29F92D43006ACFED /* CongratulationsEmailSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CongratulationsEmailSettingsView.swift; sourceTree = "<group>"; };
+		CE27C8FE29F9314B006ACFED /* NumberSettingsWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberSettingsWrapperView.swift; sourceTree = "<group>"; };
+		CE27C90029F93710006ACFED /* EmailSettingsWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSettingsWrapperView.swift; sourceTree = "<group>"; };
+		CE27C90229F9383B006ACFED /* VerifyEmailSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailSettingsView.swift; sourceTree = "<group>"; };
 		CE47D04C29F3BD9000AEC9DA /* CaseIterable+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+Ext.swift"; sourceTree = "<group>"; };
 		CE47D04E29F3C44400AEC9DA /* CountryCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodes.swift; sourceTree = "<group>"; };
 		CE47D05129F3D3F000AEC9DA /* Rubik-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Rubik-LightItalic.ttf"; sourceTree = "<group>"; };
@@ -163,6 +201,10 @@
 		CE99574D29F2B58B0079B39A /* LoginWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWrapperView.swift; sourceTree = "<group>"; };
 		CE99575029F2D9870079B39A /* CustomColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColors.swift; sourceTree = "<group>"; };
 		CE99575229F2DF430079B39A /* Text+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+Ext.swift"; sourceTree = "<group>"; };
+		CE9ADC6429F7D77D00C5861A /* AppEnviroment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnviroment.swift; sourceTree = "<group>"; };
+		CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelFactory.swift; sourceTree = "<group>"; };
+		CE9ADC6929F7EF0900C5861A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		CE9ADC6B29F7EF7C00C5861A /* PrivacySafetyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySafetyView.swift; sourceTree = "<group>"; };
 		CECCA89C29F1581800D6FC30 /* RegistrationWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationWrapperView.swift; sourceTree = "<group>"; };
 		CED1D7DA29F6688C00693DC2 /* RoundedGradientButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedGradientButtonView.swift; sourceTree = "<group>"; };
 		CED1D7DC29F6696200693DC2 /* BackButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButtonView.swift; sourceTree = "<group>"; };
@@ -188,6 +230,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		CE27C8DC29F7F7AE006ACFED /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				CE27C8DD29F7F7C0006ACFED /* SettingsViewModel.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		CE27C8F129F91A44006ACFED /* Contacts */ = {
+			isa = PBXGroup;
+			children = (
+				CE27C8F229F91A53006ACFED /* ContactsViewModel.swift */,
+			);
+			path = Contacts;
+			sourceTree = "<group>";
+		};
+		CE27C8F629F92BDE006ACFED /* ChangeNumber */ = {
+			isa = PBXGroup;
+			children = (
+				CE27C8E729F81D95006ACFED /* NumberSettingsView.swift */,
+				CE27C8F829F92C80006ACFED /* CodeSettingsView.swift */,
+				CE27C8FA29F92CBC006ACFED /* CongratulationsNumberSettingsView.swift */,
+				CE27C8FE29F9314B006ACFED /* NumberSettingsWrapperView.swift */,
+			);
+			path = ChangeNumber;
+			sourceTree = "<group>";
+		};
+		CE27C8F729F92BF2006ACFED /* AddChangeEmail */ = {
+			isa = PBXGroup;
+			children = (
+				CE27C8E929F81DAE006ACFED /* EmailSettingsView.swift */,
+				CE27C8FC29F92D43006ACFED /* CongratulationsEmailSettingsView.swift */,
+				CE27C90229F9383B006ACFED /* VerifyEmailSettingsView.swift */,
+				CE27C90029F93710006ACFED /* EmailSettingsWrapperView.swift */,
+			);
+			path = AddChangeEmail;
+			sourceTree = "<group>";
+		};
 		CE47D05029F3D3CB00AEC9DA /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
@@ -291,8 +371,8 @@
 				CE9166B729F047B800612933 /* Models */,
 				CE9166B629F047A900612933 /* ViewModels */,
 				CE9166B529F047A200612933 /* Views */,
-				CE9166A729F0419100612933 /* MakeSureApp.swift */,
 				CE9166A929F0419100612933 /* ContentView.swift */,
+				CE9166A729F0419100612933 /* MakeSureApp.swift */,
 				CE9166AB29F0419300612933 /* Assets.xcassets */,
 				CE9166AD29F0419300612933 /* Preview Content */,
 			);
@@ -310,6 +390,7 @@
 		CE9166B529F047A200612933 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				CE9ADC6829F7EEFB00C5861A /* Settings */,
 				CED1D7EC29F6D23E00693DC2 /* Contacts */,
 				CED1D7EB29F6D23500693DC2 /* Scan */,
 				CED1D7EA29F6D22F00693DC2 /* Tests */,
@@ -325,6 +406,8 @@
 		CE9166B629F047A900612933 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				CE27C8F129F91A44006ACFED /* Contacts */,
+				CE27C8DC29F7F7AE006ACFED /* Settings */,
 				CED1D7F529F6DB3100693DC2 /* Home */,
 				CE99574229F2A69A0079B39A /* Auth */,
 				CE99574329F2A6AD0079B39A /* MainViewModel.swift */,
@@ -336,6 +419,7 @@
 			isa = PBXGroup;
 			children = (
 				CE47D04E29F3C44400AEC9DA /* CountryCodes.swift */,
+				CE27C8F429F91BF3006ACFED /* User.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -415,8 +499,27 @@
 				CE9166B929F047D400612933 /* Extensions */,
 				CE47D05029F3D3CB00AEC9DA /* Fonts */,
 				CE47D0A829F3DEE400AEC9DA /* Colors */,
+				CE9ADC6429F7D77D00C5861A /* AppEnviroment.swift */,
+				CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		CE9ADC6829F7EEFB00C5861A /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				CE9ADC6929F7EF0900C5861A /* SettingsView.swift */,
+				CE9ADC6B29F7EF7C00C5861A /* PrivacySafetyView.swift */,
+				CE27C8DF29F80D07006ACFED /* LegalPoliciesView.swift */,
+				CE27C8E129F80D1B006ACFED /* BlacklistView.swift */,
+				CE27C8E529F8111C006ACFED /* OverlaySettingsView.swift */,
+				CE27C8F629F92BDE006ACFED /* ChangeNumber */,
+				CE27C8F729F92BF2006ACFED /* AddChangeEmail */,
+				CE27C8EB29F81EC3006ACFED /* NavigationViewHeight.swift */,
+				CE27C8ED29F8F23E006ACFED /* HelpView.swift */,
+				CE27C8EF29F907D2006ACFED /* LanguageSelectionView.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		CED1D7D929F6687B00693DC2 /* Utils */ = {
@@ -583,6 +686,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CE9166DA29F1051500612933 /* String+Ext.swift in Sources */,
+				CE27C8DE29F7F7C0006ACFED /* SettingsViewModel.swift in Sources */,
 				CED1D7F429F6D2D800693DC2 /* ContactsView.swift in Sources */,
 				CE99574A29F2B1E90079B39A /* NumberSignInView.swift in Sources */,
 				CE99575129F2D9870079B39A /* CustomColors.swift in Sources */,
@@ -598,17 +702,26 @@
 				CE99573D29F296200079B39A /* AuthService.swift in Sources */,
 				CE99574E29F2B58B0079B39A /* LoginWrapperView.swift in Sources */,
 				CE9166CE29F0F44700612933 /* BirthdaySignUpView.swift in Sources */,
+				CE27C8F929F92C80006ACFED /* CodeSettingsView.swift in Sources */,
 				CE9166D029F0F4C700612933 /* GenderSignUpView.swift in Sources */,
+				CE27C8E229F80D1B006ACFED /* BlacklistView.swift in Sources */,
+				CE27C8EA29F81DAE006ACFED /* EmailSettingsView.swift in Sources */,
+				CE27C8F529F91BF3006ACFED /* User.swift in Sources */,
 				CE9166C829F0F2D300612933 /* EmailSignUpView.swift in Sources */,
 				CE47D06729F3D4E700AEC9DA /* CustomFontsNames.swift in Sources */,
 				CE9166C229F05E8400612933 /* RegistrationProgressBarView.swift in Sources */,
+				CE27C90129F93710006ACFED /* EmailSettingsWrapperView.swift in Sources */,
 				CED1D7DD29F6696200693DC2 /* BackButtonView.swift in Sources */,
+				CE9ADC6A29F7EF0900C5861A /* SettingsView.swift in Sources */,
 				CE9166D629F0F66400612933 /* CongratulationSignUpView.swift in Sources */,
+				CE27C8FB29F92CBC006ACFED /* CongratulationsNumberSettingsView.swift in Sources */,
 				CED1D7F729F6DB3D00693DC2 /* HomeViewModel.swift in Sources */,
 				CE9166A829F0419100612933 /* MakeSureApp.swift in Sources */,
 				CE9166BB29F0485800612933 /* MainTabView.swift in Sources */,
 				CED1D7EE29F6D25B00693DC2 /* HomeView.swift in Sources */,
+				CE9ADC6729F7DA4900C5861A /* ViewModelFactory.swift in Sources */,
 				CE9166D229F0F4E300612933 /* AddPhotoSignUpView.swift in Sources */,
+				CE27C8FD29F92D43006ACFED /* CongratulationsEmailSettingsView.swift in Sources */,
 				CE9166C429F0F1B700612933 /* NumberSignUpView.swift in Sources */,
 				CE47D04F29F3C44400AEC9DA /* CountryCodes.swift in Sources */,
 				CED1D7DB29F6688C00693DC2 /* RoundedGradientButtonView.swift in Sources */,
@@ -616,13 +729,24 @@
 				CE47D0AA29F3DEFB00AEC9DA /* Font+Ext.swift in Sources */,
 				CED1D7F229F6D29800693DC2 /* ScannerView.swift in Sources */,
 				CED1D7DF29F6704800693DC2 /* CustomUnderlinedView.swift in Sources */,
+				CE9ADC6C29F7EF7C00C5861A /* PrivacySafetyView.swift in Sources */,
+				CE27C90329F9383B006ACFED /* VerifyEmailSettingsView.swift in Sources */,
+				CE27C8FF29F9314B006ACFED /* NumberSettingsWrapperView.swift in Sources */,
 				CE9166BD29F04A0200612933 /* InitialSelectionView.swift in Sources */,
+				CE27C8F329F91A53006ACFED /* ContactsViewModel.swift in Sources */,
 				CE99574C29F2B1F60079B39A /* CodeSignInView.swift in Sources */,
 				CE9166CC29F0F40500612933 /* NameSignUpView.swift in Sources */,
+				CE27C8E629F8111C006ACFED /* OverlaySettingsView.swift in Sources */,
 				CED1D7F029F6D26800693DC2 /* TestsView.swift in Sources */,
+				CE27C8F029F907D2006ACFED /* LanguageSelectionView.swift in Sources */,
+				CE27C8EC29F81EC3006ACFED /* NavigationViewHeight.swift in Sources */,
 				CE9166C629F0F26C00612933 /* CodeSignUpView.swift in Sources */,
+				CE27C8E829F81D95006ACFED /* NumberSettingsView.swift in Sources */,
 				CE99574629F2B1620079B39A /* SignInSelectionView.swift in Sources */,
+				CE9ADC6529F7D77D00C5861A /* AppEnviroment.swift in Sources */,
+				CE27C8E029F80D07006ACFED /* LegalPoliciesView.swift in Sources */,
 				CE99574429F2A6AD0079B39A /* MainViewModel.swift in Sources */,
+				CE27C8EE29F8F23E006ACFED /* HelpView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

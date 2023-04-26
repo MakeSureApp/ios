@@ -14,21 +14,12 @@ struct HomeView: View {
     var body: some View {
         VStack {
             Text("HomeView")
-            Button {
-                viewModel.signOutBtnClicked()
-            } label: {
-                Text("Sign Out")
-                    .foregroundColor(.white)
-                    .padding()
-                    .background(CustomColors.mainGradient)
-                    .cornerRadius(20)
-            }
         }
     }
 }
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(viewModel: HomeViewModel(authService: AuthService()))
+        HomeView(viewModel: HomeViewModel())
     }
 }

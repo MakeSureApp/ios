@@ -8,10 +8,15 @@
 import SwiftUI
 
 struct InitialSelectionView: View {
-    @ObservedObject var registrationViewModel: RegistrationViewModel
-    @ObservedObject var loginViewModel: LoginViewModel
-    
+    @EnvironmentObject var appEnvironment: AppEnvironment
+    @ObservedObject private var registrationViewModel: RegistrationViewModel
+    @ObservedObject private var loginViewModel: LoginViewModel
     @State private var showSignInSelectionView = false
+    
+    init(appEnvironment: AppEnvironment) {
+        _registrationViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeRegistrationViewModel())
+        _loginViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeLoginViewModel())
+    }
     
     var body: some View {
         VStack {
@@ -186,6 +191,6 @@ struct InitialSelectionView: View {
 
 struct AuthenticationSelectionView_Previews: PreviewProvider {
     static var previews: some View {
-        InitialSelectionView(registrationViewModel: RegistrationViewModel(authService: AuthService()), loginViewModel: LoginViewModel(authService: AuthService()))
+        InitialSelectionView(appEnvironment: AppEnvironment())
     }
 }

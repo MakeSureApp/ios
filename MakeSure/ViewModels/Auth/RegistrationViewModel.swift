@@ -138,12 +138,12 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
     
     init(authService: AuthService) {
         self.authService = authService
-        for family in UIFont.familyNames {
-            print(family)
-            for names in UIFont.fontNames(forFamilyName: family){
-                print("== \(names)")
-            }
-        }
+//        for family in UIFont.familyNames {
+//            print(family)
+//            for names in UIFont.fontNames(forFamilyName: family){
+//                print("== \(names)")
+//            }
+//        }
     }
     
     func moveToNextStep() {
@@ -334,16 +334,13 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
         resetAllData()
     }
     
-    static func ==(lhs: RegistrationViewModel, rhs: RegistrationViewModel) -> Bool {
-        return ObjectIdentifier(lhs) == ObjectIdentifier(rhs)
-    }
-    
     func resetAllData() {
         currentStep = .phoneNumber
         firstNameValidated = false
         countryCode = .RU
         partOfPhoneNumber = ""
         codeFields = Array<String>(repeating: "", count: 6)
+        canSendCode = false
         codeValidated = false
         codeSent = false
         email = ""

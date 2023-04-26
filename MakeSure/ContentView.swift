@@ -9,18 +9,30 @@ import SwiftUI
 import NavigationStack
 
 struct ContentView: View {
-    @StateObject var authService = AuthService()
+    @StateObject private var appEnvironment = AppEnvironment()
+    @ObservedObject private var authService: AuthService
+
+    init() {
+        let appEnvironment = AppEnvironment()
+        _appEnvironment = StateObject(wrappedValue: appEnvironment)
+        _authService = Self.createAuthServiceObservedObject(from: appEnvironment)
+    }
+        
+    private static func createAuthServiceObservedObject(from appEnvironment: AppEnvironment) -> ObservedObject<AuthService> {
+        return ObservedObject(wrappedValue: appEnvironment.authService)
+    }
 
     var body: some View {
-            switch authService.authState {
+        switch authService.authState {
             case .isLoggedIn:
-                MainTabView(viewModel: MainViewModel(authService: authService))
+                MainTabView(appEnvironment: appEnvironment)
+                    .environmentObject(appEnvironment)
             case .isLoggedOut:
                 NavigationView {
-                    InitialSelectionView(registrationViewModel: RegistrationViewModel(authService: authService), loginViewModel: LoginViewModel(authService: authService))
+                    InitialSelectionView(appEnvironment: appEnvironment)
+                        .environmentObject(appEnvironment)
                 }
             }
-        
     }
 }
 
