@@ -56,13 +56,18 @@ struct MainTabView: View {
                             }
                         }) {
                             Image("menuNavBarIcon")
+                                .resizable()
+                                .frame(width: 28, height: 19)
                                 .foregroundColor(.black)
+                                .padding(.leading, 6)
                         },
                         trailing: HStack {
                             Button(action: {
                                 // Add action to open scanner view
                             }) {
                                 Image("scannerNavBarIcon")
+                                    .resizable()
+                                    .frame(width: 18, height: 18)
                                     .foregroundColor(.black)
                             }
                             
@@ -70,9 +75,12 @@ struct MainTabView: View {
                                 // Add action to open notifications view
                             }) {
                                 Image("notificationNavBarIcon")
+                                    .resizable()
+                                    .frame(width: 15, height: 19)
                                     .foregroundColor(.black)
                             }
                         }
+                            .padding(.trailing, 6)
                     )
             }
             .tag(index)
@@ -87,7 +95,7 @@ struct MainTabView: View {
         
         let customTabBar = HStack {
             ForEach(tabBarItems.indices, id: \.self) { index in
-                CustomTabItem(selection: index, imageName: tabBarItems[index].imageName, name: tabBarItems[index].name, isSelected: Binding(get: {
+                CustomTabItem(selection: index, item: tabBarItems[index], isSelected: Binding(get: {
                     selectedIndex == index
                 }, set: { isSelected in
                     selectedIndex = index
@@ -95,13 +103,14 @@ struct MainTabView: View {
                 .frame(maxWidth: .infinity)
             }
         }
-        .frame(height: 40)
-        .padding(.top, 40)
-        .background(.white)
+            .padding(.top, 8)
+            .background(.white)
+            .ignoresSafeArea(.all)
         
         return ZStack {
-            VStack {
+            VStack(spacing: 0) {
                 tabView
+                    .padding(.bottom, -50)
                 customTabBar
             }
             .overlay(
@@ -147,8 +156,7 @@ struct MainTabView: View {
 
 struct CustomTabItem: View {
     var selection: Int
-    var imageName: String
-    var name: String
+    var item: MainNavigation
     @Binding var isSelected: Bool
     @Binding var selectedIndex: Int
     
@@ -158,18 +166,23 @@ struct CustomTabItem: View {
             selectedIndex = selection
         }, label: {
             VStack {
-                Image(imageName)
+                Image(item.imageName)
+                    .resizable()
+                    .frame(width: item.imageSize.width, height: item.imageSize.height)
                     .foregroundColor(CustomColors.purpleColor)
-                Text(name)
+                    .padding(.top, item == .tests ? -5 : 0)
+                Text(item.name)
                     .font(.poppinsMediumFont(size: 12))
                     .foregroundColor(CustomColors.purpleColor)
             }
         })
+        .frame(height: 45)
     }
 }
 
 struct MainTabView_Previews: PreviewProvider {
     static var previews: some View {
         MainTabView(appEnvironment: AppEnvironment())
+            .environmentObject(AppEnvironment())
     }
 }

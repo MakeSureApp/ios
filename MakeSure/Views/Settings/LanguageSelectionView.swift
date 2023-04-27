@@ -14,33 +14,36 @@ struct LanguageSelectionView: View {
     var languages = AvailableLanguages.allCases
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            ForEach(languages, id: \.self) { language in
-                Button(action: {
-                    selectedLanguage = language
-                    didSelectLanguage?(language)
-                }) {
-                    HStack(spacing: 10) {
-                        if selectedLanguage == language {
-                            Image(systemName: "c heckmark")
-                                .resizable()
-                                .frame(width: 15, height: 15)
-                                .foregroundColor(.purple)
-                        } else {
+        ScrollView(showsIndicators: false) {
+            VStack(alignment: .leading, spacing: 10) {
+                ForEach(languages, id: \.self) { language in
+                    Button(action: {
+                        selectedLanguage = language
+                        didSelectLanguage?(language)
+                    }) {
+                        HStack(spacing: 10) {
+                            if selectedLanguage == language {
+                                Image(systemName: "checkmark")
+                                    .resizable()
+                                    .frame(width: 15, height: 15)
+                                    .foregroundColor(.purple)
+                            } else {
+                                Spacer()
+                                    .frame(width: 15)
+                            }
+                            Text(language.rawValue)
+                                .font(.poppinsBoldFont(size: 18))
+                                .foregroundColor(selectedLanguage == language ? .purple : .black)
                             Spacer()
-                                .frame(width: 15)
                         }
-                        Text(language.rawValue)
-                            .font(.poppinsBoldFont(size: 18))
-                            .foregroundColor(selectedLanguage == language ? .purple : .black)
-                        Spacer()
                     }
+                    .padding(.vertical, 5)
                 }
-                .padding(.vertical, 5)
             }
+            .padding()
         }
         .frame(width: 160)
-        .padding()
+        .frame(maxHeight: 110)
         .background(Color.white)
         .cornerRadius(10)
         .shadow(radius: 5)

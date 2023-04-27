@@ -24,7 +24,7 @@ enum MainNavigation: CaseIterable {
         case .scanner:
             ScannerView()
         case .contacts:
-            ContactsView()
+            ContactsView(viewModel: viewModelFactory.makeContactsViewModel())
         }
     }
     
@@ -51,6 +51,19 @@ enum MainNavigation: CaseIterable {
             return "Scan"
         case .contacts:
             return "Contacts"
+        }
+    }
+    
+    var imageSize: (width: CGFloat, height: CGFloat) {
+        switch self {
+        case .home:
+            return (22, 24)
+        case .tests:
+            return (31, 32)
+        case .scanner:
+            return (27, 27)
+        case .contacts:
+            return (33, 27)
         }
     }
 }

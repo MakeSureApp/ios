@@ -24,6 +24,8 @@
 		CE27C8FF29F9314B006ACFED /* NumberSettingsWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8FE29F9314B006ACFED /* NumberSettingsWrapperView.swift */; };
 		CE27C90129F93710006ACFED /* EmailSettingsWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C90029F93710006ACFED /* EmailSettingsWrapperView.swift */; };
 		CE27C90329F9383B006ACFED /* VerifyEmailSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C90229F9383B006ACFED /* VerifyEmailSettingsView.swift */; };
+		CE27C90529F9589B006ACFED /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C90429F9589B006ACFED /* Card.swift */; };
+		CE2C839C29FA620D0029F451 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C839B29FA620D0029F451 /* Contact.swift */; };
 		CE3BB3C929F1376800213B9E /* NavigationStack in Frameworks */ = {isa = PBXBuildFile; productRef = CE3BB3C829F1376800213B9E /* NavigationStack */; };
 		CE47D04D29F3BD9000AEC9DA /* CaseIterable+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE47D04C29F3BD9000AEC9DA /* CaseIterable+Ext.swift */; };
 		CE47D04F29F3C44400AEC9DA /* CountryCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE47D04E29F3C44400AEC9DA /* CountryCodes.swift */; };
@@ -99,6 +101,8 @@
 		CE9ADC6729F7DA4900C5861A /* ViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */; };
 		CE9ADC6A29F7EF0900C5861A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6929F7EF0900C5861A /* SettingsView.swift */; };
 		CE9ADC6C29F7EF7C00C5861A /* PrivacySafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6B29F7EF7C00C5861A /* PrivacySafetyView.swift */; };
+		CECBA2F429FA7B3500A81F45 /* Date+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECBA2F329FA7B3500A81F45 /* Date+Ext.swift */; };
+		CECBA2F629FA950400A81F45 /* BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECBA2F529FA950400A81F45 /* BlurView.swift */; };
 		CECCA89D29F1581800D6FC30 /* RegistrationWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECCA89C29F1581800D6FC30 /* RegistrationWrapperView.swift */; };
 		CED1D7DB29F6688C00693DC2 /* RoundedGradientButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED1D7DA29F6688C00693DC2 /* RoundedGradientButtonView.swift */; };
 		CED1D7DD29F6696200693DC2 /* BackButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED1D7DC29F6696200693DC2 /* BackButtonView.swift */; };
@@ -129,6 +133,8 @@
 		CE27C8FE29F9314B006ACFED /* NumberSettingsWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NumberSettingsWrapperView.swift; sourceTree = "<group>"; };
 		CE27C90029F93710006ACFED /* EmailSettingsWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSettingsWrapperView.swift; sourceTree = "<group>"; };
 		CE27C90229F9383B006ACFED /* VerifyEmailSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailSettingsView.swift; sourceTree = "<group>"; };
+		CE27C90429F9589B006ACFED /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		CE2C839B29FA620D0029F451 /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
 		CE47D04C29F3BD9000AEC9DA /* CaseIterable+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+Ext.swift"; sourceTree = "<group>"; };
 		CE47D04E29F3C44400AEC9DA /* CountryCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodes.swift; sourceTree = "<group>"; };
 		CE47D05129F3D3F000AEC9DA /* Rubik-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Rubik-LightItalic.ttf"; sourceTree = "<group>"; };
@@ -205,6 +211,8 @@
 		CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelFactory.swift; sourceTree = "<group>"; };
 		CE9ADC6929F7EF0900C5861A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CE9ADC6B29F7EF7C00C5861A /* PrivacySafetyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySafetyView.swift; sourceTree = "<group>"; };
+		CECBA2F329FA7B3500A81F45 /* Date+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ext.swift"; sourceTree = "<group>"; };
+		CECBA2F529FA950400A81F45 /* BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurView.swift; sourceTree = "<group>"; };
 		CECCA89C29F1581800D6FC30 /* RegistrationWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationWrapperView.swift; sourceTree = "<group>"; };
 		CED1D7DA29F6688C00693DC2 /* RoundedGradientButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundedGradientButtonView.swift; sourceTree = "<group>"; };
 		CED1D7DC29F6696200693DC2 /* BackButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackButtonView.swift; sourceTree = "<group>"; };
@@ -420,6 +428,8 @@
 			children = (
 				CE47D04E29F3C44400AEC9DA /* CountryCodes.swift */,
 				CE27C8F429F91BF3006ACFED /* User.swift */,
+				CE27C90429F9589B006ACFED /* Card.swift */,
+				CE2C839B29FA620D0029F451 /* Contact.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -439,6 +449,7 @@
 				CE99575229F2DF430079B39A /* Text+Ext.swift */,
 				CE47D04C29F3BD9000AEC9DA /* CaseIterable+Ext.swift */,
 				CE47D0A929F3DEFB00AEC9DA /* Font+Ext.swift */,
+				CECBA2F329FA7B3500A81F45 /* Date+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -560,6 +571,7 @@
 			isa = PBXGroup;
 			children = (
 				CED1D7F329F6D2D800693DC2 /* ContactsView.swift */,
+				CECBA2F529FA950400A81F45 /* BlurView.swift */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -722,6 +734,7 @@
 				CE9ADC6729F7DA4900C5861A /* ViewModelFactory.swift in Sources */,
 				CE9166D229F0F4E300612933 /* AddPhotoSignUpView.swift in Sources */,
 				CE27C8FD29F92D43006ACFED /* CongratulationsEmailSettingsView.swift in Sources */,
+				CE27C90529F9589B006ACFED /* Card.swift in Sources */,
 				CE9166C429F0F1B700612933 /* NumberSignUpView.swift in Sources */,
 				CE47D04F29F3C44400AEC9DA /* CountryCodes.swift in Sources */,
 				CED1D7DB29F6688C00693DC2 /* RoundedGradientButtonView.swift in Sources */,
@@ -736,11 +749,14 @@
 				CE27C8F329F91A53006ACFED /* ContactsViewModel.swift in Sources */,
 				CE99574C29F2B1F60079B39A /* CodeSignInView.swift in Sources */,
 				CE9166CC29F0F40500612933 /* NameSignUpView.swift in Sources */,
+				CE2C839C29FA620D0029F451 /* Contact.swift in Sources */,
 				CE27C8E629F8111C006ACFED /* OverlaySettingsView.swift in Sources */,
+				CECBA2F429FA7B3500A81F45 /* Date+Ext.swift in Sources */,
 				CED1D7F029F6D26800693DC2 /* TestsView.swift in Sources */,
 				CE27C8F029F907D2006ACFED /* LanguageSelectionView.swift in Sources */,
 				CE27C8EC29F81EC3006ACFED /* NavigationViewHeight.swift in Sources */,
 				CE9166C629F0F26C00612933 /* CodeSignUpView.swift in Sources */,
+				CECBA2F629FA950400A81F45 /* BlurView.swift in Sources */,
 				CE27C8E829F81D95006ACFED /* NumberSettingsView.swift in Sources */,
 				CE99574629F2B1620079B39A /* SignInSelectionView.swift in Sources */,
 				CE9ADC6529F7D77D00C5861A /* AppEnviroment.swift in Sources */,
