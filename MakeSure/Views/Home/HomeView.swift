@@ -123,6 +123,7 @@ private extension HomeView {
                     .padding(.trailing, 4)
                 }
             }
+            .padding(.bottom)
         }
     }
 }

@@ -9,33 +9,39 @@ import Foundation
 
 class ViewModelFactory {
     private let authService: AuthService
+    private lazy var mainViewModel = MainViewModel(authService: authService)
+    private lazy var homeViewModel = HomeViewModel()
+    private lazy var loginViewModel = LoginViewModel(authService: authService)
+    private lazy var registrationViewModel = RegistrationViewModel(authService: authService)
+    private lazy var settingsViewModel = SettingsViewModel(authService: authService)
+    private lazy var contactsViewModel = ContactsViewModel()
     
     init(authService: AuthService) {
         self.authService = authService
     }
     
     func makeMainViewModel() -> MainViewModel {
-        return MainViewModel(authService: authService)
+        return mainViewModel
     }
     
     func makeHomeViewModel() -> HomeViewModel {
-        return HomeViewModel()
+        return homeViewModel
     }
     
     func makeLoginViewModel() -> LoginViewModel {
-        return LoginViewModel(authService: authService)
+        return loginViewModel
     }
     
     func makeRegistrationViewModel() -> RegistrationViewModel {
-        return RegistrationViewModel(authService: authService)
+        return registrationViewModel
     }
     
     func makeSettingsViewModel() -> SettingsViewModel {
-        return SettingsViewModel(authService: authService)
+        return settingsViewModel
     }
     
     func makeContactsViewModel() -> ContactsViewModel {
-        return ContactsViewModel()
+        return contactsViewModel
     }
     
     // Add factory methods for other view models

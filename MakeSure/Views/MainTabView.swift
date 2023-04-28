@@ -12,9 +12,12 @@ struct MainTabView: View {
     @EnvironmentObject var appEnvironment: AppEnvironment
     @ObservedObject private var viewModel: MainViewModel
     @ObservedObject private var settingsViewModel: SettingsViewModel
+    @ObservedObject private var contactsViewModel: ContactsViewModel
     @State private var showSettings = false
     
     @State private var activeSheet: ActiveSheet?
+    
+    @State private var currentDate = Date()
     
     enum ActiveSheet: Identifiable {
         case privacySafety, help, addEmail, changePhoneNumber, legalPolicies, blacklist
@@ -27,6 +30,7 @@ struct MainTabView: View {
     init(appEnvironment: AppEnvironment) {
         _viewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeMainViewModel())
         _settingsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeSettingsViewModel())
+        _contactsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeContactsViewModel())
     }
     
     var body: some View {
@@ -38,39 +42,63 @@ struct MainTabView: View {
                 tabBarItems[index].destinationView(viewModelFactory: appEnvironment.viewModelFactory)
                     .toolbar {
                         ToolbarItem(placement: .principal) {
-                            Text("MAKE SURE")
-                                .font(.custom("BebasNeue", size: 28))
-                                .overlay {
-                                    CustomColors.secondGradient
-                                        .mask(
-                                            Text("MAKE SURE")
-                                                .font(.custom("BebasNeue", size: 28))
-                                        )
-                                }
+                            if contactsViewModel.isShowLinkIsCopied {
+                                Text("Link is copied")
+                                    .font(.poppinsRegularFont(size: 17))
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 25)
+                                            .fill(CustomColors.fourthGradient)
+                                    )
+                            } else {
+                                Text("MAKE SURE")
+                                    .font(.custom("BebasNeue", size: 28))
+                                    .overlay {
+                                        CustomColors.secondGradient
+                                            .mask(
+                                                Text("MAKE SURE")
+                                                    .font(.custom("BebasNeue", size: 28))
+                                            )
+                                    }
+                            }
                         }
                     }
                     .navigationBarItems(
-                        leading: Button(action: {
+                        leading:
+                            Button(action: {
                             withAnimation {
                                 showSettings.toggle()
                             }
                         }) {
                             Image("menuNavBarIcon")
                                 .resizable()
-                                .frame(width: 28, height: 19)
+                                .frame(width: 25, height: 17)
                                 .foregroundColor(.black)
                                 .padding(.leading, 6)
                         },
                         trailing: HStack {
-                            Button(action: {
-                                // Add action to open scanner view
-                            }) {
-                                Image("scannerNavBarIcon")
-                                    .resizable()
-                                    .frame(width: 18, height: 18)
-                                    .foregroundColor(.black)
+                            if tabBarItems[index] == .contacts || tabBarItems[index] == .tests {
+                                Button(action: {
+                                    withAnimation {
+                                        contactsViewModel.showCalendar.toggle()
+                                    }
+                                }) {
+                                    Image("calendarNavBarIcon")
+                                        .resizable()
+                                        .frame(width: 23, height: 23)
+                                        .foregroundColor(.black)
+                                }
+                            } else {
+                                Button(action: {
+                                    // Add action to open scanner view
+                                }) {
+                                    Image("scannerNavBarIcon")
+                                        .resizable()
+                                        .frame(width: 18, height: 18)
+                                        .foregroundColor(.black)
+                                }
                             }
-                            
                             Button(action: {
                                 // Add action to open notifications view
                             }) {
@@ -113,7 +141,17 @@ struct MainTabView: View {
                     .padding(.bottom, -50)
                 customTabBar
             }
-            .overlay(
+            .overlay {
+                VStack {
+                    if contactsViewModel.showCalendar {
+                        GraphicalDatePicker(startDate: contactsViewModel.startDateInCalendar, metContacts: contactsViewModel.contacts, testsDates: contactsViewModel.getTestsDates(), currentMonth: $currentDate)
+                            .edgesIgnoringSafeArea(.all)
+                            .padding(.top, 50)
+                        Spacer()
+                    }
+                }
+            }
+            .overlay {
                 Group {
                     if showSettings {
                         Color.clear
@@ -132,7 +170,7 @@ struct MainTabView: View {
                         .transition(.move(edge: .bottom))
                     }
                 }
-            )
+            }
             .sheet(item: $activeSheet) { item in
                 switch item {
                 case .privacySafety:

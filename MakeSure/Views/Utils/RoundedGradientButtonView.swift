@@ -17,7 +17,6 @@ struct RoundedGradientButton: View {
         Button(action: action) {
             Text(text)
                 .font(.rubicBoldFont(size: 21))
-                .fontWeight(.bold)
                 .frame(minWidth: 0, maxWidth: .infinity)
                 .padding()
                 .padding(.vertical, 2)

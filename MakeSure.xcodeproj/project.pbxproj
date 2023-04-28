@@ -101,6 +101,7 @@
 		CE9ADC6729F7DA4900C5861A /* ViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */; };
 		CE9ADC6A29F7EF0900C5861A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6929F7EF0900C5861A /* SettingsView.swift */; };
 		CE9ADC6C29F7EF7C00C5861A /* PrivacySafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6B29F7EF7C00C5861A /* PrivacySafetyView.swift */; };
+		CEB46D7F29FC0968003F6345 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB46D7E29FC0968003F6345 /* Test.swift */; };
 		CECBA2F429FA7B3500A81F45 /* Date+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECBA2F329FA7B3500A81F45 /* Date+Ext.swift */; };
 		CECBA2F629FA950400A81F45 /* BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECBA2F529FA950400A81F45 /* BlurView.swift */; };
 		CECCA89D29F1581800D6FC30 /* RegistrationWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECCA89C29F1581800D6FC30 /* RegistrationWrapperView.swift */; };
@@ -211,6 +212,7 @@
 		CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelFactory.swift; sourceTree = "<group>"; };
 		CE9ADC6929F7EF0900C5861A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CE9ADC6B29F7EF7C00C5861A /* PrivacySafetyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySafetyView.swift; sourceTree = "<group>"; };
+		CEB46D7E29FC0968003F6345 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		CECBA2F329FA7B3500A81F45 /* Date+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ext.swift"; sourceTree = "<group>"; };
 		CECBA2F529FA950400A81F45 /* BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurView.swift; sourceTree = "<group>"; };
 		CECCA89C29F1581800D6FC30 /* RegistrationWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationWrapperView.swift; sourceTree = "<group>"; };
@@ -430,6 +432,7 @@
 				CE27C8F429F91BF3006ACFED /* User.swift */,
 				CE27C90429F9589B006ACFED /* Card.swift */,
 				CE2C839B29FA620D0029F451 /* Contact.swift */,
+				CEB46D7E29FC0968003F6345 /* Test.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -746,6 +749,7 @@
 				CE27C90329F9383B006ACFED /* VerifyEmailSettingsView.swift in Sources */,
 				CE27C8FF29F9314B006ACFED /* NumberSettingsWrapperView.swift in Sources */,
 				CE9166BD29F04A0200612933 /* InitialSelectionView.swift in Sources */,
+				CEB46D7F29FC0968003F6345 /* Test.swift in Sources */,
 				CE27C8F329F91A53006ACFED /* ContactsViewModel.swift in Sources */,
 				CE99574C29F2B1F60079B39A /* CodeSignInView.swift in Sources */,
 				CE9166CC29F0F40500612933 /* NameSignUpView.swift in Sources */,

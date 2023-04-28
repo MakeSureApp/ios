@@ -10,19 +10,21 @@ import SwiftUI
 struct ContactsView: View {
     @StateObject var viewModel: ContactsViewModel
     @State private var showMenu = false
+    @State private var showCalendar = false
+    @State private var selectedDate = Date()
     @State private var selectedContact: Contact?
     
     var body: some View {
         ZStack {
             VStack {
-                CalendarView(viewModel: viewModel)
+                CalendarScrollView(viewModel: viewModel, showCalendar: $showCalendar, selectedDate: $selectedDate)
                 
                 HStack {
                     Text("My contacts")
                         .font(.poppinsBoldFont(size: 23))
                         .padding()
                     Button {
-                        
+                        viewModel.copyLinkBtnClicked()
                     } label: {
                         Image("copyProfileLinkIcon")
                             .resizable()
@@ -38,13 +40,13 @@ struct ContactsView: View {
                         Text("Date followed").tag(ContactsViewModel.SortBy.dateFollowed)
                         Text("Recent meetings").tag(ContactsViewModel.SortBy.dateRecentMeetings)
                     }
-                    
                     .pickerStyle(MenuPickerStyle())
-                    .font(.poppinsBoldFont(size: 14))
+                    .font(.poppinsBoldFont(size: 10))
                     .foregroundColor(.black)
                     Spacer()
                 }
                 .padding(.horizontal)
+                .padding(.bottom, -14)
                 
                 ScrollView {
                     ForEach(viewModel.contacts) { contact in
@@ -53,9 +55,25 @@ struct ContactsView: View {
                 }
             }
             .padding(.top, -50)
+            .onTapGesture {
+                showCalendar = false
+                viewModel.showCalendar = false
+            }
+            
+            if showCalendar, !viewModel.showCalendar {
+                VStack {
+                    GraphicalDatePicker(startDate: viewModel.startDateInCalendar, metContacts: viewModel.contacts, testsDates: viewModel.getTestsDates(), currentMonth: $selectedDate)
+                        .edgesIgnoringSafeArea(.all)
+                        .padding(.top, 50)
+                    Spacer()
+                }
+            }
             
             if showMenu, let contact = selectedContact {
                 ContactMenu(contact: contact, showMenu: $showMenu)
+                    .onTapGesture {
+                        showMenu.toggle()
+                    }
                     //.background(BlurView(style: .systemThinMaterial))
             }
         }
@@ -181,9 +199,13 @@ struct DayView: View {
                             contact.image
                                 .resizable()
                                 .scaledToFill()
-                                .frame(width: 23, height: 23)
+                                .frame(width: 25, height: 25)
                                 .clipShape(Circle())
                                 .offset(x: CGFloat(index) * -4, y: 0)
+                                .overlay {
+                                    Circle()
+                                        .strokeBorder(.white.opacity(0.5), lineWidth: 1)
+                                }
                           
                                 Text(date)
                                     .font(.poppinsBoldFont(size: 12))
@@ -191,7 +213,7 @@ struct DayView: View {
                                     .foregroundColor(.white)
                             
                         }
-                        .padding(.top, -4)
+                        .padding(.top, -5)
                     }
                 }
             }
@@ -201,38 +223,211 @@ struct DayView: View {
     }
 }
 
-struct CalendarView: View {
+struct CalendarScrollView: View {
     @ObservedObject var viewModel: ContactsViewModel
+    @Binding var showCalendar: Bool
+    @Binding var selectedDate: Date
     let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-    let lastSevenDates: [Date]
     let calendar = Calendar.current
 
-    init(viewModel: ContactsViewModel) {
-        self.viewModel = viewModel
-        let today = calendar.startOfDay(for: Date())
-        var dates: [Date] = []
-        for daysAgo in 0...6 {
-            if let date = calendar.date(byAdding: .day, value: -daysAgo, to: today) {
-                dates.append(date)
-            }
-        }
-        self.lastSevenDates = dates.reversed()
+    @State private var currentDate = Date()
+
+    func dateFor(weeksAgo: Int) -> Date {
+        calendar.date(byAdding: .weekOfYear, value: -weeksAgo, to: currentDate) ?? currentDate
     }
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                ForEach(lastSevenDates, id: \.self) { date in
-                    let dayOfWeek = days[calendar.component(.weekday, from: date) - 1]
-                    let dateString = String(calendar.component(.day, from: date))
-                    let metContacts = viewModel.contactsMetOn(date: date)
-                    DayView(day: dayOfWeek, date: dateString, metContacts: metContacts)
+            ScrollViewReader { scrollViewProxy in
+                LazyHStack(spacing: 10) {
+                    ForEach((0..<52).reversed(), id: \.self) { weeksAgo in
+                        ForEach((0..<7).reversed(), id: \.self) { dayOffset in
+                            let date = calendar.date(byAdding: .day, value: -dayOffset, to: dateFor(weeksAgo: weeksAgo))!
+                            let dayOfWeek = days[calendar.component(.weekday, from: date) - 1]
+                            let dateString = String(calendar.component(.day, from: date))
+                            let metContacts = viewModel.contactsMetOn(date: date)
+                            DayView(day: dayOfWeek, date: dateString, metContacts: metContacts)
+                                .id("\(weeksAgo)-\(dayOffset)")
+                                .onTapGesture {
+                                    selectedDate = date
+                                    showCalendar.toggle()
+                                }
+                        }
+                    }
+                }
+                .frame(height: 50)
+                .padding()
+                .onAppear {
+                    let weeksAgo = 0
+                    let dayOffset = 0
+                    let scrollId = "\(weeksAgo)-\(dayOffset)"
+                    scrollViewProxy.scrollTo(scrollId, anchor: .trailing)
                 }
             }
-            .padding()
         }
     }
 }
+
+struct GraphicalDatePicker: View {
+    let startDate: Date
+    let metContacts: [Contact]
+    let testsDates: [Date]
+    @Binding var currentMonth: Date
+    
+    var body: some View {
+        CustomCalendarView(startDate: startDate, metContacts: metContacts, testsDates: testsDates, currentMonth: $currentMonth)
+            .background(.white)
+            .cornerRadius(12)
+            .padding(.horizontal)
+            .shadow(color: .gray, radius: 10, x: 0, y: 0)
+    }
+}
+
+struct CustomCalendarView: View {
+    let startDate: Date
+    let endDate = Date()
+    let calendar = Calendar.current
+    let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+    let metContacts: [Contact]
+    let testsDates: [Date]
+    @Binding var currentMonth: Date
+
+    private func contactsMetOn(date: Date) -> [Contact] {
+        metContacts.filter { contact in
+            if let contactDate = contact.metDate {
+                return calendar.isDate(date, inSameDayAs: contactDate)
+            }
+            return false
+        }
+    }
+    
+    private func testsOn(date: Date) -> [Date] {
+        testsDates.filter { testDate in
+            return testDate == date
+        }
+    }
+
+    private func dayView(for date: Date) -> some View {
+        Group {
+            if date != Date.distantPast {
+                ZStack {
+                    if let dates = testsOn(date: date), !dates.isEmpty {
+                        ForEach(testsDates.indices, id: \.self) { index in
+                            Circle()
+                                .frame(width: 33, height: 33)
+                                .foregroundColor(Color(red: 95/255, green: 233/255, blue: 134/255))
+                        }
+                        .zIndex(0)
+                    }
+                    
+                    if let contacts = contactsMetOn(date: date), !contacts.isEmpty {
+                        ForEach(contacts.indices, id: \.self) { index in
+                            let contact = contacts[index]
+                            contact.image
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 33, height: 33)
+                                .clipShape(Circle())
+                                .offset(x: CGFloat(index) * -4, y: 0)
+                                .overlay {
+                                    Circle()
+                                        .strokeBorder(.white.opacity(0.5), lineWidth: 1)
+                                }
+                        }
+                    }
+                    
+                    Text("\(calendar.component(.day, from: date))")
+                        .font(.poppinsRegularFont(size: 20))
+                }
+                .frame(maxWidth: .infinity)
+            } else {
+                Text("")
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .frame(width: 40, height: 30)
+    }
+
+    private func navigateMonth(by value: Int) {
+        let newMonth = calendar.date(byAdding: .month, value: value, to: currentMonth)!
+        if newMonth >= startDate && newMonth <= endDate {
+            currentMonth = newMonth
+        }
+    }
+    
+    private func weeks(in month: Date) -> [[Date]] {
+        let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: month))!
+        let endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth)!
+        let numberOfDays = calendar.dateComponents([.day], from: startOfMonth, to: endOfMonth).day! + 1
+        let numberOfWeeks = Int(ceil(Double(numberOfDays + calendar.component(.weekday, from: startOfMonth) - 1) / 7))
+        
+        var dates: [[Date]] = Array(repeating: Array(repeating: startOfMonth, count: 7), count: numberOfWeeks)
+        
+        var currentDate = startOfMonth
+        for i in 0..<numberOfWeeks {
+            for j in 0..<7 {
+                if (i == 0 && j < calendar.component(.weekday, from: startOfMonth) - 1) || currentDate > endOfMonth {
+                    dates[i][j] = Date.distantPast
+                } else {
+                    dates[i][j] = currentDate
+                    currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
+                }
+            }
+        }
+        
+        return dates
+    }
+    
+    private func monthRange(for date: Date) -> ClosedRange<Date> {
+        let startOfMonth = calendar.date(from: calendar.dateComponents([.year, .month], from: date))!
+        let endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth)!
+        return startOfMonth...endOfMonth
+    }
+
+    var body: some View {
+        VStack {
+            HStack {
+                Text("\(calendar.monthSymbols[calendar.component(.month, from: currentMonth) - 1]) \(calendar.component(.year, from: currentMonth))")
+                    .font(.poppinsBoldFont(size: 17))
+                
+                Spacer()
+                
+                Button(action: { navigateMonth(by: -1) }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(currentMonth == startDate ? .white : .black)
+                }
+                .disabled(currentMonth == startDate)
+                .padding(.trailing, 8)
+
+                Button(action: { navigateMonth(by: 1) }) {
+                    Image(systemName: "chevron.right")
+                        .foregroundColor(currentMonth == endDate ? .white : .black)
+                }
+                .disabled(currentMonth == endDate)
+            }
+            .padding(.bottom)
+
+            HStack {
+                ForEach(days, id: \.self) { day in
+                    Text(day)
+                        .frame(maxWidth: .infinity)
+                        .font(.poppinsRegularFont(size: 13))
+                        .foregroundColor(.gray)
+                }
+            }
+
+            ForEach(weeks(in: currentMonth), id: \.self) { week in
+                HStack {
+                    ForEach(week, id: \.self) { date in
+                        dayView(for: date)
+                    }
+                }
+            }
+        }
+        .padding()
+    }
+}
+
 
 struct MenuOverlay: View {
     @Binding var showMenu: Bool
