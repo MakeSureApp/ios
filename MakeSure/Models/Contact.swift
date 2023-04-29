@@ -11,7 +11,8 @@ import SwiftUI
 struct Contact: Identifiable {
     let id: UUID
     let name: String
-    let metDate: Date?
+    let dates: [UUID : Date]
+    let testsData: [Date : [Test]]
     let image: Image
     let followedDate: Date
 }

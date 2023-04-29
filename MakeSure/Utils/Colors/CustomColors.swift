@@ -57,4 +57,5 @@ extension Color {
     static let gradientPurple2 = Color(red: 0.408, green: 0.318, blue: 0.788)
     static let gradientDarkBlue3 = Color(red: 0.243, green: 0.298, blue: 0.608)
     static let gradientPurple3 = Color(red: 0.569, green: 0.475, blue: 0.871)
+    static let lightGreen = Color(red: 95/255, green: 233/255, blue: 134/255)
 }

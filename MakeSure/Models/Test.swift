@@ -7,8 +7,7 @@
 
 import Foundation
 
-struct Test: Identifiable {
+struct Test: Identifiable, Hashable {
     var id: UUID
     var name: String
-    var date: Date
 }

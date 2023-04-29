@@ -17,8 +17,6 @@ struct MainTabView: View {
     
     @State private var activeSheet: ActiveSheet?
     
-    @State private var currentDate = Date()
-    
     enum ActiveSheet: Identifiable {
         case privacySafety, help, addEmail, changePhoneNumber, legalPolicies, blacklist
         
@@ -61,22 +59,26 @@ struct MainTabView: View {
                                                     .font(.custom("BebasNeue", size: 28))
                                             )
                                     }
+                                    .onTapGesture {
+                                        contactsViewModel.showCalendar = false
+                                    }
                             }
                         }
                     }
                     .navigationBarItems(
                         leading:
                             Button(action: {
-                            withAnimation {
-                                showSettings.toggle()
-                            }
-                        }) {
-                            Image("menuNavBarIcon")
-                                .resizable()
-                                .frame(width: 25, height: 17)
-                                .foregroundColor(.black)
-                                .padding(.leading, 6)
-                        },
+                                withAnimation {
+                                    showSettings.toggle()
+                                    contactsViewModel.showCalendar = false
+                                }
+                            }) {
+                                Image("menuNavBarIcon")
+                                    .resizable()
+                                    .frame(width: 25, height: 17)
+                                    .foregroundColor(.black)
+                                    .padding(.leading, 6)
+                            },
                         trailing: HStack {
                             if tabBarItems[index] == .contacts || tabBarItems[index] == .tests {
                                 Button(action: {
@@ -101,6 +103,7 @@ struct MainTabView: View {
                             }
                             Button(action: {
                                 // Add action to open notifications view
+                                contactsViewModel.showCalendar = false
                             }) {
                                 Image("notificationNavBarIcon")
                                     .resizable()
@@ -144,8 +147,7 @@ struct MainTabView: View {
             .overlay {
                 VStack {
                     if contactsViewModel.showCalendar {
-                        GraphicalDatePicker(startDate: contactsViewModel.startDateInCalendar, metContacts: contactsViewModel.contacts, testsDates: contactsViewModel.getTestsDates(), currentMonth: $currentDate)
-                            .edgesIgnoringSafeArea(.all)
+                        GraphicalDatePicker(viewModel: contactsViewModel, currentMonth: Date(), isFromContactView: false)
                             .padding(.top, 50)
                         Spacer()
                     }
@@ -188,7 +190,6 @@ struct MainTabView: View {
                 }
             }
         }
-        
     }
 }
 
