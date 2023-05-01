@@ -13,13 +13,15 @@ class ContactsViewModel: ObservableObject {
     
     @Published var contacts: [Contact] = []
     @Published var sortBy: SortBy = .dateFollowed
-    @Published var blockedUsers: [BlockedUser] = []
+    @Published var blockedUsers: [Contact] = []
     @Published var tests: [Test] = []
     @Published var showCalendar = false
     @Published var showContactCalendar = false
     @Published var isShowLinkIsCopied = false
-    @Published var myDates: [UUID : Date] = [:]
+    @Published var myDates: [UUID : [Date]] = [:]
     @Published var myTests: [Date : [Test]] = [:]
+    @Published var dateToStartInCalendar = Date()
+    @Published var selectedDate: Date?
     
     var startDateInCalendar = Date.from(year: 2022, month: 1, day: 1)
     
@@ -33,6 +35,12 @@ class ContactsViewModel: ObservableObject {
                 self?.sortContacts(by: sortBy)
             }
             .store(in: &cancellables)
+        
+        $showCalendar.sink { [weak self] value in
+            if !value {
+                self?.dateToStartInCalendar = Date()
+            }
+        }.store(in: &cancellables)
         
         tests.append(Test(id: UUID(), name: "HIV"))
         tests.append(Test(id: UUID(), name: "Syphilis"))
@@ -52,21 +60,17 @@ class ContactsViewModel: ObservableObject {
         let userId3 = UUID()
         let userId4 = UUID()
         let userId5 = UUID()
-        contacts.append(Contact(id: userId1, name: "Ryan", dates: [ myUserId : Date.from(year: 2023, month: 4, day: 26)], testsData: [Date.from(year: 2023, month: 4, day: 15) : tests], image: Image("mockContactImage1"), followedDate: Date.from(year: 2023, month: 3, day: 20)))
-        contacts.append(Contact(id: userId2, name: "Joyce", dates: [ myUserId : Date.from(year: 2023, month: 4, day: 22)], testsData: [Date.from(year: 2023, month: 1, day: 13) : tests], image: Image("mockContactImage2"), followedDate: Date.from(year: 2023, month: 2, day: 16)))
-        contacts.append(Contact(id: userId3, name: "Teresa", dates: [ myUserId : Date.from(year: 2023, month: 4, day: 12)], testsData: [Date.from(year: 2023, month: 4, day: 15) : tests.reversed()], image: Image("mockContactImage3"), followedDate: Date()))
-        contacts.append(Contact(id: userId4, name: "Ryan", dates: [ myUserId : Date.from(year: 2023, month: 4, day: 26)], testsData: [Date.from(year: 2023, month: 4, day: 10) : tests], image: Image("mockContactImage4"), followedDate: Date()))
-        contacts.append(Contact(id: userId5, name: "Ken", dates: [ myUserId : Date.from(year: 2023, month: 2, day: 10)], testsData: [Date.from(year: 2023, month: 4, day: 25) : tests], image: Image("mockContactImage5"), followedDate: Date()))
+        contacts.append(Contact(id: userId1, name: "Ryan", dates: [ myUserId : [Date.from(year: 2023, month: 4, day: 26)]], testsData: [Date.from(year: 2023, month: 4, day: 15) : tests], image: UIImage(named: "mockContactImage1")!, followedDate: Date.from(year: 2023, month: 3, day: 20)))
+        contacts.append(Contact(id: userId2, name: "Joyce", dates: [ myUserId : [Date.from(year: 2023, month: 4, day: 22)]], testsData: [Date.from(year: 2023, month: 1, day: 13) : tests], image: UIImage(named: ("mockContactImage2"))!, followedDate: Date.from(year: 2023, month: 2, day: 16)))
+        contacts.append(Contact(id: userId3, name: "Teresa", dates: [ myUserId : [Date.from(year: 2023, month: 4, day: 12)]], testsData: [Date.from(year: 2023, month: 4, day: 15) : tests.reversed()], image: UIImage(named: ("mockContactImage3"))!, followedDate: Date()))
+        contacts.append(Contact(id: userId4, name: "Ryan", dates: [ myUserId : [Date.from(year: 2023, month: 4, day: 26)]], testsData: [Date.from(year: 2023, month: 4, day: 10) : tests], image: UIImage(named: ("mockContactImage4"))!, followedDate: Date()))
+        contacts.append(Contact(id: userId5, name: "Ken", dates: [ myUserId : [Date.from(year: 2023, month: 2, day: 10)]], testsData: [Date.from(year: 2023, month: 4, day: 25) : tests], image: UIImage(named: ("mockContactImage5"))!, followedDate: Date()))
         
-        myDates[userId1] = Date.from(year: 2023, month: 4, day: 26)
-        myDates[userId2] = Date.from(year: 2023, month: 3, day: 20)
-        myDates[userId3] = Date.from(year: 2023, month: 4, day: 12)
-        myDates[userId4] = Date.from(year: 2023, month: 4, day: 26)
-        myDates[userId5] = Date.from(year: 2023, month: 2, day: 10)
-        
-        for i in 1...20 {
-            blockedUsers.append(BlockedUser(id: UUID(), username: "steven_crash", name: "Steven \(i)", imageName: "mockBlackListUserImage"))
-        }
+        myDates[userId1] = [Date.from(year: 2023, month: 4, day: 26)]
+        myDates[userId2] = [Date.from(year: 2023, month: 3, day: 20)]
+        myDates[userId3] = [Date.from(year: 2023, month: 4, day: 12)]
+        myDates[userId4] = [Date.from(year: 2023, month: 4, day: 26)]
+        myDates[userId5] = [Date.from(year: 2023, month: 2, day: 10)]
     }
     
     func getMetDateString(_ metDate: Date?) -> String? {
@@ -122,9 +126,11 @@ class ContactsViewModel: ObservableObject {
     func contactsMetOn(date: Date) -> [Contact] {
         var ids: [UUID] = []
         let calendar = Calendar.current
-        myDates.forEach { _id, _date in
-            if calendar.isDate(date, inSameDayAs: _date) {
-                ids.append(_id)
+        myDates.forEach { _id, _dates in
+            _dates.forEach { _date in
+                if calendar.isDate(date, inSameDayAs: _date) {
+                    ids.append(_id)
+                }
             }
         }
         if !ids.isEmpty {
@@ -140,9 +146,12 @@ class ContactsViewModel: ObservableObject {
     
     func getLastDateWith(contact: Contact) -> Date? {
         var dates: [Date] = []
-        myDates.forEach { dic in
+        for dic in myDates {
             if dic.key == contact.id {
-                dates.append(dic.value)
+                dic.value.forEach { date in
+                    dates.append(date)
+                }
+                break
             }
         }
         let sortDates = dates.sorted {
@@ -170,10 +179,11 @@ class ContactsViewModel: ObservableObject {
         case dateRecentMeetings
     }
     
-    func unlockUser(_ user: BlockedUser) {
+    func unlockUser(_ user: Contact) {
         if let userIndex = blockedUsers.firstIndex(where: { $0.id == user.id }) {
             blockedUsers.remove(at: userIndex)
         }
+        contacts.append(user)
     }
     
     func getTestsDates() -> [Date] {
@@ -190,8 +200,32 @@ class ContactsViewModel: ObservableObject {
         return (date: latestTests?.key, tests: latestTests?.value) as? (date: Date, tests: [Test])
     }
     
+    func getMyLatestTestDate() -> Date? {
+        let tests = getTestsDates()
+        return tests.last
+    }
+    
+    func shareMyLatestTest(with contactId: UUID, date: Date) {
+        // implement sharing the last test
+    }
+    
     func addDate(_ date: Date, with contactId: UUID) {
-        myDates[contactId] = date
+        myDates[contactId]?.append(date)
+    }
+    
+    func addUserToBlacklist(id: UUID) {
+        if let user = contacts.first(where: { $0.id == id }) {
+            blockedUsers.append(user)
+        }
+        if let userIndex = contacts.firstIndex(where: { $0.id == id }) {
+            contacts.remove(at: userIndex)
+        }
+    }
+    
+    func deleteContact(id: UUID) {
+        if let userIndex = contacts.firstIndex(where: { $0.id == id }) {
+            contacts.remove(at: userIndex)
+        }
     }
     
     func copyLinkBtnClicked() {

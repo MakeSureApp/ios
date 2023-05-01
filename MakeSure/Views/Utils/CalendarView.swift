@@ -57,15 +57,20 @@ struct CustomCalendarView: View {
             return testDate == date
         }
     }
+    
+    private func isSelectedDateInThePast() -> Bool {
+        if let selectedDate, selectedDate < Date().addingTimeInterval(100) {
+            return true
+        }
+        return false
+    }
 
     private func dayView(for date: Date) -> some View {
-        Button(action: {
+        Button {
             if monthRange(for: currentMonth).contains(date) {
-                withAnimation {
-                    selectedDate = date
-                }
+                selectedDate = date
             }
-        }) {
+        } label: {
             Group {
                 if monthRange(for: currentMonth).contains(date) {
                     ZStack {
@@ -81,7 +86,7 @@ struct CustomCalendarView: View {
                         if let contacts = viewModel.contactsMetOn(date: date), !contacts.isEmpty {
                             ForEach(contacts.indices, id: \.self) { index in
                                 let contact = contacts[index]
-                                contact.image
+                                Image(uiImage: contact.image)
                                     .resizable()
                                     .scaledToFill()
                                     .frame(width: 33, height: 33)
@@ -195,6 +200,10 @@ struct CustomCalendarView: View {
                 Text("Select a date!")
                     .font(.poppinsRegularFont(size: 14))
                     .foregroundColor(.red)
+            } else if let selectedDate, selectedDate > Date().addingTimeInterval(100) {
+                Text("Select a date in the past!")
+                    .font(.poppinsRegularFont(size: 14))
+                    .foregroundColor(.red)
             } else {
                 Spacer()
                     .frame(height: 44)
@@ -203,7 +212,7 @@ struct CustomCalendarView: View {
             if isFromContactView {
                 Button {
                     isAddBtnClicked = true
-                    if let date = selectedDate, let id = contactId {
+                    if let date = selectedDate, let id = contactId, isSelectedDateInThePast() {
                         viewModel.addDate(date, with: id)
                         viewModel.showContactCalendar = false
                     }
@@ -212,23 +221,25 @@ struct CustomCalendarView: View {
                         .font(.rubicBoldFont(size: 15))
                         .frame(minWidth: 0, maxWidth: .infinity)
                         .padding(.vertical, 14)
-                        .foregroundColor(selectedDate == nil ? .black : .white)
+                        .foregroundColor(selectedDate != nil && isSelectedDateInThePast() ? .white : .black)
                         .background(
                             RoundedRectangle(cornerRadius: 25)
-                                .fill(selectedDate == nil ? CustomColors.whiteGradient : CustomColors.mainGradient)
+                                .fill(selectedDate != nil && isSelectedDateInThePast() ? CustomColors.mainGradient : CustomColors.whiteGradient)
                                 .shadow(color: .gray, radius: 2, x: 0, y: 1)
                         )
                 }
                 .padding(.horizontal)
-
             } else {
                 HStack {
                     Spacer()
                     Button {
                         isAddBtnClicked = true
-//                        if let date = selectedDate {
-//                            viewModel.addDate(date)
-//                        }
+                        if let selectedDate, isSelectedDateInThePast()  {
+                            viewModel.showCalendar = false
+                            withAnimation {
+                                viewModel.selectedDate = selectedDate
+                            }
+                        }
                     } label: {
                         HStack {
                             Image(systemName: "plus")
@@ -248,9 +259,9 @@ struct CustomCalendarView: View {
         .padding()
     }
 }
-
-struct GraphicalDatePicker_Previews: PreviewProvider {
-    static var previews: some View {
-        GraphicalDatePicker(viewModel: ContactsViewModel(), currentMonth: Date(), isFromContactView: true)
-    }
-}
+//
+//struct GraphicalDatePicker_Previews: PreviewProvider {
+//    static var previews: some View {
+//        GraphicalDatePicker(viewModel: ContactsViewModel(), currentMonth: Date(), isFromContactView: true)
+//    }
+//}

@@ -68,6 +68,9 @@
 		CE47D0A129F3DADB00AEC9DA /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE47D08F29F3DADB00AEC9DA /* Poppins-Thin.ttf */; };
 		CE47D0A229F3DADB00AEC9DA /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CE47D09029F3DADB00AEC9DA /* Poppins-SemiBold.ttf */; };
 		CE47D0AA29F3DEFB00AEC9DA /* Font+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE47D0A929F3DEFB00AEC9DA /* Font+Ext.swift */; };
+		CE71A51F29FF87CD00608B03 /* SelectContactForDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71A51E29FF87CD00608B03 /* SelectContactForDateView.swift */; };
+		CE71A52129FFB8F700608B03 /* ViewingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71A52029FFB8F700608B03 /* ViewingImageView.swift */; };
+		CE71A52329FFC25200608B03 /* MyQRCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71A52229FFC25200608B03 /* MyQRCodeView.swift */; };
 		CE9166A829F0419100612933 /* MakeSureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9166A729F0419100612933 /* MakeSureApp.swift */; };
 		CE9166AA29F0419100612933 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9166A929F0419100612933 /* ContentView.swift */; };
 		CE9166AC29F0419300612933 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE9166AB29F0419300612933 /* Assets.xcassets */; };
@@ -180,6 +183,9 @@
 		CE47D08F29F3DADB00AEC9DA /* Poppins-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		CE47D09029F3DADB00AEC9DA /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
 		CE47D0A929F3DEFB00AEC9DA /* Font+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Font+Ext.swift"; sourceTree = "<group>"; };
+		CE71A51E29FF87CD00608B03 /* SelectContactForDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectContactForDateView.swift; sourceTree = "<group>"; };
+		CE71A52029FFB8F700608B03 /* ViewingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewingImageView.swift; sourceTree = "<group>"; };
+		CE71A52229FFC25200608B03 /* MyQRCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyQRCodeView.swift; sourceTree = "<group>"; };
 		CE9166A429F0419100612933 /* MakeSure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MakeSure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE9166A729F0419100612933 /* MakeSureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeSureApp.swift; sourceTree = "<group>"; };
 		CE9166A929F0419100612933 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -404,6 +410,7 @@
 		CE9166B529F047A200612933 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				CED9CBC42A000197004AB9E7 /* Extensions */,
 				CE9ADC6829F7EEFB00C5861A /* Settings */,
 				CED1D7EC29F6D23E00693DC2 /* Contacts */,
 				CED1D7EB29F6D23500693DC2 /* Scan */,
@@ -555,6 +562,8 @@
 			isa = PBXGroup;
 			children = (
 				CED1D7ED29F6D25B00693DC2 /* HomeView.swift */,
+				CE71A52029FFB8F700608B03 /* ViewingImageView.swift */,
+				CE71A52229FFC25200608B03 /* MyQRCodeView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -581,6 +590,7 @@
 				CED1D7F329F6D2D800693DC2 /* ContactsView.swift */,
 				CECBA2F529FA950400A81F45 /* BlurView.swift */,
 				CEA0DFAE29FD0E6B006CFFE6 /* ContactView.swift */,
+				CE71A51E29FF87CD00608B03 /* SelectContactForDateView.swift */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -591,6 +601,13 @@
 				CED1D7F629F6DB3D00693DC2 /* HomeViewModel.swift */,
 			);
 			path = Home;
+			sourceTree = "<group>";
+		};
+		CED9CBC42A000197004AB9E7 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -710,6 +727,7 @@
 				CE27C8DE29F7F7C0006ACFED /* SettingsViewModel.swift in Sources */,
 				CEA0DFB129FD4961006CFFE6 /* CalendarView.swift in Sources */,
 				CED1D7F429F6D2D800693DC2 /* ContactsView.swift in Sources */,
+				CE71A52329FFC25200608B03 /* MyQRCodeView.swift in Sources */,
 				CE99574A29F2B1E90079B39A /* NumberSignInView.swift in Sources */,
 				CE99575129F2D9870079B39A /* CustomColors.swift in Sources */,
 				CE99575329F2DF430079B39A /* Text+Ext.swift in Sources */,
@@ -767,8 +785,10 @@
 				CED1D7F029F6D26800693DC2 /* TestsView.swift in Sources */,
 				CE27C8F029F907D2006ACFED /* LanguageSelectionView.swift in Sources */,
 				CE27C8EC29F81EC3006ACFED /* NavigationViewHeight.swift in Sources */,
+				CE71A51F29FF87CD00608B03 /* SelectContactForDateView.swift in Sources */,
 				CE9166C629F0F26C00612933 /* CodeSignUpView.swift in Sources */,
 				CECBA2F629FA950400A81F45 /* BlurView.swift in Sources */,
+				CE71A52129FFB8F700608B03 /* ViewingImageView.swift in Sources */,
 				CE27C8E829F81D95006ACFED /* NumberSettingsView.swift in Sources */,
 				CE99574629F2B1620079B39A /* SignInSelectionView.swift in Sources */,
 				CE9ADC6529F7D77D00C5861A /* AppEnviroment.swift in Sources */,

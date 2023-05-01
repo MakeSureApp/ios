@@ -11,6 +11,7 @@ struct MainTabView: View {
     @State private var selectedIndex: Int = 0
     @EnvironmentObject var appEnvironment: AppEnvironment
     @ObservedObject private var viewModel: MainViewModel
+    @ObservedObject private var homeViewModel: HomeViewModel
     @ObservedObject private var settingsViewModel: SettingsViewModel
     @ObservedObject private var contactsViewModel: ContactsViewModel
     @State private var showSettings = false
@@ -27,6 +28,7 @@ struct MainTabView: View {
     
     init(appEnvironment: AppEnvironment) {
         _viewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeMainViewModel())
+        _homeViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeHomeViewModel())
         _settingsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeSettingsViewModel())
         _contactsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeContactsViewModel())
     }
@@ -59,9 +61,6 @@ struct MainTabView: View {
                                                     .font(.custom("BebasNeue", size: 28))
                                             )
                                     }
-                                    .onTapGesture {
-                                        contactsViewModel.showCalendar = false
-                                    }
                             }
                         }
                     }
@@ -70,7 +69,6 @@ struct MainTabView: View {
                             Button(action: {
                                 withAnimation {
                                     showSettings.toggle()
-                                    contactsViewModel.showCalendar = false
                                 }
                             }) {
                                 Image("menuNavBarIcon")
@@ -93,7 +91,7 @@ struct MainTabView: View {
                                 }
                             } else {
                                 Button(action: {
-                                    // Add action to open scanner view
+                                    homeViewModel.showMyQRCode.toggle()
                                 }) {
                                     Image("scannerNavBarIcon")
                                         .resizable()
@@ -103,7 +101,6 @@ struct MainTabView: View {
                             }
                             Button(action: {
                                 // Add action to open notifications view
-                                contactsViewModel.showCalendar = false
                             }) {
                                 Image("notificationNavBarIcon")
                                     .resizable()
@@ -144,10 +141,15 @@ struct MainTabView: View {
                     .padding(.bottom, -50)
                 customTabBar
             }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                contactsViewModel.showCalendar = false
+                homeViewModel.showPhotoMenu = false
+            }
             .overlay {
                 VStack {
                     if contactsViewModel.showCalendar {
-                        GraphicalDatePicker(viewModel: contactsViewModel, currentMonth: Date(), isFromContactView: false)
+                        GraphicalDatePicker(viewModel: contactsViewModel, currentMonth: contactsViewModel.dateToStartInCalendar, isFromContactView: false)
                             .padding(.top, 50)
                         Spacer()
                     }
@@ -171,6 +173,21 @@ struct MainTabView: View {
                         )
                         .transition(.move(edge: .bottom))
                     }
+                }
+            }
+            .overlay {
+                if let date = contactsViewModel.selectedDate {
+                    SelectContactForDateView(viewModel: contactsViewModel, date: date)
+                }
+            }
+            .overlay {
+                if homeViewModel.showMyQRCode {
+                    MyQRCodeView(viewModel: homeViewModel)
+                }
+            }
+            .overlay {
+                if homeViewModel.showImagePhoto {
+                    ViewingImageView(viewModel: homeViewModel)
                 }
             }
             .sheet(item: $activeSheet) { item in

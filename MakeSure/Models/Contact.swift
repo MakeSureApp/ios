@@ -8,11 +8,11 @@
 import Foundation
 import SwiftUI
 
-struct Contact: Identifiable {
+struct Contact: Identifiable, Hashable {
     let id: UUID
     let name: String
-    let dates: [UUID : Date]
+    let dates: [UUID : [Date]]
     let testsData: [Date : [Test]]
-    let image: Image
+    let image: UIImage
     let followedDate: Date
 }

@@ -45,7 +45,7 @@ struct BlacklistView: View {
                         
                         ForEach(viewModel.blockedUsers, id: \.self) { user in
                             HStack {
-                                Image(user.imageName)
+                                Image(uiImage: user.image)
                                     .resizable()
                                     .frame(width: 63, height: 63)
                                     .padding(.trailing, 10)
@@ -53,7 +53,7 @@ struct BlacklistView: View {
                                     Text(user.name)
                                         .font(.poppinsBoldFont(size: 16))
                                         .foregroundColor(.white)
-                                    Text("@\(user.username)")
+                                    Text("@(user.username)")
                                         .font(.poppinsLightFont(size: 12))
                                         .foregroundColor(.white)
                                 }

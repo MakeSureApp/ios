@@ -10,15 +10,15 @@ import SwiftUI
 struct ContactsView: View {
     @StateObject var viewModel: ContactsViewModel
     @State private var showMenu = false
-    @State private var showCalendar = false
     @State private var showContact = false
-    @State private var selectedDate = Date()
     @State private var selectedContact: Contact?
+    @State private var menuYOffset: CGFloat = 0
+    @State private var showSharingTestView = false
     
     var body: some View {
         ZStack {
             VStack {
-                CalendarScrollView(viewModel: viewModel, showCalendar: $showCalendar, selectedDate: $selectedDate)
+                CalendarScrollView(viewModel: viewModel)
                 
                 HStack {
                     Text("My contacts")
@@ -38,10 +38,17 @@ struct ContactsView: View {
                     Text("Sort by")
                         .font(.poppinsRegularFont(size: 14))
                     Picker("Sort by", selection: $viewModel.sortBy) {
-                        Text("Date followed").tag(ContactsViewModel.SortBy.dateFollowed)
-                        Text("Recent meetings").tag(ContactsViewModel.SortBy.dateRecentMeetings)
+                        Text("Date followed")
+                            .foregroundColor(.black)
+                            .font(.poppinsBoldFont(size: 14))
+                            .tag(ContactsViewModel.SortBy.dateFollowed)
+                        Text("Recent meetings")
+                            .foregroundColor(.black)
+                            .font(.poppinsBoldFont(size: 10))
+                            .tag(ContactsViewModel.SortBy.dateRecentMeetings)
                     }
                     .pickerStyle(MenuPickerStyle())
+                    .accentColor(.black)
                     .font(.poppinsBoldFont(size: 10))
                     .foregroundColor(.black)
                     Spacer()
@@ -50,8 +57,33 @@ struct ContactsView: View {
                 .padding(.bottom, -14)
                 
                 ScrollView {
-                    ForEach(viewModel.contacts) { contact in
-                        ContactItemView(viewModel: viewModel, contact: contact, showMenu: $showMenu, showContact: $showContact, selectedContact: $selectedContact)
+                    LazyVStack {
+                        ForEach(viewModel.contacts) { contact in
+                            GeometryReader { geometry in
+                                ContactItemView(viewModel: viewModel, contact: contact, showMenu: $showMenu, showContact: $showContact, selectedContact: $selectedContact)
+                                    .onTapGesture {
+                                        if showMenu {
+                                            showMenu = false
+                                        } else {
+                                            withAnimation {
+                                                showContact = true
+                                                selectedContact = contact
+                                                menuYOffset = geometry.frame(in: .global).minY + geometry.size.height
+                                                print("click \(menuYOffset)")
+                                            }
+                                        }
+                                    }
+                                    .onLongPressGesture {
+                                        withAnimation {
+                                            showMenu = true
+                                            selectedContact = contact
+                                            menuYOffset = geometry.frame(in: .global).minY + geometry.size.height
+                                            print("press \(menuYOffset)")
+                                        }
+                                    }
+                            }
+                            .frame(height: 70)
+                        }
                     }
                 }
             }
@@ -62,34 +94,42 @@ struct ContactsView: View {
                 }
             }
             Button(action: {
+                showMenu = false
                 showContact = false
-                showCalendar = false
                 viewModel.showCalendar = false
+                viewModel.showContactCalendar = false
             }) {
                 Rectangle()
                     .fill(Color.clear)
                     .ignoresSafeArea()
-                    .allowsHitTesting(!showContact && !showCalendar)
+                    .allowsHitTesting(!showContact)
             }
             .zIndex(-1)
-
-            
-            if showCalendar, !viewModel.showCalendar {
+            if showMenu, let contact = selectedContact {
+                ContactMenu(viewModel: viewModel, contact: contact, showMenu: $showMenu, showSharingTest: $showSharingTestView)
+                   // .offset(y: menuYOffset)
+            }
+            if showSharingTestView, let date = viewModel.getMyLatestTestDate(),  let contact = selectedContact {
                 VStack {
-                    GraphicalDatePicker(viewModel: viewModel, currentMonth: selectedDate, isFromContactView: false)
-                        .edgesIgnoringSafeArea(.all)
-                        .padding(.top, 50)
                     Spacer()
+                    ShareLastTestView(viewModel: viewModel, isShowView: $showSharingTestView, contact: contact, date: date)
                 }
             }
-            
-            if showMenu, let contact = selectedContact {
-                ContactMenu(contact: contact, showMenu: $showMenu)
-                    .onTapGesture {
-                        showMenu.toggle()
-                    }
-                //.background(BlurView(style: .systemThinMaterial))
+            if viewModel.showContactCalendar, let contact = selectedContact {
+                VStack {
+                    Spacer()
+                    GraphicalDatePicker(viewModel: viewModel, currentMonth: Date(), isFromContactView: true, contactId: contact.id)
+                        .padding(.bottom, 30)
+                }
             }
+        }
+    }
+}
+
+extension VerticalAlignment {
+    struct MenuAlignment: AlignmentID {
+        static func defaultValue(in d: ViewDimensions) -> CGFloat {
+            return d[VerticalAlignment.center]
         }
     }
 }
@@ -103,7 +143,7 @@ struct ContactItemView: View {
 
     var body: some View {
         HStack {
-            contact.image
+            Image(uiImage: contact.image)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 63, height: 63)
@@ -130,20 +170,30 @@ struct ContactItemView: View {
             Spacer()
             
             Button(action: {
-                showMenu.toggle()
-                selectedContact = contact
+               // if !viewModel.showCalendar {
+                    showMenu.toggle()
+                withAnimation {
+                    selectedContact = contact
+                }
+                //}
             }) {
                 Image(systemName: "ellipsis")
                     .font(.headline)
                     .foregroundColor(.black)
             }
         }
-        .padding(.horizontal)
+        .padding(.horizontal, 6)
         .padding(.vertical, 4)
-        .cornerRadius(10)
+        .background(showMenu && selectedContact != nil && selectedContact!.id == contact.id ? Color.gradientPurple3.opacity(0.3) : .white )
+        .cornerRadius(12)
+        .padding(.horizontal, 6)
+        .contentShape(Rectangle())
         .onTapGesture {
-            selectedContact = contact
-            showContact.toggle()
+           // if !viewModel.showCalendar {
+                showMenu = false
+                selectedContact = contact
+                showContact.toggle()
+            //}
         }
     }
 }
@@ -167,7 +217,7 @@ struct DayView: View {
                     ForEach(metContacts.indices, id: \.self) { index in
                         let contact = metContacts[index]
                         ZStack(alignment: .center) {
-                            contact.image
+                            Image(uiImage: contact.image)
                                 .resizable()
                                 .scaledToFill()
                                 .frame(width: 25, height: 25)
@@ -196,8 +246,6 @@ struct DayView: View {
 
 struct CalendarScrollView: View {
     @ObservedObject var viewModel: ContactsViewModel
-    @Binding var showCalendar: Bool
-    @Binding var selectedDate: Date
     let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     let calendar = Calendar.current
 
@@ -220,8 +268,8 @@ struct CalendarScrollView: View {
                             DayView(day: dayOfWeek, date: dateString, metContacts: metContacts)
                                 .id("\(weeksAgo)-\(dayOffset)")
                                 .onTapGesture {
-                                    selectedDate = date
-                                    showCalendar.toggle()
+                                    viewModel.dateToStartInCalendar = date
+                                    viewModel.showCalendar.toggle()
                                 }
                         }
                     }
@@ -239,48 +287,70 @@ struct CalendarScrollView: View {
     }
 }
 
-struct MenuOverlay: View {
-    @Binding var showMenu: Bool
-    let contact: Contact
-    var body: some View {
-        GeometryReader { geometry in
-            VStack {
-                if geometry.safeAreaInsets.top + geometry.frame(in: .global).minY < geometry.size.height / 2 {
-                    Spacer()
-                    ContactMenu(contact: contact, showMenu: $showMenu)
-                        .background(Color(.systemBackground))
-                        .cornerRadius(10)
-                        .shadow(color: Color(.systemGray6), radius: 10, x: 0, y: 0)
-                } else {
-                    ContactMenu(contact: contact, showMenu: $showMenu)
-                        .background(Color(.systemBackground))
-                        .cornerRadius(10)
-                        .shadow(color: Color(.systemGray6), radius: 10, x: 0, y: 0)
-                    Spacer()
-                }
-            }
-            .opacity(showMenu ? 1 : 0)
-            .animation(.easeInOut)
-            .edgesIgnoringSafeArea(.all)
-            .onTapGesture {
-                showMenu.toggle()
-            }
-        }
-    }
-}
-
 struct ContactMenu: View {
+    @ObservedObject var viewModel: ContactsViewModel
     let contact: Contact
     @Binding var showMenu: Bool
+    @Binding var showSharingTest: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
-            Button(action: shareMyTest) { Text("Share my test") }
-            Button(action: addDate) { Text("Add date") }
-            Button(action: rename) { Text("Rename") }
-            Button(action: delete) { Text("Delete") }
-            Button(action: block) { Text("Block") }
-            Button(action: report) { Text("Report") }
+            VStack {
+                Button(action: shareMyTest) {
+                    Text("Share my test")
+                        .font(.poppinsRegularFont(size: 16))
+                        .foregroundColor(.black)
+                        .padding(.horizontal)
+                        .padding(.vertical, 3)
+                }
+                Divider()
+                    .frame(width: 140)
+                Button(action: addDate) {
+                    Text("Add date")
+                        .font(.poppinsRegularFont(size: 16))
+                        .foregroundColor(.black)
+                        .padding(.horizontal)
+                        .padding(.vertical, 3)
+                }
+                Divider()
+                    .frame(width: 140)
+                Button(action: rename) {
+                    Text("Rename")
+                        .font(.poppinsRegularFont(size: 16))
+                        .foregroundColor(.black)
+                        .padding(.horizontal)
+                        .padding(.vertical, 3)
+                }
+                Divider()
+                    .frame(width: 140)
+            }
+            VStack {
+                Button(action: delete) {
+                    Text("Delete")
+                        .font(.poppinsRegularFont(size: 16))
+                        .foregroundColor(.black)
+                        .padding(.horizontal)
+                        .padding(.vertical, 3)
+                }
+                Divider()
+                    .frame(width: 140)
+                Button(action: block) {
+                    Text("Block")
+                        .font(.poppinsRegularFont(size: 16))
+                        .foregroundColor(.black)
+                        .padding(.horizontal)
+                        .padding(.vertical, 3)
+                }
+                Divider()
+                    .frame(width: 140)
+                Button(action: report) {
+                    Text("Report")
+                        .font(.poppinsRegularFont(size: 16))
+                        .foregroundColor(.black)
+                        .padding(.horizontal)
+                        .padding(.vertical, 3)
+                }
+            }
         }
         .padding()
         .background(Color.white)
@@ -293,11 +363,13 @@ struct ContactMenu: View {
     }
 
     private func shareMyTest() {
-        // Implement shareMyTest functionality
+        showSharingTest = true
+        showMenu = false
     }
 
     private func addDate() {
-        // Implement addDate functionality
+        viewModel.showContactCalendar = true
+        showMenu = false
     }
 
     private func rename() {
@@ -305,15 +377,18 @@ struct ContactMenu: View {
     }
 
     private func delete() {
-        // Implement delete functionality
+        viewModel.deleteContact(id: contact.id)
+        showMenu = false
     }
 
     private func block() {
-        // Implement block functionality
+        viewModel.addUserToBlacklist(id: contact.id)
+        showMenu = false
     }
 
     private func report() {
         // Implement report functionality
+        showMenu = false
     }
 }
 

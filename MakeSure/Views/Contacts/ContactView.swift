@@ -10,6 +10,7 @@ import SwiftUI
 struct ContactView: View {
     let contact: Contact
     @ObservedObject var viewModel: ContactsViewModel
+    @State private var showSharingTestView = false
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
@@ -33,7 +34,7 @@ struct ContactView: View {
                 VStack {
                     ZStack(alignment: .trailing) {
                         Spacer()
-                        contact.image
+                        Image(uiImage: contact.image)
                             .resizable()
                             .frame(width: 157, height: 157)
                             .clipShape(Circle())
@@ -93,7 +94,7 @@ struct ContactView: View {
                     }
                     Spacer()
                     Button {
-                        
+                        showSharingTestView.toggle()
                     } label: {
                         HStack {
                             Image(systemName: "arrowshape.turn.up.right.fill")
@@ -135,7 +136,8 @@ struct ContactView: View {
                     }
                     HStack {
                         Button {
-                            viewModel.showContactCalendar = false
+                            viewModel.addUserToBlacklist(id: contact.id)
+                            presentationMode.wrappedValue.dismiss()
                         } label: {
                             Text("Block user")
                                 .font(.poppinsRegularFont(size: 15))
@@ -146,8 +148,15 @@ struct ContactView: View {
                     }
                 }
                 .padding(.horizontal, 24)
+                .contentShape(Rectangle())
                 .onTapGesture {
                     viewModel.showContactCalendar = false
+                }
+            }
+            if showSharingTestView, let date = viewModel.getMyLatestTestDate() {
+                VStack {
+                    Spacer()
+                    ShareLastTestView(viewModel: viewModel, isShowView: $showSharingTestView, contact: contact, date: date)
                 }
             }
             if viewModel.showContactCalendar {
@@ -156,11 +165,78 @@ struct ContactView: View {
                     GraphicalDatePicker(viewModel: viewModel, currentMonth: Date(), isFromContactView: true, contactId: contact.id)
                         .padding(.bottom, 30)
                 }
-                .onTapGesture {
-                    viewModel.showContactCalendar = false
-                }
             }
         }
+    }
+}
+
+struct ShareLastTestView: View {
+    @ObservedObject var viewModel: ContactsViewModel
+    @Binding var isShowView: Bool
+    let contact: Contact
+    let date: Date
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Group {
+                Text("Are you sure you want to share \nyour test on ")
+                    .font(.rubicBoldFont(size: 16))
+                    .foregroundColor(.gradientDarkBlue)
+                +
+                Text(date.toString)
+                    .font(.rubicBoldFont(size: 16))
+                    .foregroundColor(.gradientDarkBlue)
+                    .underline()
+                +
+                Text(" with \(contact.name)?")
+                    .font(.rubicBoldFont(size: 16))
+                    .foregroundColor(.gradientDarkBlue)
+            }
+            .padding([.leading, .top, .trailing], 16)
+            HStack(spacing: 12) {
+                Button(action: {
+                    isShowView = false
+                }) {
+                    Text("Cancel".uppercased())
+                        .font(.rubicBoldFont(size: 15))
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25)
+                                .stroke(Color.gradientPurple)
+                        )
+                        .overlay {
+                            (CustomColors.secondGradient)
+                                .mask(
+                                    Text("Cancel".uppercased())
+                                        .font(.rubicBoldFont(size: 15))
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                )
+                        }
+                }
+                Button(action: {
+                    viewModel.shareMyLatestTest(with: contact.id, date: date)
+                    isShowView = false
+                }) {
+                    Text("Share".uppercased())
+                        .font(.rubicBoldFont(size: 15))
+                        .frame(minWidth: 0, maxWidth: .infinity)
+                        .padding()
+                        .padding(.vertical, 2)
+                        .foregroundColor(.white)
+                        .background(
+                            RoundedRectangle(cornerRadius: 25)
+                                .fill(CustomColors.mainGradient)
+                        )
+                }
+            }
+            .padding(16)
+        }
+        .frame(maxHeight: 160)
+        .background(.white)
+        .cornerRadius(20)
+        .padding()
     }
 }
 
@@ -174,6 +250,6 @@ struct ContactView_Previews: PreviewProvider {
             Test(id: UUID(), name: "Hepatite B"),
             Test(id: UUID(), name: "HPV")]
         
-        ContactView(contact: Contact(id: UUID(), name: "Joyce", dates: [:], testsData: [Date.from(year: 2023, month: 1, day: 13) : tests], image: Image("mockContactImage2"), followedDate: Date()), viewModel: ContactsViewModel())
+        ContactView(contact: Contact(id: UUID(), name: "Joyce", dates: [:], testsData: [Date.from(year: 2023, month: 1, day: 13) : tests], image: UIImage(named: "mockContactImage2")!, followedDate: Date()), viewModel: ContactsViewModel())
     }
 }

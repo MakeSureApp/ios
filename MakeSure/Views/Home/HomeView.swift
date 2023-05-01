@@ -30,35 +30,84 @@ private extension HomeView {
         RoundedRectangle(cornerRadius: 10)
             .fill(CustomColors.fourthGradient)
             .frame(height: 150)
-            .overlay(
-                VStack {
-                    Image("mockPhotoImageHome")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 81, height: 81)
-                    HStack {
-                        VStack {
-                            Text("\(viewModel.testsDone)")
-                                .font(.interRegularFont(size: 20))
-                            Text("Tests done")
-                                .font(.interRegularFont(size: 12))
+            .overlay {
+                ZStack {
+                    VStack {
+                        if let image = viewModel.image {
+                            Image(uiImage: image)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 81, height: 81)
+                                .onTapGesture {
+                                    viewModel.showPhotoMenu.toggle()
+                                }
                         }
-                        Spacer()
-                        Text(viewModel.name)
-                            .font(.poppinsBoldFont(size: 18))
-                        Spacer()
-                        VStack {
-                            Text("\(viewModel.age)")
-                                .font(.interRegularFont(size: 20))
-                            Text("Years old")
-                                .font(.interRegularFont(size: 12))
+                        HStack {
+                            VStack {
+                                Text("\(viewModel.testsDone)")
+                                    .font(.interRegularFont(size: 20))
+                                    .foregroundColor(.white)
+                                Text("Tests done")
+                                    .font(.interRegularFont(size: 12))
+                                    .foregroundColor(.white)
+                            }
+                            Spacer()
+                            Text(viewModel.name)
+                                .font(.poppinsBoldFont(size: 18))
+                                .foregroundColor(.white)
+                            Spacer()
+                            VStack {
+                                Text("\(viewModel.age)")
+                                    .font(.interRegularFont(size: 20))
+                                    .foregroundColor(.white)
+                                Text("Years old")
+                                    .font(.interRegularFont(size: 12))
+                                    .foregroundColor(.white)
+                            }
                         }
                     }
+                    .padding()
+                    .padding(.horizontal, 12)
+                    .foregroundColor(.white)
+                    
+                    if viewModel.showPhotoMenu {
+                        HStack {
+                            Image(systemName: "arrowtriangle.left.fill")
+                                .resizable()
+                                .frame(width: 16, height: 30)
+                                .foregroundColor(.white)
+                                .padding(.trailing, -9)
+                            VStack {
+                                Button {
+                                    viewModel.requestPhoto()
+                                } label: {
+                                    Text("Change")
+                                        .font(.interRegularFont(size: 16))
+                                        .foregroundColor(.black)
+                                        
+                                }
+                                .padding(.top, 6)
+                                Divider()
+                                    .frame(maxWidth: 110)
+                                Button {
+                                    viewModel.showImagePhoto = true
+                                } label: {
+                                    Text("Show")
+                                        .font(.interRegularFont(size: 16))
+                                        .foregroundColor(.black)
+                                       
+                                }
+                                .padding(.bottom, 6)
+                            }
+                            .padding(.vertical, 2)
+                            .background(.white)
+                            .cornerRadius(12)
+                        }
+                        .padding(.leading, 210)
+                        .padding(.bottom, 50)
+                    }
                 }
-                .padding()
-                .padding(.horizontal, 12)
-                .foregroundColor(.white)
-            )
+            }
     }
 }
 
