@@ -25,7 +25,7 @@ struct MyQRCodeView: View {
                             .foregroundColor(.white)
                     }
                     Spacer()
-                    ShareLink(item: viewModel.name) {
+                    ShareLink(item: viewModel.user?.name ?? "") {
                         Label("", systemImage: "square.and.arrow.up")
                             .frame(width: 18, height: 24)
                             .foregroundColor(.white)
@@ -42,6 +42,7 @@ struct MyQRCodeView: View {
                         Image(uiImage: image)
                             .resizable()
                             .frame(width: 106, height: 106)
+                            .clipShape(Circle())
                             .padding(.bottom, 380)
                             .zIndex(1)
                     }
@@ -50,7 +51,7 @@ struct MyQRCodeView: View {
                             .resizable()
                             .frame(width: 240, height: 220)
                             .padding([.leading, .trailing, .top])
-                        Text(viewModel.name.uppercased())
+                        Text(viewModel.user?.name.uppercased() ?? "")
                             .font(.rubicBoldFont(size: 22))
                             .foregroundColor(Color(red: 114/255, green: 146/255, blue: 174/255))
                     }

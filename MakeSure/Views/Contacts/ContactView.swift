@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct ContactView: View {
-    let contact: Contact
+    let contact: UserModel
     @ObservedObject var viewModel: ContactsViewModel
+    @ObservedObject var testsViewModel: TestsViewModel
     @State private var showSharingTestView = false
+    @State private var isAnimating: Bool = false
     @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
@@ -34,11 +36,19 @@ struct ContactView: View {
                 VStack {
                     ZStack(alignment: .trailing) {
                         Spacer()
-                        Image(uiImage: contact.image)
-                            .resizable()
-                            .frame(width: 157, height: 157)
-                            .clipShape(Circle())
-                            .shadow(color: .white, radius: 30)
+                        if let image = viewModel.contactsImages[contact.id] {
+                            Image(uiImage: image)
+                                .resizable()
+                                .frame(width: 157, height: 157)
+                                .clipShape(Circle())
+                                .shadow(color: .white, radius: 30)
+                        } else {
+                            Image(systemName: "person.circle.fill")
+                                .resizable()
+                                .frame(width: 157, height: 157)
+                                .clipShape(Circle())
+                                .shadow(color: .white, radius: 30)
+                        }
                         
                         let date = viewModel.getLastDateWith(contact: contact)
                         if let metDateString = viewModel.getMetDateString(date), let date {
@@ -57,7 +67,7 @@ struct ContactView: View {
                         .font(.poppinsBoldFont(size: 16))
                         .foregroundColor(.white)
                         .padding()
-                    let testsData = viewModel.getLatestsTests(contact)
+                    /*let testsData = viewModel.getLatestsTests(contact)
                     
                     HStack {
                         Text(testsData?.date.toString ?? "No tests")
@@ -90,6 +100,52 @@ struct ContactView: View {
                                 .font(.poppinsRegularFont(size: 15))
                                 .foregroundColor(.gray)
                                 .underline()
+                        }
+                    }*/
+                    if testsViewModel.isLoadingContactTests {
+                        RotatingShapesLoader(animate: $isAnimating)
+                            .frame(maxWidth: 100)
+                            .padding(.top, 50)
+                            .onAppear {
+                                isAnimating = true
+                            }
+                            .onDisappear {
+                                isAnimating = false
+                            }
+                    } else if testsViewModel.hasLoadedContactTests {
+                        if !testsViewModel.contactLastTests.isEmpty {
+                            if let date = testsViewModel.contactLastTests.first?.date {
+                                HStack {
+                                    Spacer()
+                                    Text(date.toString)
+                                        .font(.poppinsMediumFont(size: 20))
+                                        .foregroundColor(.white)
+                                        .padding(4)
+                                    Spacer()
+                                }
+                            }
+                            VStack(alignment: .leading, spacing: 8) {
+                                ForEach(testsViewModel.contactLastTests) { test in
+                                    TestView(test: test)
+                                }
+                            }
+                            HStack {
+                                Spacer()
+                                Button {
+                                    testsViewModel.learnMoreBtnClicked()
+                                } label: {
+                                    Text("Learn more")
+                                        .font(.poppinsLightFont(size: 14))
+                                        .foregroundColor(.gray)
+                                        .underline()
+                                }
+                            }
+                        } else {
+                            Spacer()
+                            Text("This contact don't have any tests yet")
+                                .font(.poppinsBoldFont(size: 16))
+                                .foregroundColor(.white)
+                            Spacer()
                         }
                     }
                     Spacer()
@@ -131,7 +187,6 @@ struct ContactView: View {
                                     .padding(.vertical)
                             }
                         }
-
                         Spacer()
                     }
                     HStack {
@@ -153,7 +208,7 @@ struct ContactView: View {
                     viewModel.showContactCalendar = false
                 }
             }
-            if showSharingTestView, let date = viewModel.getMyLatestTestDate() {
+            if showSharingTestView, let date = testsViewModel.lastTests.first?.date {
                 VStack {
                     Spacer()
                     ShareLastTestView(viewModel: viewModel, isShowView: $showSharingTestView, contact: contact, date: date)
@@ -162,10 +217,16 @@ struct ContactView: View {
             if viewModel.showContactCalendar {
                 VStack {
                     Spacer()
-                    GraphicalDatePicker(viewModel: viewModel, currentMonth: Date(), isFromContactView: true, contactId: contact.id)
+                    GraphicalDatePicker(viewModel: viewModel, testsViewModel: testsViewModel, currentMonth: Date(), isFromContactView: true, contactId: contact.id)
                         .padding(.bottom, 30)
                 }
             }
+        }
+        .task {
+            await testsViewModel.fetchContactsTests(id: contact.id)
+        }
+        .onDisappear {
+            testsViewModel.removeContactData()
         }
     }
 }
@@ -173,7 +234,7 @@ struct ContactView: View {
 struct ShareLastTestView: View {
     @ObservedObject var viewModel: ContactsViewModel
     @Binding var isShowView: Bool
-    let contact: Contact
+    let contact: UserModel
     let date: Date
     
     var body: some View {
@@ -240,16 +301,16 @@ struct ShareLastTestView: View {
     }
 }
 
-struct ContactView_Previews: PreviewProvider {
-    static var previews: some View {
-        let tests: [Test] = [
-            Test(id: UUID(), name: "HIV"),
-            Test(id: UUID(), name: "Syphilis"),
-            Test(id: UUID(), name: "Chlamydia"),
-            Test(id: UUID(), name: "Gonorrhea"),
-            Test(id: UUID(), name: "Hepatite B"),
-            Test(id: UUID(), name: "HPV")]
-        
-        ContactView(contact: Contact(id: UUID(), name: "Joyce", dates: [:], testsData: [Date.from(year: 2023, month: 1, day: 13) : tests], image: UIImage(named: "mockContactImage2")!, followedDate: Date()), viewModel: ContactsViewModel())
-    }
-}
+//struct ContactView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        let tests: [Test] = [
+//            Test(id: UUID(), name: "HIV"),
+//            Test(id: UUID(), name: "Syphilis"),
+//            Test(id: UUID(), name: "Chlamydia"),
+//            Test(id: UUID(), name: "Gonorrhea"),
+//            Test(id: UUID(), name: "Hepatite B"),
+//            Test(id: UUID(), name: "HPV")]
+//
+//        ContactView(contact: UserModel(id: UUID(), name: "Joyce", birthdate: Date(), sex: "female", phone: "+79001234567"), viewModel: ContactsViewModel())
+//    }
+//}

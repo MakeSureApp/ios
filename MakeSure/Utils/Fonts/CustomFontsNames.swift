@@ -20,6 +20,7 @@ class CustomFontsNames {
     static let interLight = "Inter-Light"
     static let interExtraLight = "Inter-ExtraLight"
     static let interRegular = "Inter-Regular"
+    static let interMedium = "Inter-Medium"
     static let interSemiBold = "Inter-SemiBold"
     static let bebasNeueBold = "BebasNeue-Bold"
     

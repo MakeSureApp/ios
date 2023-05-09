@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CE1BD32F2A0522FF0018B7E2 /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1BD32E2A0522FF0018B7E2 /* Tips.swift */; };
+		CE2268652A08DB52004D1138 /* RefreshableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2268642A08DB52004D1138 /* RefreshableScrollView.swift */; };
 		CE27C8DE29F7F7C0006ACFED /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8DD29F7F7C0006ACFED /* SettingsViewModel.swift */; };
 		CE27C8E029F80D07006ACFED /* LegalPoliciesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8DF29F80D07006ACFED /* LegalPoliciesView.swift */; };
 		CE27C8E229F80D1B006ACFED /* BlacklistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8E129F80D1B006ACFED /* BlacklistView.swift */; };
@@ -17,7 +19,6 @@
 		CE27C8EE29F8F23E006ACFED /* HelpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8ED29F8F23E006ACFED /* HelpView.swift */; };
 		CE27C8F029F907D2006ACFED /* LanguageSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8EF29F907D2006ACFED /* LanguageSelectionView.swift */; };
 		CE27C8F329F91A53006ACFED /* ContactsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8F229F91A53006ACFED /* ContactsViewModel.swift */; };
-		CE27C8F529F91BF3006ACFED /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8F429F91BF3006ACFED /* User.swift */; };
 		CE27C8F929F92C80006ACFED /* CodeSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8F829F92C80006ACFED /* CodeSettingsView.swift */; };
 		CE27C8FB29F92CBC006ACFED /* CongratulationsNumberSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8FA29F92CBC006ACFED /* CongratulationsNumberSettingsView.swift */; };
 		CE27C8FD29F92D43006ACFED /* CongratulationsEmailSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8FC29F92D43006ACFED /* CongratulationsEmailSettingsView.swift */; };
@@ -25,7 +26,8 @@
 		CE27C90129F93710006ACFED /* EmailSettingsWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C90029F93710006ACFED /* EmailSettingsWrapperView.swift */; };
 		CE27C90329F9383B006ACFED /* VerifyEmailSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C90229F9383B006ACFED /* VerifyEmailSettingsView.swift */; };
 		CE27C90529F9589B006ACFED /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C90429F9589B006ACFED /* Card.swift */; };
-		CE2C839C29FA620D0029F451 /* Contact.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C839B29FA620D0029F451 /* Contact.swift */; };
+		CE2C839C29FA620D0029F451 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2C839B29FA620D0029F451 /* User.swift */; };
+		CE30F22C2A0147D2009EE06A /* TestsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30F22B2A0147D2009EE06A /* TestsViewModel.swift */; };
 		CE3BB3C929F1376800213B9E /* NavigationStack in Frameworks */ = {isa = PBXBuildFile; productRef = CE3BB3C829F1376800213B9E /* NavigationStack */; };
 		CE47D04D29F3BD9000AEC9DA /* CaseIterable+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE47D04C29F3BD9000AEC9DA /* CaseIterable+Ext.swift */; };
 		CE47D04F29F3C44400AEC9DA /* CountryCodes.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE47D04E29F3C44400AEC9DA /* CountryCodes.swift */; };
@@ -71,6 +73,7 @@
 		CE71A51F29FF87CD00608B03 /* SelectContactForDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71A51E29FF87CD00608B03 /* SelectContactForDateView.swift */; };
 		CE71A52129FFB8F700608B03 /* ViewingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71A52029FFB8F700608B03 /* ViewingImageView.swift */; };
 		CE71A52329FFC25200608B03 /* MyQRCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71A52229FFC25200608B03 /* MyQRCodeView.swift */; };
+		CE8E0BB42A0A899C00C4D098 /* BottomSheet in Frameworks */ = {isa = PBXBuildFile; productRef = CE8E0BB32A0A899C00C4D098 /* BottomSheet */; };
 		CE9166A829F0419100612933 /* MakeSureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9166A729F0419100612933 /* MakeSureApp.swift */; };
 		CE9166AA29F0419100612933 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9166A929F0419100612933 /* ContentView.swift */; };
 		CE9166AC29F0419300612933 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CE9166AB29F0419300612933 /* Assets.xcassets */; };
@@ -100,12 +103,18 @@
 		CE99574E29F2B58B0079B39A /* LoginWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE99574D29F2B58B0079B39A /* LoginWrapperView.swift */; };
 		CE99575129F2D9870079B39A /* CustomColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE99575029F2D9870079B39A /* CustomColors.swift */; };
 		CE99575329F2DF430079B39A /* Text+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE99575229F2DF430079B39A /* Text+Ext.swift */; };
-		CE9ADC6529F7D77D00C5861A /* AppEnviroment.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6429F7D77D00C5861A /* AppEnviroment.swift */; };
+		CE9ADC6529F7D77D00C5861A /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6429F7D77D00C5861A /* AppEnvironment.swift */; };
 		CE9ADC6729F7DA4900C5861A /* ViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */; };
 		CE9ADC6A29F7EF0900C5861A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6929F7EF0900C5861A /* SettingsView.swift */; };
 		CE9ADC6C29F7EF7C00C5861A /* PrivacySafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6B29F7EF7C00C5861A /* PrivacySafetyView.swift */; };
 		CEA0DFAF29FD0E6B006CFFE6 /* ContactView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA0DFAE29FD0E6B006CFFE6 /* ContactView.swift */; };
 		CEA0DFB129FD4961006CFFE6 /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA0DFB029FD4961006CFFE6 /* CalendarView.swift */; };
+		CEB10ABE2A02674600B7B5DF /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB10ABD2A02674600B7B5DF /* SupabaseService.swift */; };
+		CEB10AC12A02758600B7B5DF /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = CEB10AC02A02758600B7B5DF /* Supabase */; };
+		CEB10AC32A02B56800B7B5DF /* Meeting.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB10AC22A02B56800B7B5DF /* Meeting.swift */; };
+		CEB10ACB2A02B9D900B7B5DF /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB10ACA2A02B9D900B7B5DF /* SupabaseManager.swift */; };
+		CEB10ACD2A02CA4900B7B5DF /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB10ACC2A02CA4900B7B5DF /* LoadingView.swift */; };
+		CEB10ACF2A03A8DE00B7B5DF /* CalendarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB10ACE2A03A8DE00B7B5DF /* CalendarViewModel.swift */; };
 		CEB46D7F29FC0968003F6345 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB46D7E29FC0968003F6345 /* Test.swift */; };
 		CECBA2F429FA7B3500A81F45 /* Date+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECBA2F329FA7B3500A81F45 /* Date+Ext.swift */; };
 		CECBA2F629FA950400A81F45 /* BlurView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECBA2F529FA950400A81F45 /* BlurView.swift */; };
@@ -122,6 +131,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		CE1BD32E2A0522FF0018B7E2 /* Tips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tips.swift; sourceTree = "<group>"; };
+		CE2268642A08DB52004D1138 /* RefreshableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshableScrollView.swift; sourceTree = "<group>"; };
 		CE27C8DD29F7F7C0006ACFED /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		CE27C8DF29F80D07006ACFED /* LegalPoliciesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalPoliciesView.swift; sourceTree = "<group>"; };
 		CE27C8E129F80D1B006ACFED /* BlacklistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlacklistView.swift; sourceTree = "<group>"; };
@@ -132,7 +143,6 @@
 		CE27C8ED29F8F23E006ACFED /* HelpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpView.swift; sourceTree = "<group>"; };
 		CE27C8EF29F907D2006ACFED /* LanguageSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageSelectionView.swift; sourceTree = "<group>"; };
 		CE27C8F229F91A53006ACFED /* ContactsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsViewModel.swift; sourceTree = "<group>"; };
-		CE27C8F429F91BF3006ACFED /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		CE27C8F829F92C80006ACFED /* CodeSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeSettingsView.swift; sourceTree = "<group>"; };
 		CE27C8FA29F92CBC006ACFED /* CongratulationsNumberSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CongratulationsNumberSettingsView.swift; sourceTree = "<group>"; };
 		CE27C8FC29F92D43006ACFED /* CongratulationsEmailSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CongratulationsEmailSettingsView.swift; sourceTree = "<group>"; };
@@ -140,7 +150,8 @@
 		CE27C90029F93710006ACFED /* EmailSettingsWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailSettingsWrapperView.swift; sourceTree = "<group>"; };
 		CE27C90229F9383B006ACFED /* VerifyEmailSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyEmailSettingsView.swift; sourceTree = "<group>"; };
 		CE27C90429F9589B006ACFED /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
-		CE2C839B29FA620D0029F451 /* Contact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Contact.swift; sourceTree = "<group>"; };
+		CE2C839B29FA620D0029F451 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		CE30F22B2A0147D2009EE06A /* TestsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestsViewModel.swift; sourceTree = "<group>"; };
 		CE47D04C29F3BD9000AEC9DA /* CaseIterable+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CaseIterable+Ext.swift"; sourceTree = "<group>"; };
 		CE47D04E29F3C44400AEC9DA /* CountryCodes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryCodes.swift; sourceTree = "<group>"; };
 		CE47D05129F3D3F000AEC9DA /* Rubik-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Rubik-LightItalic.ttf"; sourceTree = "<group>"; };
@@ -216,12 +227,17 @@
 		CE99574D29F2B58B0079B39A /* LoginWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWrapperView.swift; sourceTree = "<group>"; };
 		CE99575029F2D9870079B39A /* CustomColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColors.swift; sourceTree = "<group>"; };
 		CE99575229F2DF430079B39A /* Text+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+Ext.swift"; sourceTree = "<group>"; };
-		CE9ADC6429F7D77D00C5861A /* AppEnviroment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnviroment.swift; sourceTree = "<group>"; };
+		CE9ADC6429F7D77D00C5861A /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelFactory.swift; sourceTree = "<group>"; };
 		CE9ADC6929F7EF0900C5861A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		CE9ADC6B29F7EF7C00C5861A /* PrivacySafetyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacySafetyView.swift; sourceTree = "<group>"; };
 		CEA0DFAE29FD0E6B006CFFE6 /* ContactView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactView.swift; sourceTree = "<group>"; };
 		CEA0DFB029FD4961006CFFE6 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		CEB10ABD2A02674600B7B5DF /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
+		CEB10AC22A02B56800B7B5DF /* Meeting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meeting.swift; sourceTree = "<group>"; };
+		CEB10ACA2A02B9D900B7B5DF /* SupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseManager.swift; sourceTree = "<group>"; };
+		CEB10ACC2A02CA4900B7B5DF /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		CEB10ACE2A03A8DE00B7B5DF /* CalendarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarViewModel.swift; sourceTree = "<group>"; };
 		CEB46D7E29FC0968003F6345 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		CECBA2F329FA7B3500A81F45 /* Date+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ext.swift"; sourceTree = "<group>"; };
 		CECBA2F529FA950400A81F45 /* BlurView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlurView.swift; sourceTree = "<group>"; };
@@ -243,6 +259,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CEB10AC12A02758600B7B5DF /* Supabase in Frameworks */,
+				CE8E0BB42A0A899C00C4D098 /* BottomSheet in Frameworks */,
 				CE3BB3C929F1376800213B9E /* NavigationStack in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -286,6 +304,14 @@
 				CE27C90029F93710006ACFED /* EmailSettingsWrapperView.swift */,
 			);
 			path = AddChangeEmail;
+			sourceTree = "<group>";
+		};
+		CE30F22A2A0147C4009EE06A /* Tests */ = {
+			isa = PBXGroup;
+			children = (
+				CE30F22B2A0147D2009EE06A /* TestsViewModel.swift */,
+			);
+			path = Tests;
 			sourceTree = "<group>";
 		};
 		CE47D05029F3D3CB00AEC9DA /* Fonts */ = {
@@ -427,11 +453,13 @@
 		CE9166B629F047A900612933 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				CE30F22A2A0147C4009EE06A /* Tests */,
 				CE27C8F129F91A44006ACFED /* Contacts */,
 				CE27C8DC29F7F7AE006ACFED /* Settings */,
 				CED1D7F529F6DB3100693DC2 /* Home */,
 				CE99574229F2A69A0079B39A /* Auth */,
 				CE99574329F2A6AD0079B39A /* MainViewModel.swift */,
+				CEB10ACE2A03A8DE00B7B5DF /* CalendarViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -440,10 +468,11 @@
 			isa = PBXGroup;
 			children = (
 				CE47D04E29F3C44400AEC9DA /* CountryCodes.swift */,
-				CE27C8F429F91BF3006ACFED /* User.swift */,
 				CE27C90429F9589B006ACFED /* Card.swift */,
-				CE2C839B29FA620D0029F451 /* Contact.swift */,
+				CE2C839B29FA620D0029F451 /* User.swift */,
 				CEB46D7E29FC0968003F6345 /* Test.swift */,
+				CEB10AC22A02B56800B7B5DF /* Meeting.swift */,
+				CE1BD32E2A0522FF0018B7E2 /* Tips.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -452,6 +481,8 @@
 			isa = PBXGroup;
 			children = (
 				CE99573C29F296200079B39A /* AuthService.swift */,
+				CEB10ABD2A02674600B7B5DF /* SupabaseService.swift */,
+				CEB10ACA2A02B9D900B7B5DF /* SupabaseManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -524,7 +555,7 @@
 				CE9166B929F047D400612933 /* Extensions */,
 				CE47D05029F3D3CB00AEC9DA /* Fonts */,
 				CE47D0A829F3DEE400AEC9DA /* Colors */,
-				CE9ADC6429F7D77D00C5861A /* AppEnviroment.swift */,
+				CE9ADC6429F7D77D00C5861A /* AppEnvironment.swift */,
 				CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */,
 			);
 			path = Utils;
@@ -554,6 +585,8 @@
 				CED1D7DC29F6696200693DC2 /* BackButtonView.swift */,
 				CED1D7DE29F6704800693DC2 /* CustomUnderlinedView.swift */,
 				CEA0DFB029FD4961006CFFE6 /* CalendarView.swift */,
+				CEB10ACC2A02CA4900B7B5DF /* LoadingView.swift */,
+				CE2268642A08DB52004D1138 /* RefreshableScrollView.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -628,6 +661,8 @@
 			name = MakeSure;
 			packageProductDependencies = (
 				CE3BB3C829F1376800213B9E /* NavigationStack */,
+				CEB10AC02A02758600B7B5DF /* Supabase */,
+				CE8E0BB32A0A899C00C4D098 /* BottomSheet */,
 			);
 			productName = MakeSure;
 			productReference = CE9166A429F0419100612933 /* MakeSure.app */;
@@ -659,6 +694,8 @@
 			mainGroup = CE91669B29F0419100612933;
 			packageReferences = (
 				CE3BB3C729F1376800213B9E /* XCRemoteSwiftPackageReference "swiftui-navigation-stack" */,
+				CEB10ABF2A02758600B7B5DF /* XCRemoteSwiftPackageReference "supabase-swift" */,
+				CE8E0BB22A0A899C00C4D098 /* XCRemoteSwiftPackageReference "bottom-sheet" */,
 			);
 			productRefGroup = CE9166A529F0419100612933 /* Products */;
 			projectDirPath = "";
@@ -737,16 +774,21 @@
 				CE47D04D29F3BD9000AEC9DA /* CaseIterable+Ext.swift in Sources */,
 				CE9166CA29F0F37C00612933 /* VerifyEmailSignUpView.swift in Sources */,
 				CE9166BF29F04AE900612933 /* RegistrationViewModel.swift in Sources */,
+				CE2268652A08DB52004D1138 /* RefreshableScrollView.swift in Sources */,
 				CE9166AA29F0419100612933 /* ContentView.swift in Sources */,
 				CE99574829F2B1C10079B39A /* AppleSignInView.swift in Sources */,
 				CE99573D29F296200079B39A /* AuthService.swift in Sources */,
+				CEB10ACD2A02CA4900B7B5DF /* LoadingView.swift in Sources */,
 				CE99574E29F2B58B0079B39A /* LoginWrapperView.swift in Sources */,
 				CE9166CE29F0F44700612933 /* BirthdaySignUpView.swift in Sources */,
+				CEB10ACF2A03A8DE00B7B5DF /* CalendarViewModel.swift in Sources */,
 				CE27C8F929F92C80006ACFED /* CodeSettingsView.swift in Sources */,
 				CE9166D029F0F4C700612933 /* GenderSignUpView.swift in Sources */,
+				CE1BD32F2A0522FF0018B7E2 /* Tips.swift in Sources */,
 				CE27C8E229F80D1B006ACFED /* BlacklistView.swift in Sources */,
 				CE27C8EA29F81DAE006ACFED /* EmailSettingsView.swift in Sources */,
-				CE27C8F529F91BF3006ACFED /* User.swift in Sources */,
+				CEB10AC32A02B56800B7B5DF /* Meeting.swift in Sources */,
+				CEB10ABE2A02674600B7B5DF /* SupabaseService.swift in Sources */,
 				CE9166C829F0F2D300612933 /* EmailSignUpView.swift in Sources */,
 				CE47D06729F3D4E700AEC9DA /* CustomFontsNames.swift in Sources */,
 				CE9166C229F05E8400612933 /* RegistrationProgressBarView.swift in Sources */,
@@ -756,6 +798,7 @@
 				CE9ADC6A29F7EF0900C5861A /* SettingsView.swift in Sources */,
 				CE9166D629F0F66400612933 /* CongratulationSignUpView.swift in Sources */,
 				CE27C8FB29F92CBC006ACFED /* CongratulationsNumberSettingsView.swift in Sources */,
+				CE30F22C2A0147D2009EE06A /* TestsViewModel.swift in Sources */,
 				CED1D7F729F6DB3D00693DC2 /* HomeViewModel.swift in Sources */,
 				CE9166A829F0419100612933 /* MakeSureApp.swift in Sources */,
 				CE9166BB29F0485800612933 /* MainTabView.swift in Sources */,
@@ -779,7 +822,7 @@
 				CE27C8F329F91A53006ACFED /* ContactsViewModel.swift in Sources */,
 				CE99574C29F2B1F60079B39A /* CodeSignInView.swift in Sources */,
 				CE9166CC29F0F40500612933 /* NameSignUpView.swift in Sources */,
-				CE2C839C29FA620D0029F451 /* Contact.swift in Sources */,
+				CE2C839C29FA620D0029F451 /* User.swift in Sources */,
 				CE27C8E629F8111C006ACFED /* OverlaySettingsView.swift in Sources */,
 				CECBA2F429FA7B3500A81F45 /* Date+Ext.swift in Sources */,
 				CED1D7F029F6D26800693DC2 /* TestsView.swift in Sources */,
@@ -787,11 +830,12 @@
 				CE27C8EC29F81EC3006ACFED /* NavigationViewHeight.swift in Sources */,
 				CE71A51F29FF87CD00608B03 /* SelectContactForDateView.swift in Sources */,
 				CE9166C629F0F26C00612933 /* CodeSignUpView.swift in Sources */,
+				CEB10ACB2A02B9D900B7B5DF /* SupabaseManager.swift in Sources */,
 				CECBA2F629FA950400A81F45 /* BlurView.swift in Sources */,
 				CE71A52129FFB8F700608B03 /* ViewingImageView.swift in Sources */,
 				CE27C8E829F81D95006ACFED /* NumberSettingsView.swift in Sources */,
 				CE99574629F2B1620079B39A /* SignInSelectionView.swift in Sources */,
-				CE9ADC6529F7D77D00C5861A /* AppEnviroment.swift in Sources */,
+				CE9ADC6529F7D77D00C5861A /* AppEnvironment.swift in Sources */,
 				CE27C8E029F80D07006ACFED /* LegalPoliciesView.swift in Sources */,
 				CE99574429F2A6AD0079B39A /* MainViewModel.swift in Sources */,
 				CE27C8EE29F8F23E006ACFED /* HelpView.swift in Sources */,
@@ -1013,6 +1057,22 @@
 				kind = branch;
 			};
 		};
+		CE8E0BB22A0A899C00C4D098 /* XCRemoteSwiftPackageReference "bottom-sheet" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weitieda/bottom-sheet";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		CEB10ABF2A02758600B7B5DF /* XCRemoteSwiftPackageReference "supabase-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/supabase/supabase-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1020,6 +1080,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CE3BB3C729F1376800213B9E /* XCRemoteSwiftPackageReference "swiftui-navigation-stack" */;
 			productName = NavigationStack;
+		};
+		CE8E0BB32A0A899C00C4D098 /* BottomSheet */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE8E0BB22A0A899C00C4D098 /* XCRemoteSwiftPackageReference "bottom-sheet" */;
+			productName = BottomSheet;
+		};
+		CEB10AC02A02758600B7B5DF /* Supabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CEB10ABF2A02758600B7B5DF /* XCRemoteSwiftPackageReference "supabase-swift" */;
+			productName = Supabase;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

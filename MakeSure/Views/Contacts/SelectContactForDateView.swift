@@ -10,8 +10,9 @@ import SwiftUI
 struct SelectContactForDateView: View {
     @StateObject var viewModel: ContactsViewModel
     let date: Date
-    @State private var selectedContact: Contact?
+    @State private var selectedContact: UserModel?
     @State private var selectedContactIdForDate: UUID?
+    @State private var isAnimating: Bool = false
     
     var body: some View {
         VStack {
@@ -49,18 +50,15 @@ struct SelectContactForDateView: View {
             
             ScrollView {
                 LazyVStack {
-                    ForEach(viewModel.contacts) { contact in
+                    ForEach(viewModel.contactsM) { contact in
                         SelectContactItemView(viewModel: viewModel, contact: contact, selectedContactId: $selectedContactIdForDate)
                     }
                 }
             }
             Button {
                 if let id = selectedContactIdForDate {
-                    viewModel.addDate(date, with: id)
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                        withAnimation {
-                            viewModel.selectedDate = nil
-                        }
+                    Task {
+                        await viewModel.addDate(date, with: id)
                     }
                 }
             } label: {
@@ -76,28 +74,51 @@ struct SelectContactForDateView: View {
                     )
             }
             .padding(.horizontal)
+            .disabled(viewModel.isAddingDate)
         }
         .contentShape(Rectangle())
         .onTapGesture {
             selectedContactIdForDate = nil
         }
         .background(.white)
+        .zIndex(0)
+        
+        if viewModel.isAddingDate {
+            RotatingShapesLoader(animate: $isAnimating, color: .black)
+                .frame(maxWidth: 80)
+                .onAppear {
+                    isAnimating = true
+                }
+                .onDisappear {
+                    isAnimating = false
+                }
+                .zIndex(1)
+        }
     }
 }
 
 struct SelectContactItemView: View {
     @ObservedObject var viewModel: ContactsViewModel
-    let contact: Contact
+    let contact: UserModel
     @Binding var selectedContactId: UUID?
 
     var body: some View {
         HStack {
-            Image(uiImage: contact.image)
+            if let image = viewModel.contactsImages[contact.id] {
+                Image(uiImage: image)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 63, height: 63)
                 .clipShape(Circle())
                 .padding(.trailing, 8)
+            } else {
+                Image(systemName: "person.circle.fill")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 63, height: 63)
+                    .clipShape(Circle())
+                    .padding(.trailing, 8)
+            }
             
             VStack(alignment: .leading, spacing: 2) {
                 Text(contact.name)

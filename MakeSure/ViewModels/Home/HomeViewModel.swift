@@ -26,28 +26,188 @@ enum Category: String, CaseIterable {
     }
 }
 
+struct TipsCategory: Hashable {
+    let id: UUID
+    let name: String
+    let color: Color
+}
+
 class HomeViewModel: NSObject, ObservableObject {
     
-    @Published var testsDone: Int = 5
+    @Published var testsDone: Int = 0
     @Published var name: String = "JANE"
     @Published var age: Int = 28
-    @Published var image = UIImage(named: "mockPhotoImageHome")
-    @Published var tipCategories: [Category] = [.health, .dates, .selfDevelopment]
-    @Published var selectedCategories: [Category] = []
-    @Published var cards: [Card] = [
-        Card(title: "Safe tips for Speed Dating", description: "How to talk to a partner about tests?", image: "mockTipsImage", category: .dates, url: "https://example.com/1"),
-        Card(title: "Keep safe & keep romantic", description: nil, image: "mockTipsImage2", category: .selfDevelopment, url: ""),
-        Card(title: "Sex education: what you need to know", description: nil, image: "mockTipsImage", category: .health, url: "https://example.com/3")
-    ]
+    @Published var image: UIImage?
+    @Published var tipCategories: [TipsCategory] = []
+    @Published var selectedCategories: [TipsCategory] = []
+    @Published var cards: [TipsModel] = []
+    @Published var tipImages: [UUID: UIImage] = [:]
+//     [
+//        Card(title: "Safe tips for Speed Dating", description: "How to talk to a partner about tests?", image: "mockTipsImage", category: .dates, url: "https://example.com/1"),
+//        Card(title: "Keep safe & keep romantic", description: nil, image: "mockTipsImage2", category: .selfDevelopment, url: ""),
+//        Card(title: "Sex education: what you need to know", description: nil, image: "mockTipsImage", category: .health, url: "https://example.com/3")
+//    ]
     @Published var showPhotoMenu = false
     @Published var showImagePhoto = false
     @Published var showMyQRCode = false
+    @Published var user: UserModel?
+    @Published var isLoadingUser: Bool = false
+    @Published var isLoadingTests: Bool = false
+    @Published var isLoadingImage: Bool = false
+    @Published var isLoadingTips: Bool = false
+    @Published private(set) var hasLoadedUser: Bool = false
+    @Published private(set) var hasLoadedTests: Bool = false
+    @Published private(set) var hasLoadedImage: Bool = false
+    @Published private(set) var hasLoadedTips: Bool = false
+    @Published private(set) var loadingImageCount: Int = 0
     
-    var filteredCards: [Card] {
+    private let userService = UserSupabaseService()
+    private var testService = TestSupabaseService()
+    private var tipsService = TipsSupabaseService()
+    let userId = UUID(uuidString: "3230f47c-e8ef-11ed-a05b-0242ac120003")!
+    
+    func fetchUserData() async {
+        DispatchQueue.main.async {
+            self.isLoadingUser = true
+        }
+        do {
+            if let user = try await userService.fetchUserById(id: userId) {
+                DispatchQueue.main.async {
+                    self.user = user
+                    self.isLoadingUser = false
+                    self.hasLoadedUser = true
+                }
+            } else {
+                print("No user found with the specified ID")
+            }
+        } catch {
+            print("An error occurred with fetching the user!")
+            DispatchQueue.main.async {
+                self.isLoadingUser = false
+            }
+        }
+    }
+    
+    func fetchTestsCount() async {
+        DispatchQueue.main.async {
+            self.isLoadingTests = true
+        }
+        do {
+            let fetchedTests = try await testService.fetchByUserId(columnName: "user_id", userId: userId)
+           
+            DispatchQueue.main.async {
+                self.testsDone = fetchedTests.filter { $0.date != nil }.count
+                self.isLoadingTests = false
+                self.hasLoadedTests = true
+            }
+        } catch {
+            print("An error occurred with fetching the user's tests!")
+            DispatchQueue.main.async {
+                self.isLoadingTests = false
+            }
+        }
+    }
+    
+    func fetchTips() async {
+        DispatchQueue.main.async {
+            self.isLoadingTips = true
+        }
+        do {
+            let fetchedTips = try await tipsService.fetchAllTips()
+            let uniqueCategories = Set(fetchedTips.map { $0.category })
+        
+            let predefinedColors = [
+                Color(red: 0, green: 23/255, blue: 119/255),
+                Color(red: 105/255, green: 76/255, blue: 219/255),
+                Color(red: 112/255, green: 39/255, blue: 110/255)
+            ]
+
+            let categories = uniqueCategories.enumerated().map { index, categoryName -> TipsCategory in
+                let color: Color
+                if index < predefinedColors.count {
+                    color = predefinedColors[index]
+                } else {
+                    color = Color(red: Double.random(in: 0...1),
+                                  green: Double.random(in: 0...1),
+                                  blue: Double.random(in: 0...1))
+                }
+                return TipsCategory(id: UUID(), name: categoryName, color: color)
+            }
+            
+            DispatchQueue.main.async {
+                self.tipCategories = categories
+                self.cards = fetchedTips
+                self.isLoadingTips = false
+                self.hasLoadedTips = true
+            }
+        } catch {
+            print("An error occurred with fetching tips!")
+            DispatchQueue.main.async {
+                self.isLoadingTips = false
+            }
+        }
+    }
+    
+    func loadImage() async {
+        DispatchQueue.main.async {
+            self.isLoadingImage = true
+        }
+        do {
+            if let urlStr = user?.photoUrl, let url = URL(string: urlStr) {
+                let (data, _) = try await URLSession.shared.data(from: url)
+                DispatchQueue.main.async {
+                    self.image = UIImage(data: data)
+                    self.isLoadingImage = false
+                    self.hasLoadedImage = true
+                }
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.isLoadingImage = false
+            }
+            print("Error loading user image: \(error.localizedDescription)")
+        }
+    }
+    
+    var filteredCards: [TipsModel] {
         if selectedCategories.isEmpty {
             return cards
         } else {
-            return cards.filter { selectedCategories.contains($0.category) }
+            return cards.filter { card in
+                selectedCategories.contains(where: { $0.name == card.category })
+            }
+        }
+    }
+    
+    func loadImageIfNeeded(for tip: TipsModel) {
+        if tipImages[tip.id] == nil {
+            print("Requesting image for card id: \(tip.id)")
+            Task {
+                await loadImage(for: tip)
+            }
+        }
+    }
+    
+    func loadImage(for tip: TipsModel) async {
+        DispatchQueue.main.async {
+            self.loadingImageCount += 1
+        }
+        do {
+            if let url = URL(string: tip.imageUrl) {
+                let (data, _) = try await URLSession.shared.data(from: url)
+                DispatchQueue.main.async {
+                    self.tipImages[tip.id] = UIImage(data: data)
+                    print("Image loaded for card id: \(tip.id)")
+                }
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.tipImages[tip.id] = nil
+            }
+            print("Error loading user image: \(error.localizedDescription)")
+        }
+        DispatchQueue.main.async {
+            self.loadingImageCount -= 1
         }
     }
     

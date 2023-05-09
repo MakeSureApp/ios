@@ -6,14 +6,15 @@
 //
 
 import SwiftUI
+import BottomSheet
 
 struct MainTabView: View {
     @State private var selectedIndex: Int = 0
-    @EnvironmentObject var appEnvironment: AppEnvironment
     @ObservedObject private var viewModel: MainViewModel
     @ObservedObject private var homeViewModel: HomeViewModel
     @ObservedObject private var settingsViewModel: SettingsViewModel
     @ObservedObject private var contactsViewModel: ContactsViewModel
+    @ObservedObject private var testsViewModel: TestsViewModel
     @State private var showSettings = false
     
     @State private var activeSheet: ActiveSheet?
@@ -26,11 +27,12 @@ struct MainTabView: View {
         }
     }
     
-    init(appEnvironment: AppEnvironment) {
-        _viewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeMainViewModel())
-        _homeViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeHomeViewModel())
-        _settingsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeSettingsViewModel())
-        _contactsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.makeContactsViewModel())
+    init() {
+        _viewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getMainViewModel())
+        _homeViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getHomeViewModel())
+        _settingsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getSettingsViewModel())
+        _contactsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getContactsViewModel())
+        _testsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getTestsViewModel())
     }
     
     var body: some View {
@@ -39,7 +41,8 @@ struct MainTabView: View {
         
         let tabViews = ForEach(tabBarItems.indices, id: \.self) { index in
             NavigationView {
-                tabBarItems[index].destinationView(viewModelFactory: appEnvironment.viewModelFactory)
+                tabBarItems[index]
+                    .destinationView(viewModelFactory: appEnvironment.viewModelFactory)
                     .toolbar {
                         ToolbarItem(placement: .principal) {
                             if contactsViewModel.isShowLinkIsCopied {
@@ -55,11 +58,19 @@ struct MainTabView: View {
                                 Text("MAKE SURE")
                                     .font(.custom("BebasNeue", size: 28))
                                     .overlay {
-                                        CustomColors.secondGradient
-                                            .mask(
-                                                Text("MAKE SURE")
-                                                    .font(.custom("BebasNeue", size: 28))
-                                            )
+                                        if tabBarItems[index] == .tests {
+                                            CustomColors.whiteGradient
+                                                .mask(
+                                                    Text("MAKE SURE")
+                                                        .font(.custom("BebasNeue", size: 28))
+                                                )
+                                        } else {
+                                            CustomColors.secondGradient
+                                                .mask(
+                                                    Text("MAKE SURE")
+                                                        .font(.custom("BebasNeue", size: 28))
+                                                )
+                                        }
                                     }
                             }
                         }
@@ -73,8 +84,9 @@ struct MainTabView: View {
                             }) {
                                 Image("menuNavBarIcon")
                                     .resizable()
+                                    .renderingMode(.template)
                                     .frame(width: 25, height: 17)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(tabBarItems[index] == .tests ? .white : .black)
                                     .padding(.leading, 6)
                             },
                         trailing: HStack {
@@ -86,8 +98,9 @@ struct MainTabView: View {
                                 }) {
                                     Image("calendarNavBarIcon")
                                         .resizable()
+                                        .renderingMode(.template)
                                         .frame(width: 23, height: 23)
-                                        .foregroundColor(.black)
+                                        .foregroundColor(tabBarItems[index] == .tests ? .white : .black)
                                 }
                             } else {
                                 Button(action: {
@@ -104,8 +117,9 @@ struct MainTabView: View {
                             }) {
                                 Image("notificationNavBarIcon")
                                     .resizable()
+                                    .renderingMode(.template)
                                     .frame(width: 15, height: 19)
-                                    .foregroundColor(.black)
+                                    .foregroundColor(tabBarItems[index] == .tests ? .white : .black)
                             }
                         }
                             .padding(.trailing, 6)
@@ -117,9 +131,6 @@ struct MainTabView: View {
         let tabView = TabView(selection: $selectedIndex) {
             tabViews
         }
-            .onChange(of: selectedIndex) { index in
-                //coordinator.navigate(to: tabBarItems[index])
-            }
         
         let customTabBar = HStack {
             ForEach(tabBarItems.indices, id: \.self) { index in
@@ -133,6 +144,7 @@ struct MainTabView: View {
         }
             .padding(.top, 8)
             .background(.white)
+            .cornerRadius(12)
             .ignoresSafeArea(.all)
         
         return ZStack {
@@ -149,7 +161,7 @@ struct MainTabView: View {
             .overlay {
                 VStack {
                     if contactsViewModel.showCalendar {
-                        GraphicalDatePicker(viewModel: contactsViewModel, currentMonth: contactsViewModel.dateToStartInCalendar, isFromContactView: false)
+                        GraphicalDatePicker(viewModel: contactsViewModel, testsViewModel: testsViewModel, currentMonth: contactsViewModel.dateToStartInCalendar, isFromContactView: false)
                             .padding(.top, 50)
                         Spacer()
                     }
@@ -168,7 +180,7 @@ struct MainTabView: View {
                         
                         SettingsView(
                             isShowing: $showSettings,
-                            viewModel: appEnvironment.viewModelFactory.makeSettingsViewModel(),
+                            viewModel: appEnvironment.viewModelFactory.getSettingsViewModel(),
                             activeSheet: $activeSheet
                         )
                         .transition(.move(edge: .bottom))
@@ -203,7 +215,7 @@ struct MainTabView: View {
                 case .legalPolicies:
                     LegalPoliciesView()
                 case .blacklist:
-                    BlacklistView(viewModel: appEnvironment.viewModelFactory.makeContactsViewModel())
+                    BlacklistView(viewModel: appEnvironment.viewModelFactory.getContactsViewModel())
                 }
             }
         }
@@ -238,7 +250,6 @@ struct CustomTabItem: View {
 
 struct MainTabView_Previews: PreviewProvider {
     static var previews: some View {
-        MainTabView(appEnvironment: AppEnvironment())
-            .environmentObject(AppEnvironment())
+        MainTabView()
     }
 }

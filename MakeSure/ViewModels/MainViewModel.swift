@@ -18,13 +18,13 @@ enum MainNavigation: CaseIterable {
     func destinationView(viewModelFactory: ViewModelFactory) -> some View {
         switch self {
         case .home:
-            HomeView(viewModel: viewModelFactory.makeHomeViewModel())
+            HomeView(viewModel: viewModelFactory.getHomeViewModel())
         case .tests:
-            TestsView()
+            TestsView(viewModel: viewModelFactory.getTestsViewModel())
         case .scanner:
             ScannerView()
         case .contacts:
-            ContactsView(viewModel: viewModelFactory.makeContactsViewModel())
+            ContactsView(viewModel: viewModelFactory.getContactsViewModel(), testsViewModel: viewModelFactory.getTestsViewModel())
         }
     }
     
@@ -74,5 +74,6 @@ class MainViewModel: ObservableObject {
     
     init(authService: AuthService) {
         self.authService = authService
+        
     }
 }

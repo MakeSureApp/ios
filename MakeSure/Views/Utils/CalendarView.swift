@@ -9,19 +9,21 @@ import SwiftUI
 
 struct GraphicalDatePicker: View {
     @ObservedObject var viewModel: ContactsViewModel
+    @ObservedObject var testsViewModel: TestsViewModel
     let currentMonth: Date
     let isFromContactView: Bool
     let contactId: UUID?
     
-    init(viewModel: ContactsViewModel, currentMonth: Date, isFromContactView: Bool, contactId: UUID? = nil) {
+    init(viewModel: ContactsViewModel, testsViewModel: TestsViewModel, currentMonth: Date, isFromContactView: Bool, contactId: UUID? = nil) {
         self.viewModel = viewModel
+        self.testsViewModel = testsViewModel
         self.currentMonth = currentMonth
         self.isFromContactView = isFromContactView
         self.contactId = contactId
     }
     
     var body: some View {
-        CustomCalendarView(viewModel: viewModel, currentMonth: currentMonth, isFromContactView: isFromContactView, contactId: contactId)
+        CustomCalendarView(viewModel: viewModel, testsViewModel: testsViewModel, currentMonth: currentMonth, isFromContactView: isFromContactView, contactId: contactId)
             .background(.white)
             .cornerRadius(18)
             .padding(.horizontal)
@@ -31,6 +33,7 @@ struct GraphicalDatePicker: View {
 
 struct CustomCalendarView: View {
     @ObservedObject var viewModel: ContactsViewModel
+    @ObservedObject var testsViewModel: TestsViewModel
     @State var currentMonth: Date
     let isFromContactView: Bool
     let startDate: Date
@@ -41,21 +44,14 @@ struct CustomCalendarView: View {
     let contactId: UUID?
     let calendar = Calendar.current
     let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
-    let testsDates: [Date]
     
-    init(viewModel: ContactsViewModel, currentMonth: Date, isFromContactView: Bool, contactId: UUID?) {
+    init(viewModel: ContactsViewModel, testsViewModel: TestsViewModel, currentMonth: Date, isFromContactView: Bool, contactId: UUID?) {
         self.viewModel = viewModel
+        self.testsViewModel = testsViewModel
         _currentMonth = State(initialValue: currentMonth)
         self.isFromContactView = isFromContactView
         self.contactId = contactId
         startDate = viewModel.startDateInCalendar
-        testsDates = viewModel.getTestsDates()
-    }
-    
-    private func testsOn(date: Date) -> [Date] {
-        testsDates.filter { testDate in
-            return testDate == date
-        }
     }
     
     private func isSelectedDateInThePast() -> Bool {
@@ -71,43 +67,55 @@ struct CustomCalendarView: View {
                 selectedDate = date
             }
         } label: {
-            Group {
+            HStack {
                 if monthRange(for: currentMonth).contains(date) {
                     ZStack {
-                        if let dates = testsOn(date: date), !dates.isEmpty {
-                            ForEach(testsDates.indices, id: \.self) { index in
-                                Circle()
-                                    .frame(width: 33, height: 33)
-                                    .foregroundColor(Color.lightGreen)
-                            }
-                            .zIndex(0)
+                        if let isNegativeTest = testsViewModel.isNegativeTestOn(date: date) {
+                            Circle()
+                                .frame(width: 33, height: 33)
+                                .foregroundColor(isNegativeTest ? .lightGreen : .orange)
+                                .zIndex(0)
                         }
                         
-                        if let contacts = viewModel.contactsMetOn(date: date), !contacts.isEmpty {
-                            ForEach(contacts.indices, id: \.self) { index in
-                                let contact = contacts[index]
-                                Image(uiImage: contact.image)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 33, height: 33)
-                                    .clipShape(Circle())
-                                    .offset(x: CGFloat(index) * -4, y: 0)
-                                    .overlay {
-                                        Circle()
-                                            .strokeBorder(.white.opacity(0.5), lineWidth: 1)
-                                    }
+                        let contactsMetOnTheDay = viewModel.contactsMetOn(date: date)
+                        if let contactsMetOnTheDay, !contactsMetOnTheDay.isEmpty {
+                            ForEach(Array(contactsMetOnTheDay.enumerated()), id: \.element.id) { (index, contact) in
+                                if let image = viewModel.contactsImages[contact.id] {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 33, height: 33)
+                                        .clipShape(Circle())
+                                        .offset(x: CGFloat(index) * -4, y: 0)
+                                        .overlay {
+                                            Circle()
+                                                .strokeBorder(.white.opacity(0.5), lineWidth: 1)
+                                        }
+                                }
                             }
                         }
-                        
-                        if selectedDate == date {
+                        let dateStr = calendar.component(.day, from: date)
+                        let isSelectedDate = selectedDate == date
+                        if isSelectedDate {
                             Circle()
                                 .frame(width: 40, height: 40)
                                 .foregroundColor(.gradientPurple.opacity(0.9))
                         }
-                        
-                        Text("\(calendar.component(.day, from: date))")
-                            .font(.poppinsRegularFont(size: 20))
-                            .foregroundColor(selectedDate == date ? .white : .black)
+                        if let contactsMetOnTheDay, !contactsMetOnTheDay.isEmpty {
+                            Text("\(dateStr)")
+                                .font(.poppinsRegularFont(size: 20))
+                                .foregroundColor(isSelectedDate ? .white : .black)
+                                .overlay {
+                                    Text("\(dateStr)")
+                                        .font(.poppinsRegularFont(size: 19))
+                                        .foregroundColor(isSelectedDate ? .black : .white)
+                                        .shadow(color: isSelectedDate ? .white : .black, radius: 2)
+                                }
+                        } else {
+                            Text("\(dateStr)")
+                                .font(.poppinsRegularFont(size: 20))
+                                .foregroundColor(isSelectedDate ? .white : .black)
+                        }
                     }
                     .frame(maxWidth: .infinity)
                 } else {
@@ -213,8 +221,9 @@ struct CustomCalendarView: View {
                 Button {
                     isAddBtnClicked = true
                     if let date = selectedDate, let id = contactId, isSelectedDateInThePast() {
-                        viewModel.addDate(date, with: id)
-                        viewModel.showContactCalendar = false
+                        Task {
+                            await viewModel.addDate(date, with: id)
+                        }
                     }
                 } label: {
                     Text("SAVE DATE")

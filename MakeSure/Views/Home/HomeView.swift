@@ -10,18 +10,37 @@ import SwiftUI
 struct HomeView: View {
     
     @ObservedObject var viewModel: HomeViewModel
+    @State private var isAnimating: Bool = false
+    @State private var isAnimatingTests: Bool = false
+    @State private var isAnimatingImage: Bool = false
     
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 6) {
                 topCardView
+                    .task {
+                        await viewModel.fetchUserData()
+                        await withTaskGroup(of: Void.self) { group in
+                            group.addTask(priority: .userInitiated) {
+                                await viewModel.fetchTestsCount()
+                            }
+                            
+                            group.addTask(priority: .userInitiated) {
+                                await viewModel.loadImage()
+                            }
+                        }
+                    }
                 secondCardView
                 tipsSection
-                cardList
+                    .task {
+                        await viewModel.fetchTips()
+                    }
+                if viewModel.hasLoadedTips {
+                    cardList
+                }
             }
             .padding(.horizontal)
         }
-        .padding(.top, -40)
     }
 }
 
@@ -33,37 +52,88 @@ private extension HomeView {
             .overlay {
                 ZStack {
                     VStack {
-                        if let image = viewModel.image {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 81, height: 81)
-                                .onTapGesture {
-                                    viewModel.showPhotoMenu.toggle()
+                        if viewModel.hasLoadedUser {
+                            if viewModel.isLoadingImage, viewModel.image == nil {
+                                Circle()
+                                    .foregroundColor(.gradientDarkBlue)
+                                    .frame(width: 81, height: 81)
+                                    .overlay(
+                                        RotatingShapesLoader(animate: $isAnimatingImage)
+                                            .frame(maxWidth: 35)
+                                            .onAppear {
+                                                isAnimatingImage = true
+                                            }
+                                            .onDisappear {
+                                                isAnimatingImage = false
+                                            }
+                                    )
+                            } else if let image = viewModel.image {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 81, height: 81)
+                                    .clipShape(Circle())
+                                    .shadow(radius: 10)
+                                    .onTapGesture {
+                                        viewModel.showPhotoMenu.toggle()
+                                    }
+                            } else {
+                                Image(systemName: "person.circle.fill")
+                                    .resizable()
+                                    .frame(width: 81, height: 81)
+                                    .foregroundColor(.white)
+                            }
+                            HStack {
+                                if viewModel.hasLoadedTests {
+                                    VStack {
+                                        Text("\(viewModel.testsDone)")
+                                            .font(.interRegularFont(size: 20))
+                                            .foregroundColor(.white)
+                                        Text("Tests done")
+                                            .font(.interRegularFont(size: 12))
+                                            .foregroundColor(.white)
+                                    }
+                                } else if viewModel.isLoadingTests {
+                                    RowOfShapesLoader(animate: $isAnimatingTests, count: 3, spacing: 2)
+                                        .frame(maxWidth: 60)
+                                        .padding(.top, 10)
+                                        .onAppear {
+                                            isAnimatingTests = true
+                                        }
+                                        .onDisappear {
+                                            isAnimatingTests = false
+                                        }
                                 }
-                        }
-                        HStack {
-                            VStack {
-                                Text("\(viewModel.testsDone)")
-                                    .font(.interRegularFont(size: 20))
-                                    .foregroundColor(.white)
-                                Text("Tests done")
-                                    .font(.interRegularFont(size: 12))
-                                    .foregroundColor(.white)
+                                Spacer()
+                                if let user = viewModel.user {
+                                    Text(user.name)
+                                        .font(.poppinsBoldFont(size: 18))
+                                        .foregroundColor(.white)
+                                    Spacer()
+                                    VStack {
+                                        Text("\(user.birthdate.getAge)")
+                                            .font(.interRegularFont(size: 20))
+                                            .foregroundColor(.white)
+                                        Text("Years old")
+                                            .font(.interRegularFont(size: 12))
+                                            .foregroundColor(.white)
+                                    }
+                                }
                             }
-                            Spacer()
-                            Text(viewModel.name)
-                                .font(.poppinsBoldFont(size: 18))
+                        } else if viewModel.isLoadingUser {
+                            RotatingShapesLoader(animate: $isAnimating
+                            )
+                                .frame(maxWidth: 100)
+                                .onAppear {
+                                    isAnimating = true
+                                }
+                                .onDisappear {
+                                    isAnimating = false
+                                }
+                        } else {
+                            Text("Check your internet connection")
+                                .font(.interSemiBoldFont(size: 16))
                                 .foregroundColor(.white)
-                            Spacer()
-                            VStack {
-                                Text("\(viewModel.age)")
-                                    .font(.interRegularFont(size: 20))
-                                    .foregroundColor(.white)
-                                Text("Years old")
-                                    .font(.interRegularFont(size: 12))
-                                    .foregroundColor(.white)
-                            }
                         }
                     }
                     .padding()
@@ -157,7 +227,7 @@ private extension HomeView {
                             viewModel.selectedCategories.append(category)
                         }
                     }) {
-                        Text(category.rawValue)
+                        Text(category.name)
                             .font(.poppinsBoldFont(size: 10))
                             .frame(height: 20)
                             .padding(.horizontal, 10)
@@ -171,8 +241,8 @@ private extension HomeView {
                     }
                     .padding(.trailing, 4)
                 }
+                .padding(.bottom)
             }
-            .padding(.bottom)
         }
     }
 }
@@ -182,7 +252,7 @@ private extension HomeView {
         VStack(alignment: .leading, spacing: 20) {
             ForEach(viewModel.filteredCards) { card in
                 ZStack(alignment: .bottomLeading) {
-                    cardBackgroundImage(for: card)
+                    cardBackgroundImage(for: card.id)
                     VStack(alignment: .leading, spacing: 5) {
                         categoryImage(for: card.category)
                             .fontWeight(.bold)
@@ -208,35 +278,62 @@ private extension HomeView {
                 .onTapGesture {
                     viewModel.openTipsDetails(card.url)
                 }
+                .onAppear {
+                    viewModel.loadImageIfNeeded(for: card)
+                }
             }
         }
     }
 
-    func cardBackgroundImage(for card: Card) -> some View {
-        Image(card.image)
-            .resizable()
-            .scaledToFill()
-            .frame(height: 200)
-            .clipped()
-            .cornerRadius(18)
-            .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.gray.opacity(0.1), lineWidth: 1))
+    func cardBackgroundImage(for id: UUID) -> some View {
+        Group {
+            if let image = viewModel.tipImages[id] {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 200)
+                    .clipped()
+                    .cornerRadius(18)
+                    .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.gray.opacity(0.1), lineWidth: 1))
+            } else {
+                Image("mockTipsImage2")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: 200)
+                    .clipped()
+                    .cornerRadius(18)
+                    .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.gray.opacity(0.1), lineWidth: 1))
+            }
+        }
     }
 
-    func categoryImage(for category: Category) -> some View {
+    func categoryImage(for category: String) -> some View {
         switch category {
-        case .dates:
+        case "dates":
             return Image(systemName: "heart")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 20, height: 20)
                 .foregroundColor(.white)
-        case .selfDevelopment:
+        case "health":
             return Image(systemName: "face.smiling")
                 .resizable()
                 .scaledToFit()
                 .frame(width: 20, height: 20)
                 .foregroundColor(.white)
-        case .health:
+        case "education":
+            return Image(systemName: "book")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 20, height: 20)
+                .foregroundColor(.white)
+        case "self-development":
+            return Image(systemName: "brain.head.profile")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 20, height: 20)
+                .foregroundColor(.white)
+        default:
             return Image(systemName: "staroflife")
                 .resizable()
                 .scaledToFit()

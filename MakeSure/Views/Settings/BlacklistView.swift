@@ -10,6 +10,8 @@ import SwiftUI
 struct BlacklistView: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var viewModel: ContactsViewModel
+    @State private var isAnimating: Bool = false
+    @State private var isAnimatingImage: Bool = false
     
     var body: some View {
         ZStack {
@@ -30,54 +32,99 @@ struct BlacklistView: View {
                 .padding([.top, .leading], 16)
                 .padding(.bottom, -12)
                 
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 30) {
-                        HStack {
-                            Text("Blacklist")
-                                .font(.poppinsLightFont(size: 35))
-                                .foregroundColor(.white)
-                                .padding()
-                            Spacer()
+                if viewModel.isLoadingBlacklist {
+                    Spacer()
+                    RotatingShapesLoader(animate: $isAnimating)
+                        .frame(maxWidth: 100)
+                        .padding(.top, 50)
+                        .onAppear {
+                            isAnimating = true
                         }
-                        Text("Описание про то, что могут и не могут пользователи из черноко списка")
-                            .font(.poppinsLightFont(size: 16))
-                            .foregroundColor(.white)
-                        
-                        ForEach(viewModel.blockedUsers, id: \.self) { user in
+                        .onDisappear {
+                            isAnimating = false
+                        }
+                    Spacer()
+                } else if viewModel.hasLoadedBlacklist {
+                    ScrollView(showsIndicators: false) {
+                        VStack(spacing: 30) {
                             HStack {
-                                Image(uiImage: user.image)
-                                    .resizable()
-                                    .frame(width: 63, height: 63)
-                                    .padding(.trailing, 10)
-                                VStack(alignment: .leading) {
-                                    Text(user.name)
-                                        .font(.poppinsBoldFont(size: 16))
-                                        .foregroundColor(.white)
-                                    Text("@(user.username)")
-                                        .font(.poppinsLightFont(size: 12))
-                                        .foregroundColor(.white)
-                                }
+                                Text("Blacklist")
+                                    .font(.poppinsLightFont(size: 35))
+                                    .foregroundColor(.white)
+                                    .padding()
                                 Spacer()
-                                Button(action: {
-                                    withAnimation {
-                                        viewModel.unlockUser(user)
+                            }
+                            Text("Описание про то, что могут и не могут пользователи из черного списка")
+                                .font(.poppinsLightFont(size: 16))
+                                .foregroundColor(.white)
+                            
+                            ForEach(viewModel.blockedUsers, id: \.self) { user in
+                                HStack {
+                                        if let image = viewModel.blacklistImages[user.id] {
+                                            Image(uiImage: image)
+                                                .resizable()
+                                                .frame(width: 63, height: 63)
+                                                .clipShape(Circle())
+                                                .padding(.trailing, 10)
+                                                .shadow(radius: 10)
+                                        } else if user.photoUrl == nil {
+                                            Image(systemName: "person.circle.fill")
+                                                .resizable()
+                                                .foregroundColor(.white)
+                                                .frame(width: 63, height: 63)
+                                                .clipShape(Circle())
+                                                .padding(.trailing, 10)
+                                        } else {
+                                            Circle()
+                                                .foregroundColor(.gradientDarkBlue)
+                                                .frame(width: 63, height: 63)
+                                                .overlay(
+                                                    RotatingShapesLoader(animate: $isAnimatingImage)
+                                                        .frame(maxWidth: 25)
+                                                        .onAppear {
+                                                            isAnimatingImage = true
+                                                        }
+                                                        .onDisappear {
+                                                            isAnimatingImage = false
+                                                        }
+                                                )
+                                        }
+                                        Text(user.name)
+                                            .font(.poppinsBoldFont(size: 16))
+                                            .foregroundColor(.white)
+                                    Spacer()
+                                    Button(action: {
+                                        withAnimation {
+                                            //viewModel.unlockUser(user)
+                                        }
+                                    }) {
+                                        Text("unlock")
+                                            .font(.poppinsRegularFont(size: 14))
+                                            .foregroundColor(.black)
+                                            .padding(.horizontal, 10)
+                                            .padding(.vertical, 5)
+                                            .background(Color(red: 247/255, green: 213/255, blue: 1))
+                                            .cornerRadius(5)
                                     }
-                                }) {
-                                    Text("unlock")
-                                        .font(.poppinsRegularFont(size: 14))
-                                        .foregroundColor(.black)
-                                        .padding(.horizontal, 10)
-                                        .padding(.vertical, 5)
-                                        .background(Color(red: 247/255, green: 213/255, blue: 1))
-                                        .cornerRadius(5)
+                                }
+                                .padding(.vertical, -8)
+                                .task {
+                                    await viewModel.loadImage(user: user, for: .blacklist)
                                 }
                             }
-                            .padding(.vertical, -8)
                         }
+                        .padding([.leading, .trailing], 30)
                     }
+                } else {
+                    Text("Blacklist is empty")
+                        .font(.poppinsBoldFont(size: 18))
+                        .foregroundColor(.white)
+                    Spacer()
                 }
-                .padding([.leading, .trailing], 30)
             }
+        }
+        .task {
+            await viewModel.fetchBlacklist()
         }
     }
 }

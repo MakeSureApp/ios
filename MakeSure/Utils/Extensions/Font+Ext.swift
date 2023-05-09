@@ -54,6 +54,10 @@ extension Font {
         return Font.custom(CustomFontsNames.interRegular, size: size)
     }
     
+    static func interMediumFont(size: CGFloat) -> Font {
+        return Font.custom(CustomFontsNames.interMedium, size: size)
+    }
+    
     static func interSemiBoldFont(size: CGFloat) -> Font {
         return Font.custom(CustomFontsNames.interSemiBold, size: size)
     }

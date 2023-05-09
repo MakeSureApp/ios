@@ -27,6 +27,7 @@ struct ViewingImageView: View {
             Spacer()
             if let image = viewModel.image {
                 Image(uiImage: image)
+                    .resizable()
             }
             Spacer()
         }
