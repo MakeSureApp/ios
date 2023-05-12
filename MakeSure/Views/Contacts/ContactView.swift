@@ -11,6 +11,7 @@ struct ContactView: View {
     let contact: UserModel
     @ObservedObject var viewModel: ContactsViewModel
     @ObservedObject var testsViewModel: TestsViewModel
+    @ObservedObject var homeViewModel: HomeViewModel
     @State private var showSharingTestView = false
     @State private var isAnimating: Bool = false
     @Environment(\.presentationMode) var presentationMode
@@ -191,8 +192,12 @@ struct ContactView: View {
                     }
                     HStack {
                         Button {
-                            viewModel.addUserToBlacklist(id: contact.id)
-                            presentationMode.wrappedValue.dismiss()
+                            Task {
+                                await viewModel.addUserToBlacklist(id: contact.id, contacts: homeViewModel.user?.contacts)
+                            }
+                            if viewModel.hasAddedUserToBlacklist {
+                                presentationMode.wrappedValue.dismiss()
+                            }
                         } label: {
                             Text("Block user")
                                 .font(.poppinsRegularFont(size: 15))

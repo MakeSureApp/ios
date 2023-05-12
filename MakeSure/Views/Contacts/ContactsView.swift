@@ -10,6 +10,7 @@ import SwiftUI
 struct ContactsView: View {
     @StateObject var viewModel: ContactsViewModel
     @StateObject var testsViewModel: TestsViewModel
+    @StateObject var homeViewModel: HomeViewModel
     @State private var showMenu = false
     @State private var showContact = false
     @State private var selectedContact: UserModel?
@@ -115,12 +116,13 @@ struct ContactsView: View {
             }
             .sheet(isPresented: $showContact) {
                 if let contact = selectedContact {
-                    ContactView(contact: contact, viewModel: viewModel, testsViewModel: testsViewModel)
+                    ContactView(contact: contact, viewModel: viewModel, testsViewModel: testsViewModel, homeViewModel: homeViewModel)
                 }
             }
             Button(action: {
                 showMenu = false
                 showContact = false
+                selectedContact = nil
                 viewModel.showCalendar = false
                 viewModel.showContactCalendar = false
             }) {
@@ -131,8 +133,8 @@ struct ContactsView: View {
             }
             .zIndex(-1)
             if showMenu, let contact = selectedContact {
-                ContactMenu(viewModel: viewModel, contact: contact, showMenu: $showMenu, showSharingTest: $showSharingTestView)
-                   // .offset(y: menuYOffset)
+                ContactMenu(viewModel: viewModel, homeViewModel: homeViewModel, contact: contact, showMenu: $showMenu, showSharingTest: $showSharingTestView)
+                    .offset(y: menuYOffset)
             }
             if showSharingTestView, let date = testsViewModel.lastTests.first?.date, let contact = selectedContact {
                 VStack {
@@ -171,6 +173,7 @@ struct ContactItemView: View {
     @Binding var selectedContact: UserModel?
     @Binding var isAnimatingMeetings: Bool
     @State private var isAnimatingImage: Bool = true
+    @State private var isAnimating: Bool = true
 
     var body: some View {
         HStack {
@@ -239,14 +242,32 @@ struct ContactItemView: View {
                     }
                 }
             }
+            if selectedContact?.id == contact.id, viewModel.isAddingUserToBlacklist || viewModel.isDeletingContact {
+                HStack(alignment: .center) {
+                    RowOfShapesLoader(animate: $isAnimating, color: .gray.opacity(0.8), count: 3, spacing: 3)
+                        .frame(maxWidth: 80, maxHeight: 18)
+                        .onAppear {
+                            isAnimating = true
+                        }
+                        .onDisappear {
+                            isAnimating = false
+                        }
+                }
+                .padding(.leading, 28)
+                .padding(.top, 6)
+                .background(.gray.opacity(0.1))
+                .cornerRadius(8)
+            }
             
             Spacer()
             
             Button(action: {
                // if !viewModel.showCalendar {
-                    showMenu.toggle()
                 withAnimation {
-                    selectedContact = contact
+                    if !showMenu {
+                        selectedContact = contact
+                    }
+                    showMenu.toggle()
                 }
                 //}
             }) {
@@ -263,9 +284,9 @@ struct ContactItemView: View {
         .contentShape(Rectangle())
         .onTapGesture {
            // if !viewModel.showCalendar {
-                showMenu = false
-                selectedContact = contact
-                showContact.toggle()
+            selectedContact = contact
+            showMenu = false
+            showContact.toggle()
             //}
         }
     }
@@ -386,6 +407,7 @@ struct ContactsCalendarScrollView: View {
 
 struct ContactMenu: View {
     @ObservedObject var viewModel: ContactsViewModel
+    @ObservedObject var homeViewModel: HomeViewModel
     let contact: UserModel
     @Binding var showMenu: Bool
     @Binding var showSharingTest: Bool
@@ -460,13 +482,17 @@ struct ContactMenu: View {
     }
 
     private func shareMyTest() {
-        showSharingTest = true
-        showMenu = false
+        withAnimation {
+            showMenu = false
+            showSharingTest = true
+        }
     }
 
     private func addDate() {
-        viewModel.showContactCalendar = true
-        showMenu = false
+        withAnimation {
+            showMenu = false
+            viewModel.showContactCalendar = true
+        }
     }
 
     private func rename() {
@@ -474,23 +500,33 @@ struct ContactMenu: View {
     }
 
     private func delete() {
-        viewModel.deleteContact(id: contact.id)
-        showMenu = false
+        withAnimation {
+            showMenu = false
+        }
+        Task {
+            await viewModel.deleteContact(id: contact.id, contacts: homeViewModel.user?.contacts)
+        }
     }
 
     private func block() {
-        viewModel.addUserToBlacklist(id: contact.id)
-        showMenu = false
+        withAnimation {
+            showMenu = false
+        }
+        Task {
+            await viewModel.addUserToBlacklist(id: contact.id, contacts: homeViewModel.user?.contacts)
+        }
     }
 
     private func report() {
         // Implement report functionality
-        showMenu = false
+        withAnimation {
+            showMenu = false
+        }
     }
 }
 
 struct ContactsView_Previews: PreviewProvider {
     static var previews: some View {
-        ContactsView(viewModel: ContactsViewModel(), testsViewModel: TestsViewModel())
+        ContactsView(viewModel: ContactsViewModel(), testsViewModel: TestsViewModel(), homeViewModel: HomeViewModel())
     }
 }

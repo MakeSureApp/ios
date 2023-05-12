@@ -215,7 +215,7 @@ struct MainTabView: View {
                 case .legalPolicies:
                     LegalPoliciesView()
                 case .blacklist:
-                    BlacklistView(viewModel: appEnvironment.viewModelFactory.getContactsViewModel())
+                    BlacklistView(viewModel: appEnvironment.viewModelFactory.getContactsViewModel(), homeViewModel: appEnvironment.viewModelFactory.getHomeViewModel())
                 }
             }
         }

@@ -27,13 +27,19 @@ class ContactsViewModel: ObservableObject {
     @Published var isLoadingContacts: Bool = false
     @Published var isLoadingMeetings: Bool = false
     @Published var isLoadingBlacklist: Bool = false
+    @Published var isDeletingContact: Bool = false
+    @Published var isUnlocingContact: Bool = false
     @Published var isAddingDate: Bool = false
+    @Published var isAddingUserToBlacklist: Bool = false
     @Published var contactsImages: [UUID: UIImage] = [:]
     @Published var blacklistImages: [UUID: UIImage] = [:]
     @Published private(set) var hasLoadedContacts: Bool = false
     @Published private(set) var hasLoadedMeetings: Bool = false
     @Published private(set) var hasLoadedBlacklist: Bool = false
+    @Published private(set) var hasDeletedContact: Bool = false
+    @Published private(set) var hasUnlockedContact: Bool = false
     @Published private(set) var hasAddedDate: Bool = false
+    @Published private(set) var hasAddedUserToBlacklist: Bool = false
     
     enum LoadImageFor {
         case blacklist
@@ -301,11 +307,38 @@ class ContactsViewModel: ObservableObject {
         case dateRecentMeetings
     }
     
-    func unlockUser(_ user: User) {
-        if let userIndex = blockedUsers.firstIndex(where: { $0.id == user.id }) {
-            blockedUsers.remove(at: userIndex)
+    func unlockUser(_ id: UUID, contacts: [UUID]?) async {
+        DispatchQueue.main.async {
+            self.isUnlocingContact = true
         }
-        contacts.append(user)
+        
+        do {
+            if !blockedUsers.isEmpty {
+                var contacts: [UUID] = contacts ?? []
+                var blacklistUsersIds: [UUID] = []
+                if let userIndex = blockedUsers.firstIndex(where: { $0.id == id }) {
+                    DispatchQueue.main.async {
+                        self.blockedUsers.remove(at: userIndex)
+                    }
+                }
+                contacts.append(id)
+                blockedUsers.forEach { user in
+                    blacklistUsersIds.append(user.id)
+                }
+                try await userService.update(id: userId, fields: [
+                    "contacts" : contacts.isEmpty ? nil : contacts,
+                    "blocked_users" : blacklistUsersIds.isEmpty ? nil : blacklistUsersIds])
+                DispatchQueue.main.async {
+                    self.isUnlocingContact = false
+                    self.hasUnlockedContact = true
+                }
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.isUnlocingContact = false
+            }
+            print("Error unlocking contact from blacklist: \(error.localizedDescription)")
+        }
     }
     
     func getTestsDates() -> [Date] {
@@ -363,18 +396,67 @@ class ContactsViewModel: ObservableObject {
         }
     }
     
-    func addUserToBlacklist(id: UUID) {
-        if let user = contacts.first(where: { $0.id == id }) {
-            //blockedUsers.append(user)
+    func addUserToBlacklist(id: UUID, contacts: [UUID]?) async {
+        DispatchQueue.main.async {
+            self.isAddingUserToBlacklist = true
         }
-        if let userIndex = contacts.firstIndex(where: { $0.id == id }) {
-            contacts.remove(at: userIndex)
+        do {
+            if let contacts, !contacts.isEmpty {
+                var contacts: [UUID] = contacts
+                var blacklistUsersIds: [UUID] = []
+                blockedUsers.forEach { user in
+                    blacklistUsersIds.append(user.id)
+                }
+                blacklistUsersIds.append(id)
+                
+                if let userIndex = contacts.firstIndex(where: { $0 == id }) {
+                    contacts.remove(at: userIndex)
+                }
+                try await userService.update(id: userId, fields: [
+                    "contacts" : contacts.isEmpty ? nil : contacts,
+                    "blocked_users" : blacklistUsersIds.isEmpty ? nil : blacklistUsersIds])
+                DispatchQueue.main.async {
+                    if let userIndex = self.contactsM.firstIndex(where: { $0.id == id }) {
+                        self.contactsM.remove(at: userIndex)
+                    }
+                    self.isAddingUserToBlacklist = false
+                    self.hasAddedUserToBlacklist = true
+                }
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.isAddingUserToBlacklist = false
+            }
+            print("Error adding user to blacklist: \(error.localizedDescription)")
         }
     }
     
-    func deleteContact(id: UUID) {
-        if let userIndex = contacts.firstIndex(where: { $0.id == id }) {
-            contacts.remove(at: userIndex)
+    func deleteContact(id: UUID, contacts: [UUID]?) async {
+        DispatchQueue.main.async {
+            self.isDeletingContact = true
+        }
+        
+        do {
+            if let contacts, !contacts.isEmpty {
+                var contacts: [UUID] = contacts
+                if let userIndex = contacts.firstIndex(where: { $0 == id }) {
+                    contacts.remove(at: userIndex)
+                }
+                try await userService.update(id: userId, fields: [
+                    "contacts" : contacts.isEmpty ? nil : contacts])
+                DispatchQueue.main.async {
+                    if let userIndex = self.contactsM.firstIndex(where: { $0.id == id }) {
+                        self.contactsM.remove(at: userIndex)
+                    }
+                    self.isDeletingContact = false
+                    self.hasDeletedContact = true
+                }
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.isDeletingContact = false
+            }
+            print("Error deleting user from contacts: \(error.localizedDescription)")
         }
     }
     

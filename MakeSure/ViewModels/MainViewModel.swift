@@ -24,7 +24,7 @@ enum MainNavigation: CaseIterable {
         case .scanner:
             ScannerView()
         case .contacts:
-            ContactsView(viewModel: viewModelFactory.getContactsViewModel(), testsViewModel: viewModelFactory.getTestsViewModel())
+            ContactsView(viewModel: viewModelFactory.getContactsViewModel(), testsViewModel: viewModelFactory.getTestsViewModel(), homeViewModel: viewModelFactory.getHomeViewModel())
         }
     }
     
