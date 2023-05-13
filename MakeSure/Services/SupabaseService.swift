@@ -81,8 +81,14 @@ class TipsSupabaseService: SupabaseService<TipsModel> {
     init() {
         super.init(tableName: "tips")
     }
+}
+
+class FriendsLinksSupabaseService: SupabaseService<FriendLinkModel> {
+    init() {
+        super.init(tableName: "friend_links")
+    }
     
-    func fetchAllTips() async throws -> [TipsModel] {
-        return try await fetchAll()
+    func fetchLinksByUserId(userId: UUID) async throws -> [FriendLinkModel] {
+        return try await fetchByUserId(columnName: "user_id", userId: userId)
     }
 }

@@ -28,7 +28,7 @@ struct CodeSettingsView: View {
                         viewModel.codeFields = Array<String>(repeating: "", count: 6)
                         activeField = .field1
                     } label: {
-                        Text("Resend")
+                        Text("resend_button".localized)
                             .font(.rubicRegularFont(size: 16))
                             .foregroundColor(.black)
                             .padding(2)

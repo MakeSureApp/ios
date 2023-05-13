@@ -49,13 +49,13 @@ struct BlacklistView: View {
                     ScrollView(showsIndicators: false) {
                         VStack(spacing: 30) {
                             HStack {
-                                Text("Blacklist")
+                                Text("blacklist_section".localized)
                                     .font(.poppinsLightFont(size: 35))
                                     .foregroundColor(.white)
                                     .padding()
                                 Spacer()
                             }
-                            Text("Описание про то, что могут и не могут пользователи из черного списка")
+                            Text("blacklist_description".localized)
                                 .font(.poppinsLightFont(size: 16))
                                 .foregroundColor(.white)
                             
@@ -99,7 +99,7 @@ struct BlacklistView: View {
                                                 await viewModel.unlockUser(user.id, contacts: homeViewModel.user?.contacts)
                                             }
                                     }) {
-                                        Text("unlock")
+                                        Text("unlock_button".localized)
                                             .font(.poppinsRegularFont(size: 14))
                                             .foregroundColor(.black)
                                             .padding(.horizontal, 10)
@@ -117,7 +117,7 @@ struct BlacklistView: View {
                         .padding([.leading, .trailing], 30)
                     }
                 } else {
-                    Text("Blacklist is empty")
+                    Text("blacklist_empty".localized)
                         .font(.poppinsBoldFont(size: 18))
                         .foregroundColor(.white)
                     Spacer()

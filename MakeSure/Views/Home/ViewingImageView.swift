@@ -18,7 +18,7 @@ struct ViewingImageView: View {
                         viewModel.showImagePhoto = false
                     }
                 } label: {
-                    Text("Cancel")
+                    Text("cancel_button".localized)
                         .font(.poppinsRegularFont(size: 18))
                         .foregroundColor(.black)
                         .padding()

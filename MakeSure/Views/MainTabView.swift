@@ -46,7 +46,7 @@ struct MainTabView: View {
                     .toolbar {
                         ToolbarItem(placement: .principal) {
                             if contactsViewModel.isShowLinkIsCopied {
-                                Text("Link is copied")
+                                Text("link_copied_message".localized)
                                     .font(.poppinsRegularFont(size: 17))
                                     .foregroundColor(.white)
                                     .padding(.horizontal)

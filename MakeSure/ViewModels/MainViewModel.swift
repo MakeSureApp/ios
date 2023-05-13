@@ -44,13 +44,13 @@ enum MainNavigation: CaseIterable {
     var name: String {
         switch self {
         case .home:
-            return "Home"
+            return "home_tab".localized
         case .tests:
-            return "Tests"
+            return "tests_tab".localized
         case .scanner:
-            return "Scan"
+            return "scan_tab".localized
         case .contacts:
-            return "Contacts"
+            return "contacts_tab".localized
         }
     }
     

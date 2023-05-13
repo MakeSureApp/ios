@@ -22,7 +22,7 @@ class TestsViewModel: ObservableObject {
     private(set) lazy var groupedTests: [Date: [TestModel]] = [:]
     
     private var testService = TestSupabaseService()
-    let userId = UUID(uuidString: "3230f47c-e8ef-11ed-a05b-0242ac120003")!
+    let userId = UUID(uuidString: "79295454-e8f0-11ed-a05b-0242ac120003")!
     
     enum LatestTestFor {
         case myself

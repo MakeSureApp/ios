@@ -64,6 +64,15 @@
       }
     },
     {
+      "identity" : "qrcode",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/qrcode.git",
+      "state" : {
+        "revision" : "158007e1295f54dc50c7fb622f6eb8634a89f50f",
+        "version" : "13.0.0"
+      }
+    },
+    {
       "identity" : "realtime-swift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/supabase-community/realtime-swift.git",
@@ -88,6 +97,15 @@
       "state" : {
         "branch" : "master",
         "revision" : "c5d5e3eb7b8db485494949ecdfa9eef126cfa947"
+      }
+    },
+    {
+      "identity" : "swift-qrcode-generator",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dagronf/swift-qrcode-generator",
+      "state" : {
+        "revision" : "5ca09b6a2ad190f94aa3d6ddef45b187f8c0343b",
+        "version" : "1.0.3"
       }
     },
     {

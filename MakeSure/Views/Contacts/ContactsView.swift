@@ -25,7 +25,7 @@ struct ContactsView: View {
                 ContactsCalendarScrollView(viewModel: viewModel, testsViewModel: testsViewModel)
                 
                 HStack {
-                    Text("My contacts")
+                    Text("my_contacts_section".localized)
                         .font(.poppinsBoldFont(size: 23))
                         .padding()
                     Button {
@@ -39,14 +39,14 @@ struct ContactsView: View {
                 }
                 
                 HStack {
-                    Text("Sort by")
+                    Text("sort_by_label".localized)
                         .font(.poppinsRegularFont(size: 14))
-                    Picker("Sort by", selection: $viewModel.sortBy) {
-                        Text("Date followed")
+                    Picker("sort_by_label".localized, selection: $viewModel.sortBy) {
+                        Text("date_followed_option".localized)
                             .foregroundColor(.black)
                             .font(.poppinsBoldFont(size: 14))
                             .tag(ContactsViewModel.SortBy.dateFollowed)
-                        Text("Recent meetings")
+                        Text("recent_dates_option".localized)
                             .foregroundColor(.black)
                             .font(.poppinsBoldFont(size: 10))
                             .tag(ContactsViewModel.SortBy.dateRecentMeetings)
@@ -107,7 +107,7 @@ struct ContactsView: View {
                     }
                 } else {
                     Spacer()
-                    Text("You don't have any contacts yet")
+                    Text("no_contacts".localized)
                         .font(.poppinsBoldFont(size: 16))
                         .foregroundColor(.black)
                     Spacer()
@@ -364,7 +364,15 @@ struct DayView: View {
 struct ContactsCalendarScrollView: View {
     @ObservedObject var viewModel: ContactsViewModel
     @ObservedObject var testsViewModel: TestsViewModel
-    let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    let days = [
+        "sunday_short".localized,
+        "monday_short".localized,
+        "tuesday_short".localized,
+        "wednesday_short".localized,
+        "thursday_short".localized,
+        "friday_short".localized,
+        "saturday_short".localized
+    ]
     let calendar = Calendar.current
 
     @State private var currentDate = Date()
@@ -416,7 +424,7 @@ struct ContactMenu: View {
         VStack(alignment: .leading) {
             VStack {
                 Button(action: shareMyTest) {
-                    Text("Share my test")
+                    Text("share_my_test_button".localized)
                         .font(.poppinsRegularFont(size: 16))
                         .foregroundColor(.black)
                         .padding(.horizontal)
@@ -425,7 +433,7 @@ struct ContactMenu: View {
                 Divider()
                     .frame(width: 140)
                 Button(action: addDate) {
-                    Text("Add date")
+                    Text("add_date_button".localized)
                         .font(.poppinsRegularFont(size: 16))
                         .foregroundColor(.black)
                         .padding(.horizontal)
@@ -434,7 +442,7 @@ struct ContactMenu: View {
                 Divider()
                     .frame(width: 140)
                 Button(action: rename) {
-                    Text("Rename")
+                    Text("rename_button".localized)
                         .font(.poppinsRegularFont(size: 16))
                         .foregroundColor(.black)
                         .padding(.horizontal)
@@ -445,7 +453,7 @@ struct ContactMenu: View {
             }
             VStack {
                 Button(action: delete) {
-                    Text("Delete")
+                    Text("delete_button".localized)
                         .font(.poppinsRegularFont(size: 16))
                         .foregroundColor(.black)
                         .padding(.horizontal)
@@ -454,7 +462,7 @@ struct ContactMenu: View {
                 Divider()
                     .frame(width: 140)
                 Button(action: block) {
-                    Text("Block")
+                    Text("block_button".localized)
                         .font(.poppinsRegularFont(size: 16))
                         .foregroundColor(.black)
                         .padding(.horizontal)
@@ -463,7 +471,7 @@ struct ContactMenu: View {
                 Divider()
                     .frame(width: 140)
                 Button(action: report) {
-                    Text("Report")
+                    Text("report_button".localized)
                         .font(.poppinsRegularFont(size: 16))
                         .foregroundColor(.black)
                         .padding(.horizontal)

@@ -13,11 +13,11 @@ struct LegalPoliciesView: View {
             CustomColors.thirdGradient
                 .ignoresSafeArea(.all)
             VStack(spacing: 30) {
-                Text("Legal & Policies")
+                Text("legal_policies_section".localized)
                     .font(.poppinsBoldFont(size: 30))
                     .foregroundColor(.white)
                     .padding()
-                Text("Coming soon")
+                Text("coming_soon".localized)
                     .font(.poppinsMediumFont(size: 17))
                     .foregroundColor(.white)
             }

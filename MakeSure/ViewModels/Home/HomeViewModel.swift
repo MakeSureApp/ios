@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import PhotosUI
+import QRCodeGenerator
 
 enum Category: String, CaseIterable {
     case health = "Health"
@@ -42,6 +43,7 @@ class HomeViewModel: NSObject, ObservableObject {
     @Published var selectedCategories: [TipsCategory] = []
     @Published var cards: [TipsModel] = []
     @Published var tipImages: [UUID: UIImage] = [:]
+    @Published var qrCodeText: String?
 //     [
 //        Card(title: "Safe tips for Speed Dating", description: "How to talk to a partner about tests?", image: "mockTipsImage", category: .dates, url: "https://example.com/1"),
 //        Card(title: "Keep safe & keep romantic", description: nil, image: "mockTipsImage2", category: .selfDevelopment, url: ""),
@@ -55,16 +57,19 @@ class HomeViewModel: NSObject, ObservableObject {
     @Published var isLoadingTests: Bool = false
     @Published var isLoadingImage: Bool = false
     @Published var isLoadingTips: Bool = false
+    @Published var isGeneratingQRCode: Bool = false
     @Published private(set) var hasLoadedUser: Bool = false
     @Published private(set) var hasLoadedTests: Bool = false
     @Published private(set) var hasLoadedImage: Bool = false
     @Published private(set) var hasLoadedTips: Bool = false
     @Published private(set) var loadingImageCount: Int = 0
+    @Published private(set) var hasGeneratedQRCode: Bool = false
     
     private let userService = UserSupabaseService()
-    private var testService = TestSupabaseService()
-    private var tipsService = TipsSupabaseService()
-    let userId = UUID(uuidString: "3230f47c-e8ef-11ed-a05b-0242ac120003")!
+    private let testService = TestSupabaseService()
+    private let tipsService = TipsSupabaseService()
+    private let friensLinksService = FriendsLinksSupabaseService()
+    let userId = UUID(uuidString: "79295454-e8f0-11ed-a05b-0242ac120003")!
     
     func fetchUserData() async {
         DispatchQueue.main.async {
@@ -79,6 +84,9 @@ class HomeViewModel: NSObject, ObservableObject {
                 }
             } else {
                 print("No user found with the specified ID")
+                DispatchQueue.main.async {
+                    self.isLoadingUser = false
+                }
             }
         } catch {
             print("An error occurred with fetching the user!")
@@ -113,7 +121,7 @@ class HomeViewModel: NSObject, ObservableObject {
             self.isLoadingTips = true
         }
         do {
-            let fetchedTips = try await tipsService.fetchAllTips()
+            let fetchedTips = try await tipsService.fetchAll()
             let uniqueCategories = Set(fetchedTips.map { $0.category })
         
             let predefinedColors = [
@@ -208,6 +216,36 @@ class HomeViewModel: NSObject, ObservableObject {
         }
         DispatchQueue.main.async {
             self.loadingImageCount -= 1
+        }
+    }
+    
+    func createFriendLink() async {
+        DispatchQueue.main.async {
+            self.isGeneratingQRCode = true
+        }
+        do {
+            let fetchedLinks = try await friensLinksService.fetchLinksByUserId(userId: userId)
+            var id = UUID()
+            if fetchedLinks.isEmpty {
+                let createdAt = Date()
+                let model = FriendLinkModel(id: id, createdAt: createdAt, userId: userId)
+                try await friensLinksService.create(item: model)
+            } else {
+                if let linkId = fetchedLinks.first?.id{
+                    id = linkId
+                }
+            }
+            let text = id.uuidString
+            DispatchQueue.main.async {
+                self.qrCodeText = text
+                self.isGeneratingQRCode = false
+                self.hasGeneratedQRCode = true
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.isGeneratingQRCode = false
+            }
+            print("Error generating qrcode: \(error.localizedDescription)")
         }
     }
     

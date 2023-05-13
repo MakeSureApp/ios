@@ -66,4 +66,7 @@ extension String {
         self.insert(contentsOf: string, at:self.index(self.startIndex, offsetBy: ind) )
     }
     
+    var localized: String {
+        return appEnvironment.localizationManager.localizedString(forKey: self)
+    }
 }

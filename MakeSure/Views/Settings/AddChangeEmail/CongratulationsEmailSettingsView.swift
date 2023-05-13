@@ -13,7 +13,7 @@ struct CongratulationsEmailSettingsView: View {
     var body: some View {
         VStack {
             // Title
-            Text("Congratulations, your new email is \nlinked!")
+            Text("new_email_linked_message".localized)
                 .font(.rubicBoldFont(size: 34))
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)

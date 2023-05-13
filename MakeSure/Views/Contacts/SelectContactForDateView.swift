@@ -17,7 +17,7 @@ struct SelectContactForDateView: View {
     var body: some View {
         VStack {
             HStack {
-                Text("My contacts")
+                Text("my_contacts_section".localized)
                     .font(.poppinsBoldFont(size: 23))
                     .padding()
                 Spacer()
@@ -26,7 +26,7 @@ struct SelectContactForDateView: View {
                         viewModel.selectedDate = nil
                     }
                 } label: {
-                    Text("Cancel")
+                    Text("cancel_button".localized)
                         .font(.poppinsRegularFont(size: 18))
                         .foregroundColor(.black)
                         .padding()
@@ -34,11 +34,11 @@ struct SelectContactForDateView: View {
             }
             
             HStack {
-                Text("Sort by")
+                Text("sort_by_label".localized)
                     .font(.poppinsRegularFont(size: 14))
-                Picker("Sort by", selection: $viewModel.sortBy) {
-                    Text("Date followed").tag(ContactsViewModel.SortBy.dateFollowed)
-                    Text("Recent meetings").tag(ContactsViewModel.SortBy.dateRecentMeetings)
+                Picker("sort_by_label".localized, selection: $viewModel.sortBy) {
+                    Text("date_followed_option".localized).tag(ContactsViewModel.SortBy.dateFollowed)
+                    Text("recent_dates_option".localized).tag(ContactsViewModel.SortBy.dateRecentMeetings)
                 }
                 .pickerStyle(MenuPickerStyle())
                 .font(.poppinsBoldFont(size: 10))
@@ -62,7 +62,7 @@ struct SelectContactForDateView: View {
                     }
                 }
             } label: {
-                Text("SAVE DATE")
+                Text("save_date_button".localized.uppercased())
                     .font(.rubicBoldFont(size: 15))
                     .frame(minWidth: 0, maxWidth: .infinity)
                     .padding(.vertical, 14)

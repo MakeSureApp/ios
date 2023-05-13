@@ -20,6 +20,24 @@ enum AvailableLanguages: String, CaseIterable {
             return "EN"
         }
     }
+    
+    var key: String {
+        switch self {
+        case .RU:
+            return "ru-RU"
+        case .EN:
+            return "en"
+        }
+    }
+    
+    var text: String {
+        switch self {
+        case .RU:
+            return "language_russian".localized
+        case .EN:
+            return "language_english".localized
+        }
+    }
 }
 
 enum SettingsPhoneNumberSteps: Int, CaseIterable {
@@ -42,11 +60,17 @@ class SettingsViewModel: ObservableObject {
     
     @ObservedObject var authService: AuthService
     @Published var notificationsEnabled = true
-    @Published var selectedLanguage: AvailableLanguages = .EN
+    @Published var selectedLanguage = appEnvironment.localizationManager.getLanguage() {
+        didSet {
+            localizationManager.setLanguage(selectedLanguage.key)
+        }
+    }
     @Published var emailAddress = "example@email.com"
     @Published var isEmail = true
     @Published var isVerified = true
     @Published var mobileNumber = "+1 (555) 123-4567"
+    
+    private let localizationManager = appEnvironment.localizationManager
     
     init(authService: AuthService) {
         self.authService = authService
@@ -79,6 +103,7 @@ class SettingsViewModel: ObservableObject {
             return true
         }
     }
+    
     
     func phoneMoveToNextStep() {
         phoneCurrentStep = phoneCurrentStep.next()

@@ -27,7 +27,7 @@ struct SettingsView: View {
                     .padding(8)
                 
                 VStack(alignment: .leading) {
-                    Text("Settings")
+                    Text("settings".localized)
                         .font(.poppinsLightFont(size: 24))
                         .foregroundColor(.white)
                         .padding(4)
@@ -37,9 +37,11 @@ struct SettingsView: View {
                         HStack {
                             Image("PrivacySafetyIcon")
                                 .foregroundColor(.white)
-                            Text("Privacy & Safety")
+                            Text("privacy_safety_section".localized)
                                 .font(.poppinsRegularFont(size: 20))
                                 .foregroundColor(.white)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                                 .padding(.leading, 6)
                         }
                         .padding(4)
@@ -49,13 +51,13 @@ struct SettingsView: View {
                     HStack {
                         Image("NotificationIcon")
                             .foregroundColor(.white)
-                        Text("Notifications")
+                        Text("notifications_section".localized)
                             .foregroundColor(.white)
                             .font(.poppinsRegularFont(size: 20))
                             .padding(.leading, 6)
                         Spacer()
                         CustomSwitch(isOn: $viewModel.notificationsEnabled)
-                        Spacer()
+                            .padding(.trailing, 8)
                     }
                     .padding(4)
                     
@@ -63,7 +65,7 @@ struct SettingsView: View {
                     HStack {
                         Image("LanguageIcon")
                             .foregroundColor(.white)
-                        Text("Language")
+                        Text("language_section".localized)
                             .foregroundColor(.white)
                             .font(.poppinsRegularFont(size: 20))
                             .padding(.leading, 6)
@@ -80,8 +82,7 @@ struct SettingsView: View {
                                     .foregroundColor(.white)
                             }
                         }
-                        .offset(x: 12)
-                        Spacer()
+                        .padding(.trailing, 8)
                     }
                     .padding(4)
                     
@@ -90,7 +91,7 @@ struct SettingsView: View {
                         HStack {
                             Image("HelpIcon")
                                 .foregroundColor(.white)
-                            Text("Help")
+                            Text("help_section".localized)
                                 .font(.poppinsRegularFont(size: 20))
                                 .foregroundColor(.white)
                                 .padding(.leading, 6)
@@ -104,13 +105,13 @@ struct SettingsView: View {
                             HStack {
                                 Image("ChangeEmailIcon")
                                     .foregroundColor(.white)
-                                Text(viewModel.isEmail ? "Change email" : "Add email")
+                                Text(viewModel.isEmail ? "change_email".localized : "add_email".localized)
                                     .foregroundColor(.white)
                                     .font(.poppinsRegularFont(size: 20))
                                     .padding(.leading, 6)
                             }
                             if viewModel.isEmail {
-                                Text(viewModel.isVerified ? viewModel.emailAddress : "Not Verified")
+                                Text(viewModel.isVerified ? viewModel.emailAddress : "not_verified_label".localized)
                                     .font(.poppinsRegularFont(size: 12))
                                     .foregroundColor(.white)
                                     .underline()
@@ -126,7 +127,7 @@ struct SettingsView: View {
                             HStack {
                                 Image("ChangePhoneNumberIcon")
                                     .foregroundColor(.white)
-                                Text("Change Phone Number")
+                                Text("change_phone_number_button".localized)
                                     .foregroundColor(.white)
                                     .font(.poppinsRegularFont(size: 20))
                                     .padding(.leading, 6)
@@ -145,7 +146,7 @@ struct SettingsView: View {
                         HStack {
                             Image("LegalPiliciesIcon")
                                 .foregroundColor(.white)
-                            Text("Legal & Policies")
+                            Text("legal_policies_section".localized)
                                 .font(.poppinsRegularFont(size: 20))
                                 .foregroundColor(.white)
                                 .padding(.leading, 6)
@@ -158,7 +159,7 @@ struct SettingsView: View {
                         HStack {
                             Image("BlocklistIcon")
                                 .foregroundColor(.white)
-                            Text("Blacklist")
+                            Text("blacklist_section".localized)
                                 .font(.poppinsRegularFont(size: 20))
                                 .foregroundColor(.white)
                                 .padding(.leading, 6)
@@ -170,7 +171,7 @@ struct SettingsView: View {
                     HStack {
                         Image("DeleteIcon")
                             .foregroundColor(.white)
-                        Text("Delete Profile")
+                        Text("delete_profile_button".localized)
                             .font(.poppinsRegularFont(size: 20))
                             .foregroundColor(.white)
                             .padding(.leading, 6)
@@ -182,7 +183,7 @@ struct SettingsView: View {
                 Button {
                     viewModel.signOutBtnClicked()
                 } label: {
-                    Text("SIGN OUT")
+                    Text("sign_out".localized.uppercased())
                         .font(.poppinsBoldFont(size: 20))
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.white)
@@ -242,7 +243,7 @@ struct CustomSwitch: View {
                 .frame(width: 70, height: 30)
             HStack {
                 if isOn {
-                    Text("ON")
+                    Text("on".localized.uppercased())
                         .font(.poppinsBoldFont(size: 16))
                         .foregroundColor(.white)
                         .padding(.leading, 10)
@@ -254,8 +255,9 @@ struct CustomSwitch: View {
                     .offset(x: isOn ? 0 : 4)
                 
                 if !isOn {
-                    Text("OFF")
+                    Text("off".localized.uppercased())
                         .font(.poppinsBoldFont(size: 16))
+                        .minimumScaleFactor(0.7)
                         .foregroundColor(.white)
                         .padding(.trailing, 10)
                 }

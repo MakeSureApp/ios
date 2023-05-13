@@ -50,7 +50,7 @@ class ContactsViewModel: ObservableObject {
     
     private let meetingsService = MeetingSupabaseService()
     private let userService = UserSupabaseService()
-    let userId = UUID(uuidString: "3230f47c-e8ef-11ed-a05b-0242ac120003")!
+    let userId = UUID(uuidString: "79295454-e8f0-11ed-a05b-0242ac120003")!
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -212,25 +212,25 @@ class ContactsViewModel: ObservableObject {
         
         switch (daysSinceMet, monthsSinceMet, yearsSinceMet) {
         case (0, 0, 0):
-            return "Met today"
+            return "met_today".localized
         case (1, 0, 0):
-            return "Met yesterday"
+            return "met_yesterday".localized
         case (2...6, 0, 0):
-            return "Met \(daysSinceMet) days ago"
+            return String(format: "met_x_days_ago".localized, daysSinceMet, daysSinceMet.localizedDayLabel)
         case (7...13, 0, 0):
-            return "Met a week ago"
+            return "met_a_week_ago".localized
         case (14...20, 0, 0):
-            return "Met two weeks ago"
+            return "met_two_weeks_ago".localized
         case (21...27, 0, 0):
-            return "Met three weeks ago"
+            return "met_three_weeks_ago".localized
         case (_, 1, 0):
-            return "Met a month ago"
+            return "met_a_month_ago".localized
         case (_, 2..<12, 0):
-            return "Met \(monthsSinceMet) months ago"
+            return String(format: "met_months_ago".localized, monthsSinceMet, monthsSinceMet.localizedMonthLabel)
         case (_, _, 1):
-            return "Met a year ago"
+            return "met_a_year_ago".localized
         case (_, _, _):
-            return "Met \(yearsSinceMet) years ago"
+            return String(format: "met_years_ago".localized, yearsSinceMet, yearsSinceMet.localizedYearLabel)
         }
     }
     

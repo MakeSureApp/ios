@@ -20,7 +20,7 @@ struct NumberSettingsView: View {
         ZStack {
             VStack {
                 // Title
-                Text("My number is")
+                Text("my_number_is".localized)
                     .font(.rubicBoldFont(size: 44))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
@@ -65,7 +65,7 @@ struct NumberSettingsView: View {
                 }
                 .padding(.horizontal)
                 
-                Text("We will send a text with a verification code.")
+                Text("send_verification_code".localized)
                     .font(.interLightFont(size: 14))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(CustomColors.darkGray)
@@ -89,7 +89,7 @@ struct NumberSettingsView: View {
                                     .foregroundColor(.black)
                             }
                         }
-                        .navigationBarTitle("Select Country Code", displayMode: .inline)
+                        .navigationBarTitle("select_country_code".localized, displayMode: .inline)
                     }
                 }
                 .background(Color(.systemBackground))

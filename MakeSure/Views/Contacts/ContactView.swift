@@ -68,41 +68,7 @@ struct ContactView: View {
                         .font(.poppinsBoldFont(size: 16))
                         .foregroundColor(.white)
                         .padding()
-                    /*let testsData = viewModel.getLatestsTests(contact)
                     
-                    HStack {
-                        Text(testsData?.date.toString ?? "No tests")
-                            .font(.poppinsMediumFont(size: 20))
-                            .foregroundColor(.white)
-                        Spacer()
-                    }
-                    if let testsData {
-                        ForEach(testsData.tests, id: \.self) { test in
-                            HStack {
-                                Circle()
-                                    .frame(width: 18, height: 18)
-                                    .foregroundColor(Color.lightGreen)
-                                Text(test.name)
-                                    .font(.poppinsLightFont(size: 15))
-                                    .foregroundColor(.white)
-                                Spacer()
-                                Text("Negative")
-                                    .font(.poppinsLightFont(size: 15))
-                                    .foregroundColor(.white)
-                            }
-                        }
-                    }
-                    HStack {
-                        Spacer()
-                        Button {
-                            
-                        } label: {
-                            Text("Learn more")
-                                .font(.poppinsRegularFont(size: 15))
-                                .foregroundColor(.gray)
-                                .underline()
-                        }
-                    }*/
                     if testsViewModel.isLoadingContactTests {
                         RotatingShapesLoader(animate: $isAnimating)
                             .frame(maxWidth: 100)
@@ -135,7 +101,7 @@ struct ContactView: View {
                                 Button {
                                     testsViewModel.learnMoreBtnClicked()
                                 } label: {
-                                    Text("Learn more")
+                                    Text("learn_more_button".localized)
                                         .font(.poppinsLightFont(size: 14))
                                         .foregroundColor(.gray)
                                         .underline()
@@ -143,7 +109,7 @@ struct ContactView: View {
                             }
                         } else {
                             Spacer()
-                            Text("This contact don't have any tests yet")
+                            Text("no_tests_for_contact".localized)
                                 .font(.poppinsBoldFont(size: 16))
                                 .foregroundColor(.white)
                             Spacer()
@@ -159,9 +125,11 @@ struct ContactView: View {
                                 .frame(width: 23, height: 17.5)
                                 .foregroundColor(Color.gradientDarkBlue2)
                                 .padding()
-                            Text("SHARE MY LATEST TEST")
+                            Text("share_latest_test_button".localized.uppercased())
                                 .font(.rubicBoldFont(size: 15))
                                 .foregroundColor(Color.gradientDarkBlue2)
+                                .minimumScaleFactor(0.8)
+                                .lineLimit(1)
                                 .padding()
                             Spacer()
                         }
@@ -182,7 +150,7 @@ struct ContactView: View {
                                     .frame(width: 14, height: 14)
                                     .foregroundColor(.white)
                                     .fontWeight(.bold)
-                                Text("ADD DATE")
+                                Text("add_date_button".localized.uppercased())
                                     .font(.rubicBoldFont(size: 15))
                                     .foregroundColor(.white)
                                     .padding(.vertical)
@@ -199,7 +167,7 @@ struct ContactView: View {
                                 presentationMode.wrappedValue.dismiss()
                             }
                         } label: {
-                            Text("Block user")
+                            Text("block_user_button".localized)
                                 .font(.poppinsRegularFont(size: 15))
                                 .foregroundColor(.gray)
                                 .underline()
@@ -245,16 +213,20 @@ struct ShareLastTestView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Group {
-                Text("Are you sure you want to share \nyour test on ")
+                Text("confirm_share_test_message".localized)
                     .font(.rubicBoldFont(size: 16))
                     .foregroundColor(.gradientDarkBlue)
                 +
-                Text(date.toString)
+                Text(" \(date.toString) ")
                     .font(.rubicBoldFont(size: 16))
                     .foregroundColor(.gradientDarkBlue)
                     .underline()
                 +
-                Text(" with \(contact.name)?")
+                Text("with_label".localized)
+                    .font(.rubicBoldFont(size: 16))
+                    .foregroundColor(.gradientDarkBlue)
+                +
+                Text(" \(contact.name)?")
                     .font(.rubicBoldFont(size: 16))
                     .foregroundColor(.gradientDarkBlue)
             }
@@ -263,7 +235,7 @@ struct ShareLastTestView: View {
                 Button(action: {
                     isShowView = false
                 }) {
-                    Text("Cancel".uppercased())
+                    Text("cancel_button".localized.uppercased())
                         .font(.rubicBoldFont(size: 15))
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -274,7 +246,7 @@ struct ShareLastTestView: View {
                         .overlay {
                             (CustomColors.secondGradient)
                                 .mask(
-                                    Text("Cancel".uppercased())
+                                    Text("cancel_button".localized.uppercased())
                                         .font(.rubicBoldFont(size: 15))
                                         .frame(maxWidth: .infinity)
                                         .padding()
@@ -285,7 +257,7 @@ struct ShareLastTestView: View {
                     viewModel.shareMyLatestTest(with: contact.id, date: date)
                     isShowView = false
                 }) {
-                    Text("Share".uppercased())
+                    Text("share_button".localized.uppercased())
                         .font(.rubicBoldFont(size: 15))
                         .frame(minWidth: 0, maxWidth: .infinity)
                         .padding()

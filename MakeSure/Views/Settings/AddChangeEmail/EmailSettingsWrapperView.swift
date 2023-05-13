@@ -35,7 +35,7 @@ struct EmailSettingsWrapperView: View {
                 let _ = self.authorizationCompleted()
             }
             
-            RoundedGradientButton(text: "CONTINUE", isEnabled: viewModel.emailCanProceedToNextStep) {
+            RoundedGradientButton(text: "continue_button".localized.uppercased(), isEnabled: viewModel.emailCanProceedToNextStep) {
                 viewModel.emailMoveToNextStep()
             }
         }

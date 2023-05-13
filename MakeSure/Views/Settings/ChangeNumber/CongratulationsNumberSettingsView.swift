@@ -13,7 +13,7 @@ struct CongratulationsNumberSettingsView: View {
     var body: some View {
         VStack {
             // Title
-            Text("Congratulations, your new number is \nlinked!")
+            Text("new_number_linked_message".localized)
                 .font(.rubicBoldFont(size: 34))
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)

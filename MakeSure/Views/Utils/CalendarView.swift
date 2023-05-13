@@ -43,7 +43,15 @@ struct CustomCalendarView: View {
     @State var selectedDate: Date?
     let contactId: UUID?
     let calendar = Calendar.current
-    let days = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
+    let days = [
+        "sunday_short".localized.uppercased(),
+        "monday_short".localized.uppercased(),
+        "tuesday_short".localized.uppercased(),
+        "wednesday_short".localized.uppercased(),
+        "thursday_short".localized.uppercased(),
+        "friday_short".localized.uppercased(),
+        "saturday_short".localized.uppercased()
+    ]
     
     init(viewModel: ContactsViewModel, testsViewModel: TestsViewModel, currentMonth: Date, isFromContactView: Bool, contactId: UUID?) {
         self.viewModel = viewModel
@@ -205,11 +213,11 @@ struct CustomCalendarView: View {
             }
             
             if isAddBtnClicked, selectedDate == nil {
-                Text("Select a date!")
+                Text("select_date".localized)
                     .font(.poppinsRegularFont(size: 14))
                     .foregroundColor(.red)
             } else if let selectedDate, selectedDate > Date().addingTimeInterval(100) {
-                Text("Select a date in the past!")
+                Text("select_past_date".localized)
                     .font(.poppinsRegularFont(size: 14))
                     .foregroundColor(.red)
             } else {
@@ -226,7 +234,7 @@ struct CustomCalendarView: View {
                         }
                     }
                 } label: {
-                    Text("SAVE DATE")
+                    Text("save_date_button".localized.uppercased())
                         .font(.rubicBoldFont(size: 15))
                         .frame(minWidth: 0, maxWidth: .infinity)
                         .padding(.vertical, 14)
@@ -256,7 +264,7 @@ struct CustomCalendarView: View {
                                 .frame(width: 14, height: 14)
                                 .foregroundColor(.black)
                                 .fontWeight(.bold)
-                            Text("ADD DATE")
+                            Text("add_date_button".localized.uppercased())
                                 .font(.rubicBoldFont(size: 15))
                                 .foregroundColor(.black)
                         }

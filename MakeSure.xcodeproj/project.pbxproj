@@ -73,6 +73,12 @@
 		CE71A51F29FF87CD00608B03 /* SelectContactForDateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71A51E29FF87CD00608B03 /* SelectContactForDateView.swift */; };
 		CE71A52129FFB8F700608B03 /* ViewingImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71A52029FFB8F700608B03 /* ViewingImageView.swift */; };
 		CE71A52329FFC25200608B03 /* MyQRCodeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE71A52229FFC25200608B03 /* MyQRCodeView.swift */; };
+		CE8DBC392A0F675A005D3A79 /* FriendLinkModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8DBC382A0F675A005D3A79 /* FriendLinkModel.swift */; };
+		CE8DBC3B2A0F74E1005D3A79 /* Image+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8DBC3A2A0F74E1005D3A79 /* Image+Ext.swift */; };
+		CE8DBC4B2A0F7F83005D3A79 /* QRCode in Frameworks */ = {isa = PBXBuildFile; productRef = CE8DBC4A2A0F7F83005D3A79 /* QRCode */; };
+		CE8DBC522A0F97EA005D3A79 /* Int+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8DBC512A0F97EA005D3A79 /* Int+Ext.swift */; };
+		CE8DBC542A0F9868005D3A79 /* LocalizationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE8DBC532A0F9868005D3A79 /* LocalizationManager.swift */; };
+		CE8DBC582A0FA6FE005D3A79 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE8DBC5A2A0FA6FE005D3A79 /* Localizable.strings */; };
 		CE8E0BB42A0A899C00C4D098 /* BottomSheet in Frameworks */ = {isa = PBXBuildFile; productRef = CE8E0BB32A0A899C00C4D098 /* BottomSheet */; };
 		CE9166A829F0419100612933 /* MakeSureApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9166A729F0419100612933 /* MakeSureApp.swift */; };
 		CE9166AA29F0419100612933 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9166A929F0419100612933 /* ContentView.swift */; };
@@ -103,6 +109,7 @@
 		CE99574E29F2B58B0079B39A /* LoginWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE99574D29F2B58B0079B39A /* LoginWrapperView.swift */; };
 		CE99575129F2D9870079B39A /* CustomColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE99575029F2D9870079B39A /* CustomColors.swift */; };
 		CE99575329F2DF430079B39A /* Text+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE99575229F2DF430079B39A /* Text+Ext.swift */; };
+		CE99BFFB2A0FBAAE002ABE09 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE99BFFD2A0FBAAE002ABE09 /* Localizable.strings */; };
 		CE9ADC6529F7D77D00C5861A /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6429F7D77D00C5861A /* AppEnvironment.swift */; };
 		CE9ADC6729F7DA4900C5861A /* ViewModelFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */; };
 		CE9ADC6A29F7EF0900C5861A /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE9ADC6929F7EF0900C5861A /* SettingsView.swift */; };
@@ -197,6 +204,11 @@
 		CE71A51E29FF87CD00608B03 /* SelectContactForDateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectContactForDateView.swift; sourceTree = "<group>"; };
 		CE71A52029FFB8F700608B03 /* ViewingImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewingImageView.swift; sourceTree = "<group>"; };
 		CE71A52229FFC25200608B03 /* MyQRCodeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyQRCodeView.swift; sourceTree = "<group>"; };
+		CE8DBC382A0F675A005D3A79 /* FriendLinkModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendLinkModel.swift; sourceTree = "<group>"; };
+		CE8DBC3A2A0F74E1005D3A79 /* Image+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Image+Ext.swift"; sourceTree = "<group>"; };
+		CE8DBC512A0F97EA005D3A79 /* Int+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Int+Ext.swift"; sourceTree = "<group>"; };
+		CE8DBC532A0F9868005D3A79 /* LocalizationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalizationManager.swift; sourceTree = "<group>"; };
+		CE8DBC592A0FA6FE005D3A79 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE9166A429F0419100612933 /* MakeSure.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MakeSure.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE9166A729F0419100612933 /* MakeSureApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MakeSureApp.swift; sourceTree = "<group>"; };
 		CE9166A929F0419100612933 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -227,6 +239,7 @@
 		CE99574D29F2B58B0079B39A /* LoginWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginWrapperView.swift; sourceTree = "<group>"; };
 		CE99575029F2D9870079B39A /* CustomColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColors.swift; sourceTree = "<group>"; };
 		CE99575229F2DF430079B39A /* Text+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Text+Ext.swift"; sourceTree = "<group>"; };
+		CE99BFFE2A0FBAC3002ABE09 /* ru-RU */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "ru-RU"; path = "ru-RU.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		CE9ADC6429F7D77D00C5861A /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelFactory.swift; sourceTree = "<group>"; };
 		CE9ADC6929F7EF0900C5861A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -259,6 +272,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CE8DBC4B2A0F7F83005D3A79 /* QRCode in Frameworks */,
 				CEB10AC12A02758600B7B5DF /* Supabase in Frameworks */,
 				CE8E0BB42A0A899C00C4D098 /* BottomSheet in Frameworks */,
 				CE3BB3C929F1376800213B9E /* NavigationStack in Frameworks */,
@@ -391,6 +405,16 @@
 			path = Colors;
 			sourceTree = "<group>";
 		};
+		CE8DBC4C2A0F8C38005D3A79 /* Localizations */ = {
+			isa = PBXGroup;
+			children = (
+				CE99BFFD2A0FBAAE002ABE09 /* Localizable.strings */,
+				CE8DBC5A2A0FA6FE005D3A79 /* Localizable.strings */,
+				CE8DBC532A0F9868005D3A79 /* LocalizationManager.swift */,
+			);
+			path = Localizations;
+			sourceTree = "<group>";
+		};
 		CE91669B29F0419100612933 = {
 			isa = PBXGroup;
 			children = (
@@ -473,6 +497,7 @@
 				CEB46D7E29FC0968003F6345 /* Test.swift */,
 				CEB10AC22A02B56800B7B5DF /* Meeting.swift */,
 				CE1BD32E2A0522FF0018B7E2 /* Tips.swift */,
+				CE8DBC382A0F675A005D3A79 /* FriendLinkModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -495,6 +520,8 @@
 				CE47D04C29F3BD9000AEC9DA /* CaseIterable+Ext.swift */,
 				CE47D0A929F3DEFB00AEC9DA /* Font+Ext.swift */,
 				CECBA2F329FA7B3500A81F45 /* Date+Ext.swift */,
+				CE8DBC3A2A0F74E1005D3A79 /* Image+Ext.swift */,
+				CE8DBC512A0F97EA005D3A79 /* Int+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -552,6 +579,7 @@
 		CE99574F29F2D97A0079B39A /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				CE8DBC4C2A0F8C38005D3A79 /* Localizations */,
 				CE9166B929F047D400612933 /* Extensions */,
 				CE47D05029F3D3CB00AEC9DA /* Fonts */,
 				CE47D0A829F3DEE400AEC9DA /* Colors */,
@@ -663,6 +691,7 @@
 				CE3BB3C829F1376800213B9E /* NavigationStack */,
 				CEB10AC02A02758600B7B5DF /* Supabase */,
 				CE8E0BB32A0A899C00C4D098 /* BottomSheet */,
+				CE8DBC4A2A0F7F83005D3A79 /* QRCode */,
 			);
 			productName = MakeSure;
 			productReference = CE9166A429F0419100612933 /* MakeSure.app */;
@@ -690,12 +719,14 @@
 			knownRegions = (
 				en,
 				Base,
+				"ru-RU",
 			);
 			mainGroup = CE91669B29F0419100612933;
 			packageReferences = (
 				CE3BB3C729F1376800213B9E /* XCRemoteSwiftPackageReference "swiftui-navigation-stack" */,
 				CEB10ABF2A02758600B7B5DF /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				CE8E0BB22A0A899C00C4D098 /* XCRemoteSwiftPackageReference "bottom-sheet" */,
+				CE8DBC492A0F7F83005D3A79 /* XCRemoteSwiftPackageReference "qrcode" */,
 			);
 			productRefGroup = CE9166A529F0419100612933 /* Products */;
 			projectDirPath = "";
@@ -728,6 +759,7 @@
 				CE47D07C29F3D95E00AEC9DA /* Inter-SemiBold.ttf in Resources */,
 				CE47D09829F3DADB00AEC9DA /* Poppins-Bold.ttf in Resources */,
 				CE47D06129F3D3F100AEC9DA /* Rubik-Italic.ttf in Resources */,
+				CE8DBC582A0FA6FE005D3A79 /* Localizable.strings in Resources */,
 				CE47D09E29F3DADB00AEC9DA /* Poppins-LightItalic.ttf in Resources */,
 				CE47D07D29F3D95E00AEC9DA /* Inter-ExtraLight.ttf in Resources */,
 				CE47D0A129F3DADB00AEC9DA /* Poppins-Thin.ttf in Resources */,
@@ -739,6 +771,7 @@
 				CE47D07A29F3D95E00AEC9DA /* Inter-Regular.ttf in Resources */,
 				CE47D07729F3D95E00AEC9DA /* Inter-Medium.ttf in Resources */,
 				CE47D05F29F3D3F100AEC9DA /* Rubik-MediumItalic.ttf in Resources */,
+				CE99BFFB2A0FBAAE002ABE09 /* Localizable.strings in Resources */,
 				CE47D09229F3DADB00AEC9DA /* Poppins-ExtraLightItalic.ttf in Resources */,
 				CE47D09429F3DADB00AEC9DA /* Poppins-Italic.ttf in Resources */,
 				CE47D0A229F3DADB00AEC9DA /* Poppins-SemiBold.ttf in Resources */,
@@ -767,6 +800,7 @@
 				CE71A52329FFC25200608B03 /* MyQRCodeView.swift in Sources */,
 				CE99574A29F2B1E90079B39A /* NumberSignInView.swift in Sources */,
 				CE99575129F2D9870079B39A /* CustomColors.swift in Sources */,
+				CE8DBC392A0F675A005D3A79 /* FriendLinkModel.swift in Sources */,
 				CE99575329F2DF430079B39A /* Text+Ext.swift in Sources */,
 				CED1D7E829F6C76500693DC2 /* AppleSignInButton.swift in Sources */,
 				CE99573F29F298870079B39A /* LoginViewModel.swift in Sources */,
@@ -788,11 +822,13 @@
 				CE27C8E229F80D1B006ACFED /* BlacklistView.swift in Sources */,
 				CE27C8EA29F81DAE006ACFED /* EmailSettingsView.swift in Sources */,
 				CEB10AC32A02B56800B7B5DF /* Meeting.swift in Sources */,
+				CE8DBC3B2A0F74E1005D3A79 /* Image+Ext.swift in Sources */,
 				CEB10ABE2A02674600B7B5DF /* SupabaseService.swift in Sources */,
 				CE9166C829F0F2D300612933 /* EmailSignUpView.swift in Sources */,
 				CE47D06729F3D4E700AEC9DA /* CustomFontsNames.swift in Sources */,
 				CE9166C229F05E8400612933 /* RegistrationProgressBarView.swift in Sources */,
 				CE27C90129F93710006ACFED /* EmailSettingsWrapperView.swift in Sources */,
+				CE8DBC522A0F97EA005D3A79 /* Int+Ext.swift in Sources */,
 				CED1D7DD29F6696200693DC2 /* BackButtonView.swift in Sources */,
 				CEA0DFAF29FD0E6B006CFFE6 /* ContactView.swift in Sources */,
 				CE9ADC6A29F7EF0900C5861A /* SettingsView.swift in Sources */,
@@ -836,6 +872,7 @@
 				CE27C8E829F81D95006ACFED /* NumberSettingsView.swift in Sources */,
 				CE99574629F2B1620079B39A /* SignInSelectionView.swift in Sources */,
 				CE9ADC6529F7D77D00C5861A /* AppEnvironment.swift in Sources */,
+				CE8DBC542A0F9868005D3A79 /* LocalizationManager.swift in Sources */,
 				CE27C8E029F80D07006ACFED /* LegalPoliciesView.swift in Sources */,
 				CE99574429F2A6AD0079B39A /* MainViewModel.swift in Sources */,
 				CE27C8EE29F8F23E006ACFED /* HelpView.swift in Sources */,
@@ -844,11 +881,31 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXVariantGroup section */
+		CE8DBC5A2A0FA6FE005D3A79 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE8DBC592A0FA6FE005D3A79 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		CE99BFFD2A0FBAAE002ABE09 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE99BFFE2A0FBAC3002ABE09 /* ru-RU */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
 		CE9166B029F0419300612933 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -909,6 +966,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -964,6 +1022,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_LOCALIZABILITY_EMPTY_CONTEXT = NO;
 				CODE_SIGN_ENTITLEMENTS = MakeSure/MakeSure.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -997,6 +1056,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ANALYZER_LOCALIZABILITY_EMPTY_CONTEXT = NO;
 				CODE_SIGN_ENTITLEMENTS = MakeSure/MakeSure.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
@@ -1057,6 +1117,14 @@
 				kind = branch;
 			};
 		};
+		CE8DBC492A0F7F83005D3A79 /* XCRemoteSwiftPackageReference "qrcode" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dagronf/qrcode.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 13.0.0;
+			};
+		};
 		CE8E0BB22A0A899C00C4D098 /* XCRemoteSwiftPackageReference "bottom-sheet" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/weitieda/bottom-sheet";
@@ -1080,6 +1148,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = CE3BB3C729F1376800213B9E /* XCRemoteSwiftPackageReference "swiftui-navigation-stack" */;
 			productName = NavigationStack;
+		};
+		CE8DBC4A2A0F7F83005D3A79 /* QRCode */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = CE8DBC492A0F7F83005D3A79 /* XCRemoteSwiftPackageReference "qrcode" */;
+			productName = QRCode;
 		};
 		CE8E0BB32A0A899C00C4D098 /* BottomSheet */ = {
 			isa = XCSwiftPackageProductDependency;

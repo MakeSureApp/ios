@@ -19,7 +19,7 @@ struct TestsView: View {
                 ScrollView(showsIndicators: false) {
                     orderNewBoxView
                     HStack {
-                        Text("My Tests")
+                        Text("my_tests_section".localized)
                             .font(.poppinsBoldFont(size: 25))
                             .foregroundColor(.white)
                             .padding(.bottom)
@@ -39,7 +39,7 @@ struct TestsView: View {
                     } else if viewModel.hasLoaded {
                         testsBoxes
                     } else {
-                        Text("No tests found")
+                        Text("no_tests_found".localized)
                             .font(.poppinsBoldFont(size: 20))
                             .foregroundColor(.white)
                             .padding()
@@ -65,7 +65,7 @@ private extension TestsView {
                 .cornerRadius(10)
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Order New box")
+                    Text("order_new_box".localized)
                         .font(.poppinsMediumFont(size: 18))
                         .foregroundColor(.white)
                     Text("1 490 руб.")
@@ -149,7 +149,15 @@ struct TestDayView: View {
 
 struct TestsCalendarScrollView: View {
     @ObservedObject var viewModel: TestsViewModel
-    let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    let days = [
+        "sunday_short".localized,
+        "monday_short".localized,
+        "tuesday_short".localized,
+        "wednesday_short".localized,
+        "thursday_short".localized,
+        "friday_short".localized,
+        "saturday_short".localized
+    ]
     let calendar = Calendar.current
 
     @State private var currentDate = Date().endOfWeek ?? Date()
@@ -214,7 +222,7 @@ private extension TestsView {
                     Button {
                         viewModel.learnMoreBtnClicked()
                     } label: {
-                        Text("Learn more")
+                        Text("learn_more_button".localized)
                             .font(.poppinsLightFont(size: 14))
                             .foregroundColor(.gray)
                             .underline()
@@ -252,7 +260,7 @@ struct TestView: View {
                     .foregroundColor(.white)
                     .padding(.leading, 4)
                 Spacer()
-                Text(test.result == "negative" ? "Negative" : "Failure")
+                Text(test.result == "negative" ? "negative_result".localized : "failure_result".localized)
                     .font(.poppinsLightFont(size: 15))
                     .foregroundColor(.white)
             }

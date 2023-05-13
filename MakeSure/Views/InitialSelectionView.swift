@@ -77,7 +77,7 @@ struct InitialSelectionView: View {
         VStack {
             VStack {
                 NavigationLink(destination: RegistrationWrapperView(viewModel: registrationViewModel)) {
-                    Text("GET STARTED")
+                    Text("get_started_button".localized.uppercased())
                         .font(.rubicBoldFont(size: 20))
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -90,7 +90,7 @@ struct InitialSelectionView: View {
                 Button {
                     showSignInSelectionView.toggle()
                 } label: {
-                    Text("SIGN IN")
+                    Text("sign_in_button".localized.uppercased())
                         .font(.rubicBoldFont(size: 20))
                         .padding()
                         .foregroundColor(.white)
@@ -99,12 +99,12 @@ struct InitialSelectionView: View {
             }
             
             VStack(alignment: .center) {
-                Text("By Creating Account you Accept ")
+                Text("accept_terms_and_privacy".localized + " ")
                     .foregroundColor(.white)
                     .font(.interExtraLightFont(size: 12))
                 
                 HStack {
-                    Text("Terms of Use")
+                    Text("terms_of_use".localized)
                         .font(.interExtraLightFont(size: 12))
                         .underline()
                         .foregroundColor(.white)
@@ -112,11 +112,11 @@ struct InitialSelectionView: View {
                             loginViewModel.openTermsOfUse()
                         }
                     
-                    Text("and")
+                    Text("and".localized)
                         .foregroundColor(.white)
                         .font(.interExtraLightFont(size: 12))
                     
-                    Text("Privacy Policy")
+                    Text("privacy_policy".localized)
                         .font(.interExtraLightFont(size: 12))
                         .underline()
                         .foregroundColor(.white)
@@ -139,7 +139,7 @@ struct InitialSelectionView: View {
                         .font(.rubicBoldFont(size: 20))
                     Spacer()
                     
-                    Text("SIGN IN WITH APPLE")
+                    Text("sign_in_with_apple".localized.uppercased())
                         .font(.rubicBoldFont(size: 16))
                         .foregroundColor(.white)
                     Spacer()
@@ -160,7 +160,7 @@ struct InitialSelectionView: View {
                         .font(.rubicBoldFont(size: 16))
                     Spacer()
                     
-                    Text("SIGN IN WITH PHONE NUMBER")
+                    Text("sign_in_with_phone".localized.uppercased())
                         .font(.rubicBoldFont(size: 16))
                         .foregroundColor(.white)
                     Spacer()
@@ -177,7 +177,7 @@ struct InitialSelectionView: View {
             Button {
                 
             } label: {
-                Text("Trouble signing in?")
+                Text("trouble_signing_in".localized)
                     .font(.rubicRegularFont(size: 17))
                     .padding()
                     .foregroundColor(.white)

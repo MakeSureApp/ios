@@ -16,7 +16,7 @@ struct BackButtonView: View {
         Button(action: action) {
             HStack {
                 Image(systemName: "chevron.backward")
-                Text("Back")
+                Text("go_back_button".localized)
                     .font(.rubicRegularFont(size: 24))
                     .foregroundColor(color)
             }

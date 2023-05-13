@@ -31,7 +31,7 @@ struct HelpView: View {
 
                 VStack(spacing: 30) {
                     HStack {
-                        Text("Help")
+                        Text("help_section".localized)
                             .font(.poppinsLightFont(size: 56))
                             .foregroundColor(.white)
                         Spacer()
@@ -50,26 +50,26 @@ struct HelpView: View {
                         Spacer()
                     }
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("What is Make Sure?")
+                        Text("what_is_make_sure_question".localized)
                             .font(.poppinsMediumFont(size: 17))
                             .foregroundColor(.white)
-                        Text("Make Sure is an app for people who want to make their sex experience safe.")
+                        Text("make_sure_description".localized)
                             .font(.poppinsLightFont(size: 16))
                             .foregroundColor(.white)
                     }
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("What is Make Sure?")
+                        Text("what_is_make_sure_question".localized)
                             .font(.poppinsMediumFont(size: 17))
                             .foregroundColor(.white)
-                        Text("Make Sure is an app for people who want to make their sex experience safe.")
+                        Text("make_sure_description".localized)
                             .font(.poppinsLightFont(size: 16))
                             .foregroundColor(.white)
                     }
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("What is Make Sure?")
+                        Text("what_is_make_sure_question".localized)
                             .font(.poppinsMediumFont(size: 17))
                             .foregroundColor(.white)
-                        Text("Make Sure is an app for people who want to make their sex experience safe.")
+                        Text("make_sure_description".localized)
                             .font(.poppinsLightFont(size: 16))
                             .foregroundColor(.white)
                     }

@@ -31,8 +31,10 @@ struct LanguageSelectionView: View {
                                 Spacer()
                                     .frame(width: 15)
                             }
-                            Text(language.rawValue)
+                            Text(language.text)
                                 .font(.poppinsBoldFont(size: 18))
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.8)
                                 .foregroundColor(selectedLanguage == language ? .purple : .black)
                             Spacer()
                         }
@@ -42,7 +44,7 @@ struct LanguageSelectionView: View {
             }
             .padding()
         }
-        .frame(width: 160)
+        .frame(width: 180)
         .frame(maxHeight: 110)
         .background(Color.white)
         .cornerRadius(10)

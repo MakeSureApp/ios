@@ -53,76 +53,94 @@ private extension HomeView {
                 ZStack {
                     VStack {
                         if viewModel.hasLoadedUser {
-                            if viewModel.isLoadingImage, viewModel.image == nil {
-                                Circle()
-                                    .foregroundColor(.gradientDarkBlue)
-                                    .frame(width: 81, height: 81)
-                                    .overlay(
-                                        RotatingShapesLoader(animate: $isAnimatingImage)
-                                            .frame(maxWidth: 35)
-                                            .onAppear {
-                                                isAnimatingImage = true
-                                            }
-                                            .onDisappear {
-                                                isAnimatingImage = false
-                                            }
-                                    )
-                            } else if let image = viewModel.image {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 81, height: 81)
-                                    .clipShape(Circle())
-                                    .shadow(radius: 10)
-                                    .onTapGesture {
-                                        viewModel.showPhotoMenu.toggle()
-                                    }
-                            } else {
-                                Image(systemName: "person.circle.fill")
-                                    .resizable()
-                                    .frame(width: 81, height: 81)
-                                    .foregroundColor(.white)
+                            // Photo section
+                            VStack {
+                                if viewModel.isLoadingImage, viewModel.image == nil {
+                                    // Loading animation
+                                    Circle()
+                                        .foregroundColor(.gradientDarkBlue)
+                                        .frame(width: 81, height: 81)
+                                        .overlay(
+                                            RotatingShapesLoader(animate: $isAnimatingImage)
+                                                .frame(maxWidth: 35)
+                                                .onAppear {
+                                                    isAnimatingImage = true
+                                                }
+                                                .onDisappear {
+                                                    isAnimatingImage = false
+                                                }
+                                        )
+                                } else if let image = viewModel.image {
+                                    // Photo
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 81, height: 81)
+                                        .clipShape(Circle())
+                                        .shadow(radius: 10)
+                                        .onTapGesture {
+                                            viewModel.showPhotoMenu.toggle()
+                                        }
+                                } else {
+                                    // Default placeholder
+                                    Image(systemName: "person.circle.fill")
+                                        .resizable()
+                                        .frame(width: 81, height: 81)
+                                        .foregroundColor(.white)
+                                }
                             }
+                            
+                            // User info section
                             HStack {
-                                if viewModel.hasLoadedTests {
-                                    VStack {
+                                VStack {
+                                    if viewModel.hasLoadedTests {
                                         Text("\(viewModel.testsDone)")
                                             .font(.interRegularFont(size: 20))
                                             .foregroundColor(.white)
-                                        Text("Tests done")
+                                        Text("tests_done".localized)
                                             .font(.interRegularFont(size: 12))
                                             .foregroundColor(.white)
+                                            .minimumScaleFactor(0.8)
+                                    } else if viewModel.isLoadingTests {
+                                        RowOfShapesLoader(animate: $isAnimatingTests, count: 3, spacing: 2)
+                                            .frame(maxWidth: 60)
+                                            .padding(.top, 10)
+                                            .onAppear {
+                                                isAnimatingTests = true
+                                            }
+                                            .onDisappear {
+                                                isAnimatingTests = false
+                                            }
                                     }
-                                } else if viewModel.isLoadingTests {
-                                    RowOfShapesLoader(animate: $isAnimatingTests, count: 3, spacing: 2)
-                                        .frame(maxWidth: 60)
-                                        .padding(.top, 10)
-                                        .onAppear {
-                                            isAnimatingTests = true
-                                        }
-                                        .onDisappear {
-                                            isAnimatingTests = false
-                                        }
                                 }
+                                .frame(width: 80)
+                                
                                 Spacer()
+                                
                                 if let user = viewModel.user {
                                     Text(user.name)
                                         .font(.poppinsBoldFont(size: 18))
                                         .foregroundColor(.white)
-                                    Spacer()
-                                    VStack {
+                                        .frame(maxWidth: .infinity)
+                                }
+                                
+                                Spacer()
+                                
+                                VStack {
+                                    if let user = viewModel.user {
                                         Text("\(user.birthdate.getAge)")
                                             .font(.interRegularFont(size: 20))
                                             .foregroundColor(.white)
-                                        Text("Years old")
+                                        Text("years_old".localized)
                                             .font(.interRegularFont(size: 12))
                                             .foregroundColor(.white)
                                     }
                                 }
+                                .frame(width: 80)
                             }
                         } else if viewModel.isLoadingUser {
-                            RotatingShapesLoader(animate: $isAnimating
-                            )
+                            // Loading animation
+                            RotatingShapesLoader(animate: $isAnimating)
                                 .frame(maxWidth: 100)
                                 .onAppear {
                                     isAnimating = true
@@ -131,7 +149,8 @@ private extension HomeView {
                                     isAnimating = false
                                 }
                         } else {
-                            Text("Check your internet connection")
+                            // No internet connection
+                            Text("check_internet_connection".localized)
                                 .font(.interSemiBoldFont(size: 16))
                                 .foregroundColor(.white)
                         }
@@ -141,31 +160,29 @@ private extension HomeView {
                     .foregroundColor(.white)
                     
                     if viewModel.showPhotoMenu {
+                        // Photo menu overlay
                         HStack {
                             Image(systemName: "arrowtriangle.left.fill")
                                 .resizable()
-                                .frame(width: 16, height: 30)
-                                .foregroundColor(.white)
-                                .padding(.trailing, -9)
                             VStack {
                                 Button {
                                     viewModel.requestPhoto()
                                 } label: {
-                                    Text("Change")
+                                    Text("change".localized)
                                         .font(.interRegularFont(size: 16))
                                         .foregroundColor(.black)
-                                        
                                 }
                                 .padding(.top, 6)
+                                
                                 Divider()
                                     .frame(maxWidth: 110)
+                                
                                 Button {
                                     viewModel.showImagePhoto = true
                                 } label: {
-                                    Text("Show")
+                                    Text("show".localized)
                                         .font(.interRegularFont(size: 16))
                                         .foregroundColor(.black)
-                                       
                                 }
                                 .padding(.bottom, 6)
                             }
@@ -190,8 +207,10 @@ private extension HomeView {
                 .cornerRadius(10)
             HStack {
                 VStack(alignment: .leading) {
-                    Text("Order New box")
+                    Text("order_new_box".localized)
                         .font(.poppinsMediumFont(size: 18))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
                         .foregroundColor(.white)
                     Text("1 490 руб.")
                         .font(.poppinsBoldFont(size: 11))
@@ -215,7 +234,7 @@ private extension HomeView {
 private extension HomeView {
     var tipsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Tips")
+            Text("tips_heading".localized)
                 .font(.poppinsBoldFont(size: 25))
                 .foregroundColor(Color.gradientPurple2)
             HStack {

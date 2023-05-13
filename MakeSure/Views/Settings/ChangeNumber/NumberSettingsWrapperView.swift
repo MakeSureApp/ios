@@ -35,7 +35,7 @@ struct NumberSettingsWrapperView: View {
                 let _ = self.authorizationCompleted()
             }
             
-            RoundedGradientButton(text: "CONTINUE", isEnabled: viewModel.phoneCanProceedToNextStep) {
+            RoundedGradientButton(text: "continue_button".localized.uppercased(), isEnabled: viewModel.phoneCanProceedToNextStep) {
                 viewModel.phoneMoveToNextStep()
             }
         }
