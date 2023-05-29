@@ -28,6 +28,7 @@ struct ContentView: View {
                 NavigationView {
                     InitialSelectionView()
                         .environmentObject(appEnvironment)
+                        .navigationBarHidden(true)
                 }
             }
     }

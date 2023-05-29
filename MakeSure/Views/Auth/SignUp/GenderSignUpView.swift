@@ -14,7 +14,7 @@ struct GenderSignUpView: View {
     var body: some View {
         VStack {
             // Title
-            Text("I am a")
+            Text("gender_prompt".localized)
                 .font(.rubicBoldFont(size: 44))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
@@ -25,7 +25,7 @@ struct GenderSignUpView: View {
                 Button(action: {
                     viewModel.gender = .male
                 }) {
-                    Text("MAN")
+                    Text("gender_male".localized.uppercased())
                         .font(.rubicBoldFont(size: 21))
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -36,7 +36,7 @@ struct GenderSignUpView: View {
                         .overlay {
                             (viewModel.gender == .male ? CustomColors.secondGradient : CustomColors.grayGradient)
                                 .mask(
-                                    Text("MAN")
+                                    Text("gender_male".localized.uppercased())
                                         .font(.rubicBoldFont(size: 21))
                                         .frame(maxWidth: .infinity)
                                         .padding()
@@ -47,7 +47,7 @@ struct GenderSignUpView: View {
                 Button(action: {
                     viewModel.gender = .female
                 }) {
-                    Text("WOMAN")
+                    Text("gender_female".localized.uppercased())
                         .font(.rubicBoldFont(size: 21))
                         .frame(maxWidth: .infinity)
                         .padding()
@@ -58,7 +58,7 @@ struct GenderSignUpView: View {
                         .overlay {
                             (viewModel.gender == .female ? CustomColors.secondGradient : CustomColors.grayGradient)
                                 .mask(
-                                    Text("WOMAN")
+                                    Text("gender_female".localized.uppercased())
                                         .font(.rubicBoldFont(size: 21))
                                         .frame(maxWidth: .infinity)
                                         .padding()

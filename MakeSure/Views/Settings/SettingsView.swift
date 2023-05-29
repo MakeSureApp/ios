@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct SettingsView: View {
+    @EnvironmentObject var viewModel: SettingsViewModel
     @Binding var isShowing: Bool
-    @ObservedObject var viewModel: SettingsViewModel
     @GestureState private var dragOffset = CGSize.zero
     @Binding var activeSheet: MainTabView.ActiveSheet?
     @State private var isShowingLanguageSelection = false

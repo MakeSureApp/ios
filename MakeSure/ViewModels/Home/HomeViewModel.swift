@@ -189,7 +189,6 @@ class HomeViewModel: NSObject, ObservableObject {
     
     func loadImageIfNeeded(for tip: TipsModel) {
         if tipImages[tip.id] == nil {
-            print("Requesting image for card id: \(tip.id)")
             Task {
                 await loadImage(for: tip)
             }
@@ -205,7 +204,6 @@ class HomeViewModel: NSObject, ObservableObject {
                 let (data, _) = try await URLSession.shared.data(from: url)
                 DispatchQueue.main.async {
                     self.tipImages[tip.id] = UIImage(data: data)
-                    print("Image loaded for card id: \(tip.id)")
                 }
             }
         } catch {

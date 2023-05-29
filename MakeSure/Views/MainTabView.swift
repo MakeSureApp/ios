@@ -6,10 +6,8 @@
 //
 
 import SwiftUI
-import BottomSheet
 
 struct MainTabView: View {
-    @State private var selectedIndex: Int = 0
     @ObservedObject private var viewModel: MainViewModel
     @ObservedObject private var homeViewModel: HomeViewModel
     @ObservedObject private var settingsViewModel: SettingsViewModel
@@ -36,197 +34,219 @@ struct MainTabView: View {
     }
     
     var body: some View {
-        
-        let tabBarItems = MainNavigation.allCases
-        
-        let tabViews = ForEach(tabBarItems.indices, id: \.self) { index in
-            NavigationView {
-                tabBarItems[index]
-                    .destinationView(viewModelFactory: appEnvironment.viewModelFactory)
-                    .toolbar {
-                        ToolbarItem(placement: .principal) {
-                            if contactsViewModel.isShowLinkIsCopied {
-                                Text("link_copied_message".localized)
-                                    .font(.poppinsRegularFont(size: 17))
-                                    .foregroundColor(.white)
-                                    .padding(.horizontal)
-                                    .background(
-                                        RoundedRectangle(cornerRadius: 25)
-                                            .fill(CustomColors.fourthGradient)
-                                    )
-                            } else {
-                                Text("MAKE SURE")
-                                    .font(.custom("BebasNeue", size: 28))
-                                    .overlay {
-                                        if tabBarItems[index] == .tests {
-                                            CustomColors.whiteGradient
-                                                .mask(
-                                                    Text("MAKE SURE")
-                                                        .font(.custom("BebasNeue", size: 28))
-                                                )
-                                        } else {
-                                            CustomColors.secondGradient
-                                                .mask(
-                                                    Text("MAKE SURE")
-                                                        .font(.custom("BebasNeue", size: 28))
-                                                )
-                                        }
-                                    }
+        ZStack {
+            topNavigationBar
+            tabView
+            bottomNavigationBar
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            contactsViewModel.showCalendar = false
+            homeViewModel.showPhotoMenu = false
+        }
+        .overlay {
+            VStack {
+                if contactsViewModel.showCalendar {
+                    GraphicalDatePicker(viewModel: contactsViewModel, testsViewModel: testsViewModel, currentMonth: contactsViewModel.dateToStartInCalendar, isFromContactView: false)
+                        .padding(.top, 50)
+                    Spacer()
+                }
+            }
+        }
+        .overlay {
+            Group {
+                if showSettings {
+                    Color.clear
+                        .ignoresSafeArea()
+                        .onTapGesture {
+                            withAnimation {
+                                showSettings.toggle()
                             }
                         }
-                    }
-                    .navigationBarItems(
-                        leading:
-                            Button(action: {
-                                withAnimation {
-                                    showSettings.toggle()
-                                }
-                            }) {
-                                Image("menuNavBarIcon")
-                                    .resizable()
-                                    .renderingMode(.template)
-                                    .frame(width: 25, height: 17)
-                                    .foregroundColor(tabBarItems[index] == .tests ? .white : .black)
-                                    .padding(.leading, 6)
-                            },
-                        trailing: HStack {
-                            if tabBarItems[index] == .contacts || tabBarItems[index] == .tests {
-                                Button(action: {
-                                    withAnimation {
-                                        contactsViewModel.showCalendar.toggle()
-                                    }
-                                }) {
-                                    Image("calendarNavBarIcon")
-                                        .resizable()
-                                        .renderingMode(.template)
-                                        .frame(width: 23, height: 23)
-                                        .foregroundColor(tabBarItems[index] == .tests ? .white : .black)
-                                }
-                            } else {
-                                Button(action: {
-                                    homeViewModel.showMyQRCode.toggle()
-                                }) {
-                                    Image("scannerNavBarIcon")
-                                        .resizable()
-                                        .frame(width: 18, height: 18)
-                                        .foregroundColor(.black)
-                                }
-                            }
-                            Button(action: {
-                                // Add action to open notifications view
-                            }) {
-                                Image("notificationNavBarIcon")
-                                    .resizable()
-                                    .renderingMode(.template)
-                                    .frame(width: 15, height: 19)
-                                    .foregroundColor(tabBarItems[index] == .tests ? .white : .black)
-                            }
-                        }
-                            .padding(.trailing, 6)
+                    
+                    SettingsView(
+                        isShowing: $showSettings,
+                        activeSheet: $activeSheet
                     )
-            }
-            .tag(index)
-        }
-        
-        let tabView = TabView(selection: $selectedIndex) {
-            tabViews
-        }
-        
-        let customTabBar = HStack {
-            ForEach(tabBarItems.indices, id: \.self) { index in
-                CustomTabItem(selection: index, item: tabBarItems[index], isSelected: Binding(get: {
-                    selectedIndex == index
-                }, set: { isSelected in
-                    selectedIndex = index
-                }), selectedIndex: $selectedIndex)
-                .frame(maxWidth: .infinity)
+                    .environmentObject(appEnvironment.viewModelFactory.getSettingsViewModel())
+                    .transition(.move(edge: .bottom))
+                }
             }
         }
-            .padding(.top, 8)
-            .background(.white)
-            .cornerRadius(12)
-            .ignoresSafeArea(.all)
-        
-        return ZStack {
-            VStack(spacing: 0) {
-                tabView
-                    .padding(.bottom, -50)
-                customTabBar
+        .overlay {
+            if let date = contactsViewModel.selectedDate {
+                SelectContactForDateView(viewModel: contactsViewModel, date: date)
             }
-            .contentShape(Rectangle())
-            .onTapGesture {
-                contactsViewModel.showCalendar = false
-                homeViewModel.showPhotoMenu = false
+        }
+        .overlay {
+            if homeViewModel.showMyQRCode {
+                MyQRCodeView()
+                    .environmentObject(homeViewModel)
             }
-            .overlay {
-                VStack {
-                    if contactsViewModel.showCalendar {
-                        GraphicalDatePicker(viewModel: contactsViewModel, testsViewModel: testsViewModel, currentMonth: contactsViewModel.dateToStartInCalendar, isFromContactView: false)
-                            .padding(.top, 50)
-                        Spacer()
-                    }
-                }
+        }
+        .overlay {
+            if homeViewModel.showImagePhoto {
+                ViewingImageView()
+                    .environmentObject(homeViewModel)
             }
-            .overlay {
-                Group {
-                    if showSettings {
-                        Color.clear
-                            .ignoresSafeArea()
-                            .onTapGesture {
-                                withAnimation {
-                                    showSettings.toggle()
-                                }
-                            }
-                        
-                        SettingsView(
-                            isShowing: $showSettings,
-                            viewModel: appEnvironment.viewModelFactory.getSettingsViewModel(),
-                            activeSheet: $activeSheet
-                        )
-                        .transition(.move(edge: .bottom))
-                    }
-                }
-            }
-            .overlay {
-                if let date = contactsViewModel.selectedDate {
-                    SelectContactForDateView(viewModel: contactsViewModel, date: date)
-                }
-            }
-            .overlay {
-                if homeViewModel.showMyQRCode {
-                    MyQRCodeView(viewModel: homeViewModel)
-                }
-            }
-            .overlay {
-                if homeViewModel.showImagePhoto {
-                    ViewingImageView(viewModel: homeViewModel)
-                }
-            }
-            .sheet(item: $activeSheet) { item in
-                switch item {
-                case .privacySafety:
-                    PrivacySafetyView()
-                case .help:
-                    HelpView()
-                case .addEmail:
-                    EmailSettingsWrapperView(viewModel: settingsViewModel)
-                case .changePhoneNumber:
-                    NumberSettingsWrapperView(viewModel: settingsViewModel)
-                case .legalPolicies:
-                    LegalPoliciesView()
-                case .blacklist:
-                    BlacklistView(viewModel: appEnvironment.viewModelFactory.getContactsViewModel(), homeViewModel: appEnvironment.viewModelFactory.getHomeViewModel())
-                }
+        }
+        .sheet(item: $activeSheet) { item in
+            switch item {
+            case .privacySafety:
+                PrivacySafetyView()
+            case .help:
+                HelpView()
+            case .addEmail:
+                EmailSettingsWrapperView(viewModel: settingsViewModel)
+            case .changePhoneNumber:
+                NumberSettingsWrapperView(viewModel: settingsViewModel)
+            case .legalPolicies:
+                LegalPoliciesView()
+            case .blacklist:
+                BlacklistView(viewModel: appEnvironment.viewModelFactory.getContactsViewModel(), homeViewModel: appEnvironment.viewModelFactory.getHomeViewModel())
             }
         }
     }
 }
 
+private extension MainTabView {
+    var topNavigationBar: some View {
+        VStack {
+            HStack {
+                Button {
+                    withAnimation {
+                        showSettings.toggle()
+                    }
+                } label: {
+                    Image("menuNavBarIcon")
+                        .resizable()
+                        .renderingMode(.template)
+                        .frame(width: 25, height: 17)
+                        .foregroundColor(viewModel.currentTab == .tests ? .white : .black)
+                        .padding(.leading, 6)
+                }
+                Spacer()
+                if contactsViewModel.isShowLinkIsCopied {
+                    Text("link_copied_message".localized)
+                        .font(.poppinsRegularFont(size: 17))
+                        .foregroundColor(.white)
+                        .padding(.horizontal)
+                        .background(
+                            RoundedRectangle(cornerRadius: 25)
+                                .fill(CustomColors.fourthGradient)
+                        )
+                } else {
+                    Text("MAKE SURE")
+                        .font(.custom("BebasNeue", size: 28))
+                        .overlay {
+                            if viewModel.currentTab == .tests {
+                                CustomColors.whiteGradient
+                                    .mask(
+                                        Text("MAKE SURE")
+                                            .font(.custom("BebasNeue", size: 28))
+                                    )
+                            } else {
+                                CustomColors.secondGradient
+                                    .mask(
+                                        Text("MAKE SURE")
+                                            .font(.custom("BebasNeue", size: 28))
+                                    )
+                            }
+                        }
+                }
+                Spacer()
+                HStack {
+                    if viewModel.currentTab == .contacts || viewModel.currentTab == .tests {
+                        Button(action: {
+                            withAnimation {
+                                contactsViewModel.showCalendar.toggle()
+                            }
+                        }) {
+                            Image("calendarNavBarIcon")
+                                .resizable()
+                                .renderingMode(.template)
+                                .frame(width: 23, height: 23)
+                                .foregroundColor(viewModel.currentTab == .tests ? .white : .black)
+                        }
+                    } else {
+                        Button(action: {
+                            homeViewModel.showMyQRCode.toggle()
+                        }) {
+                            Image("scannerNavBarIcon")
+                                .resizable()
+                                .frame(width: 18, height: 18)
+                                .foregroundColor(.black)
+                        }
+                    }
+                    Button(action: {
+                        // Add action to open notifications view
+                    }) {
+                        Image("notificationNavBarIcon")
+                            .resizable()
+                            .renderingMode(.template)
+                            .frame(width: 15, height: 19)
+                            .foregroundColor(viewModel.currentTab == .tests ? .white : .black)
+                    }
+                    .padding(.leading, 8)
+                }
+                .padding(.trailing, 8)
+            }
+            .padding(.horizontal, 12)
+            .background(viewModel.currentTab == .tests ? Color.gradientPurple2 : .white)
+            .zIndex(1)
+            Spacer()
+        }
+    }
+}
+
+private extension MainTabView {
+    var tabView: some View {
+        Group {
+            switch viewModel.currentTab {
+            case .home:
+                viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
+            case .tests:
+                viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
+            case .scanner:
+                viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
+            case .contacts:
+                viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
+            }
+        }
+        .padding(.vertical, 38)
+        .zIndex(0)
+    }
+}
+
+private extension MainTabView {
+    var bottomNavigationBar: some View {
+        VStack {
+            Spacer()
+            HStack {
+                ForEach(MainNavigation.allCases.indices, id: \.self) { index in
+                    let tab = MainNavigation.allCases[index]
+                    CustomTabItem(selection: tab, item: tab, isSelected: Binding(get: {
+                        viewModel.currentTab == tab
+                    }, set: { isSelected in
+                        viewModel.currentTab = tab
+                    }), selectedIndex: $viewModel.currentTab)
+                    .frame(maxWidth: .infinity)
+                }
+            }
+            .padding(.top, 8)
+            .background(.white)
+            .cornerRadius(12)
+            .ignoresSafeArea(.all)
+            .zIndex(1)
+        }
+    }
+}
+
 struct CustomTabItem: View {
-    var selection: Int
+    var selection: MainNavigation
     var item: MainNavigation
     @Binding var isSelected: Bool
-    @Binding var selectedIndex: Int
+    @Binding var selectedIndex: MainNavigation
     
     var body: some View {
         Button(action: {
@@ -244,7 +264,7 @@ struct CustomTabItem: View {
                     .foregroundColor(CustomColors.purpleColor)
             }
         })
-        .frame(height: 45)
+        .frame(height: 50)
     }
 }
 

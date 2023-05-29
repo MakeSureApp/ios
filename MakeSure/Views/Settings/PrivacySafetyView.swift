@@ -13,7 +13,7 @@ struct PrivacySafetyView: View {
             CustomColors.thirdGradient
                 .ignoresSafeArea(.all)
             VStack {
-                Text("privacy_safety_section")
+                Text("privacy_safety_section".localized)
                     .font(.poppinsBoldFont(size: 30))
                     .foregroundColor(.white)
                     .padding()

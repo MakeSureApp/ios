@@ -9,7 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @ObservedObject var viewModel: HomeViewModel
+    @EnvironmentObject var viewModel: HomeViewModel
     @State private var isAnimating: Bool = false
     @State private var isAnimatingTests: Bool = false
     @State private var isAnimatingImage: Bool = false
@@ -54,7 +54,7 @@ private extension HomeView {
                     VStack {
                         if viewModel.hasLoadedUser {
                             // Photo section
-                            VStack {
+                            Group {
                                 if viewModel.isLoadingImage, viewModel.image == nil {
                                     // Loading animation
                                     Circle()
@@ -74,13 +74,11 @@ private extension HomeView {
                                     // Photo
                                     Image(uiImage: image)
                                         .resizable()
-                                        .scaledToFit()
+                                        .scaledToFill()
                                         .frame(width: 81, height: 81)
                                         .clipShape(Circle())
                                         .shadow(radius: 10)
-                                        .onTapGesture {
-                                            viewModel.showPhotoMenu.toggle()
-                                        }
+                                        
                                 } else {
                                     // Default placeholder
                                     Image(systemName: "person.circle.fill")
@@ -89,7 +87,10 @@ private extension HomeView {
                                         .foregroundColor(.white)
                                 }
                             }
-                            
+                            .onTapGesture {
+                                if viewModel.hasLoadedImage {  viewModel.showPhotoMenu.toggle()
+                                }
+                            }
                             // User info section
                             HStack {
                                 VStack {
@@ -160,37 +161,43 @@ private extension HomeView {
                     .foregroundColor(.white)
                     
                     if viewModel.showPhotoMenu {
-                        // Photo menu overlay
                         HStack {
-                            Image(systemName: "arrowtriangle.left.fill")
-                                .resizable()
-                            VStack {
-                                Button {
-                                    viewModel.requestPhoto()
-                                } label: {
-                                    Text("change".localized)
-                                        .font(.interRegularFont(size: 16))
-                                        .foregroundColor(.black)
+                            Spacer()
+                            HStack {
+                                Image(systemName: "arrowtriangle.left.fill")
+                                    .resizable()
+                                    .frame(width: 30, height: 40)
+                                    .foregroundColor(.white)
+                                VStack {
+                                    Button {
+                                        viewModel.requestPhoto()
+                                        viewModel.showPhotoMenu.toggle()
+                                    } label: {
+                                        Text("change".localized)
+                                            .font(.interRegularFont(size: 16))
+                                            .foregroundColor(.black)
+                                    }
+                                    .padding(.top, 6)
+                                    
+                                    Divider()
+                                        .frame(maxWidth: 110)
+                                    
+                                    Button {
+                                        viewModel.showImagePhoto = true
+                                        viewModel.showPhotoMenu.toggle()
+                                    } label: {
+                                        Text("show".localized)
+                                            .font(.interRegularFont(size: 16))
+                                            .foregroundColor(.black)
+                                    }
+                                    .padding(.bottom, 6)
                                 }
-                                .padding(.top, 6)
-                                
-                                Divider()
-                                    .frame(maxWidth: 110)
-                                
-                                Button {
-                                    viewModel.showImagePhoto = true
-                                } label: {
-                                    Text("show".localized)
-                                        .font(.interRegularFont(size: 16))
-                                        .foregroundColor(.black)
-                                }
-                                .padding(.bottom, 6)
+                                .padding(.vertical, 2)
+                                .background(.white)
+                                .cornerRadius(12)
                             }
-                            .padding(.vertical, 2)
-                            .background(.white)
-                            .cornerRadius(12)
                         }
-                        .padding(.leading, 210)
+                        .padding(.trailing, 8)
                         .padding(.bottom, 50)
                     }
                 }
@@ -309,7 +316,7 @@ private extension HomeView {
             if let image = viewModel.tipImages[id] {
                 Image(uiImage: image)
                     .resizable()
-                    .scaledToFill()
+                    .aspectRatio(contentMode: .fill)
                     .frame(height: 200)
                     .clipped()
                     .cornerRadius(18)
@@ -317,7 +324,7 @@ private extension HomeView {
             } else {
                 Image("mockTipsImage2")
                     .resizable()
-                    .scaledToFill()
+                    .aspectRatio(contentMode: .fill)
                     .frame(height: 200)
                     .clipped()
                     .cornerRadius(18)
@@ -365,6 +372,7 @@ private extension HomeView {
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
-        HomeView(viewModel: HomeViewModel())
+        HomeView()
+            .environmentObject(HomeViewModel())
     }
 }

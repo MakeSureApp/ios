@@ -31,7 +31,7 @@ struct RegistrationWrapperView: View {
                     Button {
                         viewModel.skipPage()
                     } label: {
-                        Text("Skip")
+                        Text("skip_button".localized)
                             .font(.rubicRegularFont(size: 24))
                             .foregroundColor(.gray)
                     }
@@ -50,8 +50,8 @@ struct RegistrationWrapperView: View {
                 CodeSignUpView(viewModel: viewModel)
             case .email:
                 EmailSignUpView(viewModel: viewModel)
-            case .verifyEmail:
-                VerifyEmailSignUpView(viewModel: viewModel)
+           // case .verifyEmail:
+                //VerifyEmailSignUpView(viewModel: viewModel)
             case .firstName:
                 NameSignUpView(viewModel: viewModel)
             case .birthday:
@@ -69,7 +69,7 @@ struct RegistrationWrapperView: View {
             }
             
             // Continue button
-            RoundedGradientButton(text: viewModel.currentStep == .agreement ? "AGREE" : "CONTINUE", isEnabled: viewModel.canProceedToNextStep) {
+            RoundedGradientButton(text: viewModel.currentStep == .agreement ? "agree_button".localized.uppercased() : "continue_button".localized.uppercased(), isEnabled: viewModel.canProceedToNextStep) {
                 viewModel.moveToNextStep()
             }
         }
@@ -77,7 +77,9 @@ struct RegistrationWrapperView: View {
     
     func onBackPressed() {
         presentationMode.wrappedValue.dismiss()
-        viewModel.resetAllData()
+        DispatchQueue.main.async {
+            viewModel.resetAllData()
+        }
     }
     
     func registrationCompleted() {

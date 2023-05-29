@@ -14,9 +14,11 @@ struct CongratulationSignUpView: View {
     var body: some View {
         VStack {
             // Title
-            Text("Congratulations!")
+            Text("congratulations".localized)
                 .font(.rubicMediumFont(size: 40))
                 .fontWeight(.bold)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .padding(.top, 30)

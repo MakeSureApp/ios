@@ -8,9 +8,11 @@
 import SwiftUI
 
 struct ContactsView: View {
-    @StateObject var viewModel: ContactsViewModel
-    @StateObject var testsViewModel: TestsViewModel
-    @StateObject var homeViewModel: HomeViewModel
+    
+    @EnvironmentObject var viewModel: ContactsViewModel
+    @EnvironmentObject var testsViewModel: TestsViewModel
+    @EnvironmentObject var homeViewModel: HomeViewModel
+    
     @State private var showMenu = false
     @State private var showContact = false
     @State private var selectedContact: UserModel?
@@ -18,11 +20,15 @@ struct ContactsView: View {
     @State private var showSharingTestView = false
     @State private var isAnimating: Bool = false
     @State private var isAnimatingMeetings: Bool = false
+    @State private var topPadding: CGFloat = 0.0
     
     var body: some View {
+        GeometryReader { geometry in
         ZStack {
             VStack {
-                ContactsCalendarScrollView(viewModel: viewModel, testsViewModel: testsViewModel)
+                ContactsCalendarScrollView()
+                    .environmentObject(viewModel)
+                    .environmentObject(testsViewModel)
                 
                 HStack {
                     Text("my_contacts_section".localized)
@@ -116,7 +122,10 @@ struct ContactsView: View {
             }
             .sheet(isPresented: $showContact) {
                 if let contact = selectedContact {
-                    ContactView(contact: contact, viewModel: viewModel, testsViewModel: testsViewModel, homeViewModel: homeViewModel)
+                    ContactView(contact: contact)
+                        .environmentObject(viewModel)
+                        .environmentObject(testsViewModel)
+                        .environmentObject(homeViewModel)
                 }
             }
             Button(action: {
@@ -133,13 +142,16 @@ struct ContactsView: View {
             }
             .zIndex(-1)
             if showMenu, let contact = selectedContact {
-                ContactMenu(viewModel: viewModel, homeViewModel: homeViewModel, contact: contact, showMenu: $showMenu, showSharingTest: $showSharingTestView)
+                ContactMenu(contact: contact, showMenu: $showMenu, showSharingTest: $showSharingTestView)
+                    .environmentObject(viewModel)
+                    .environmentObject(homeViewModel)
                     .offset(y: menuYOffset)
             }
             if showSharingTestView, let date = testsViewModel.lastTests.first?.date, let contact = selectedContact {
                 VStack {
                     Spacer()
-                    ShareLastTestView(viewModel: viewModel, isShowView: $showSharingTestView, contact: contact, date: date)
+                    ShareLastTestView(isShowView: $showSharingTestView, contact: contact, date: date)
+                        .environmentObject(viewModel)
                 }
             }
             if viewModel.showContactCalendar, let contact = selectedContact {
@@ -150,10 +162,28 @@ struct ContactsView: View {
                 }
             }
         }
+        .onAppear {
+            if geometry.safeAreaInsets.top > 0 {
+                topPadding = 80
+            } else {
+                topPadding = 0
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+            if geometry.safeAreaInsets.top > 0 {
+                topPadding = 80
+            } else {
+                topPadding = 0
+            }
+        }
+        .padding(.top, topPadding)
+        .ignoresSafeArea(.all)
+       
         .task {
             await viewModel.fetchContacts()
             await viewModel.fetchMeetings()
         }
+    }
     }
 }
 
@@ -236,9 +266,9 @@ struct ContactItemView: View {
                             .padding(.vertical, 4)
                             .background(viewModel.metDateColor(date: date))
                             .cornerRadius(8)
-                            .onAppear {
-                                print("last date with \(contact.name) = \(date)")
-                            }
+//                            .onAppear {
+//                                print("last date with \(contact.name) = \(date)")
+//                            }
                     }
                 }
             }
@@ -297,8 +327,8 @@ struct DayView: View {
     let date: Date
     let dateString: String
     let metContacts: [UserModel]
-    @ObservedObject var viewModel: ContactsViewModel
-    @ObservedObject var testsViewModel: TestsViewModel
+    @EnvironmentObject var viewModel: ContactsViewModel
+    @EnvironmentObject var testsViewModel: TestsViewModel
 
     var body: some View {
         VStack {
@@ -308,7 +338,8 @@ struct DayView: View {
             if !metContacts.isEmpty {
                 ZStack {
                     ForEach(metContacts.indices, id: \.self) { index in
-                        if let contact = metContacts[index], let image = viewModel.contactsImages[contact.id] {
+                        let contact = metContacts[index]
+                        if let image = viewModel.contactsImages[contact.id] {
                             ZStack(alignment: .center) {
                                 Image(uiImage: image)
                                     .resizable()
@@ -362,8 +393,8 @@ struct DayView: View {
 }
 
 struct ContactsCalendarScrollView: View {
-    @ObservedObject var viewModel: ContactsViewModel
-    @ObservedObject var testsViewModel: TestsViewModel
+    @EnvironmentObject var viewModel: ContactsViewModel
+    @EnvironmentObject var testsViewModel: TestsViewModel
     let days = [
         "sunday_short".localized,
         "monday_short".localized,
@@ -391,7 +422,9 @@ struct ContactsCalendarScrollView: View {
                             let dayOfWeek = days[calendar.component(.weekday, from: date) - 1]
                             let dateString = String(calendar.component(.day, from: date))
                             let metContacts = viewModel.contactsMetOn(date: date)
-                            DayView(day: dayOfWeek, date: date, dateString: dateString, metContacts: metContacts, viewModel: viewModel, testsViewModel: testsViewModel)
+                            DayView(day: dayOfWeek, date: date, dateString: dateString, metContacts: metContacts)
+                                .environmentObject(viewModel)
+                                .environmentObject(testsViewModel)
                                 .id("\(weeksAgo)-\(dayOffset)")
                                 .onTapGesture {
                                     viewModel.dateToStartInCalendar = date
@@ -414,8 +447,8 @@ struct ContactsCalendarScrollView: View {
 }
 
 struct ContactMenu: View {
-    @ObservedObject var viewModel: ContactsViewModel
-    @ObservedObject var homeViewModel: HomeViewModel
+    @EnvironmentObject var viewModel: ContactsViewModel
+    @EnvironmentObject var homeViewModel: HomeViewModel
     let contact: UserModel
     @Binding var showMenu: Bool
     @Binding var showSharingTest: Bool
@@ -535,6 +568,9 @@ struct ContactMenu: View {
 
 struct ContactsView_Previews: PreviewProvider {
     static var previews: some View {
-        ContactsView(viewModel: ContactsViewModel(), testsViewModel: TestsViewModel(), homeViewModel: HomeViewModel())
+        ContactsView()
+            .environmentObject(ContactsViewModel())
+            .environmentObject(HomeViewModel())
+            .environmentObject(TestsViewModel())
     }
 }

@@ -41,6 +41,8 @@ class ContactsViewModel: ObservableObject {
     @Published private(set) var hasAddedDate: Bool = false
     @Published private(set) var hasAddedUserToBlacklist: Bool = false
     
+    private let blockedUsersQueue = DispatchQueue(label: "ru.turbopro.makesure.blockedUsersQueue", attributes: .concurrent)
+    
     enum LoadImageFor {
         case blacklist
         case contact
@@ -307,40 +309,6 @@ class ContactsViewModel: ObservableObject {
         case dateRecentMeetings
     }
     
-    func unlockUser(_ id: UUID, contacts: [UUID]?) async {
-        DispatchQueue.main.async {
-            self.isUnlocingContact = true
-        }
-        
-        do {
-            if !blockedUsers.isEmpty {
-                var contacts: [UUID] = contacts ?? []
-                var blacklistUsersIds: [UUID] = []
-                if let userIndex = blockedUsers.firstIndex(where: { $0.id == id }) {
-                    DispatchQueue.main.async {
-                        self.blockedUsers.remove(at: userIndex)
-                    }
-                }
-                contacts.append(id)
-                blockedUsers.forEach { user in
-                    blacklistUsersIds.append(user.id)
-                }
-                try await userService.update(id: userId, fields: [
-                    "contacts" : contacts.isEmpty ? nil : contacts,
-                    "blocked_users" : blacklistUsersIds.isEmpty ? nil : blacklistUsersIds])
-                DispatchQueue.main.async {
-                    self.isUnlocingContact = false
-                    self.hasUnlockedContact = true
-                }
-            }
-        } catch {
-            DispatchQueue.main.async {
-                self.isUnlocingContact = false
-            }
-            print("Error unlocking contact from blacklist: \(error.localizedDescription)")
-        }
-    }
-    
     func getTestsDates() -> [Date] {
         var dates: [Date] = []
         myTests.forEach { date, tests in
@@ -400,34 +368,84 @@ class ContactsViewModel: ObservableObject {
         DispatchQueue.main.async {
             self.isAddingUserToBlacklist = true
         }
+
         do {
-            if let contacts, !contacts.isEmpty {
-                var contacts: [UUID] = contacts
-                var blacklistUsersIds: [UUID] = []
-                blockedUsers.forEach { user in
-                    blacklistUsersIds.append(user.id)
-                }
+            var contactsCopy: [UUID] = contacts ?? []
+            var blacklistUsersIds: [UUID] = blockedUsers.map { $0.id }
+            if let userIndex = contactsM.firstIndex(where: { $0.id == id }) {
+                let userToBlock = contactsM[userIndex]
+                contactsCopy.remove(at: userIndex)
                 blacklistUsersIds.append(id)
-                
-                if let userIndex = contacts.firstIndex(where: { $0 == id }) {
-                    contacts.remove(at: userIndex)
-                }
+
                 try await userService.update(id: userId, fields: [
-                    "contacts" : contacts.isEmpty ? nil : contacts,
+                    "contacts" : contactsCopy.isEmpty ? nil : contactsCopy,
                     "blocked_users" : blacklistUsersIds.isEmpty ? nil : blacklistUsersIds])
+
                 DispatchQueue.main.async {
-                    if let userIndex = self.contactsM.firstIndex(where: { $0.id == id }) {
-                        self.contactsM.remove(at: userIndex)
+                    self.contactsM.remove(at: userIndex)
+                    if self.blockedUsers.first(where: { $0.id == id }) == nil {
+                        self.blockedUsers.append(userToBlock)
                     }
                     self.isAddingUserToBlacklist = false
                     self.hasAddedUserToBlacklist = true
                 }
+            } else {
+                DispatchQueue.main.async {
+                    self.isAddingUserToBlacklist = false
+                }
+                print("Error adding user to blacklist")
             }
         } catch {
             DispatchQueue.main.async {
                 self.isAddingUserToBlacklist = false
             }
             print("Error adding user to blacklist: \(error.localizedDescription)")
+        }
+    }
+
+
+    func unlockUser(_ id: UUID, contacts: [UUID]?) async {
+        DispatchQueue.main.async {
+            self.isUnlocingContact = true
+        }
+
+        do {
+            if !blockedUsers.isEmpty {
+                var contactsCopy: [UUID] = contacts ?? []
+                var blacklistUsersIds: [UUID] = blockedUsers.map { $0.id }
+                if let userIndex = blacklistUsersIds.firstIndex(where: { $0 == id }) {
+                    blacklistUsersIds.remove(at: userIndex)
+                }
+                contactsCopy.append(id)
+
+                try await userService.update(id: userId, fields: [
+                    "contacts" : contactsCopy.isEmpty ? nil : contactsCopy,
+                    "blocked_users" : blacklistUsersIds.isEmpty ? nil : blacklistUsersIds])
+
+                if let userIndex = blockedUsers.firstIndex(where: { $0.id == id }) {
+                    let user = blockedUsers[userIndex]
+                    DispatchQueue.main.async {
+                        self.blockedUsers.remove(at: userIndex)
+                        self.contactsM.append(user)
+                        self.isUnlocingContact = false
+                        self.hasUnlockedContact = true
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self.isUnlocingContact = false
+                    }
+                }
+            } else {
+                print("Error unlocking contact from blacklist")
+                DispatchQueue.main.async {
+                    self.isUnlocingContact = false
+                }
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.isUnlocingContact = false
+            }
+            print("Error unlocking contact from blacklist: \(error.localizedDescription)")
         }
     }
     
@@ -459,7 +477,7 @@ class ContactsViewModel: ObservableObject {
             print("Error deleting user from contacts: \(error.localizedDescription)")
         }
     }
-    
+
     func fetchBlacklist() async {
         DispatchQueue.main.async {
             self.blockedUsers.removeAll()
@@ -479,31 +497,17 @@ class ContactsViewModel: ObservableObject {
                         self.isLoadingBlacklist = false
                     }
                 } else {
-                    await withTaskGroup(of: UserModel?.self) { group in
-                        for id in ids {
-                            group.addTask {
-                                do {
-                                    if let user = try await self.userService.fetchUserById(id: id) {
-                                        return user
-                                    } else {
-                                        return nil
-                                    }
-                                } catch {
-                                    print("An error occurred with fetching a user: \(error)")
-                                    return nil
-                                }
-                            }
-                        }
-                        
-                        for await user in group {
-                            if let user {
+                    for id in ids {
+                        do {
+                            if let user = try await userService.fetchUserById(id: id) {
                                 DispatchQueue.main.async {
                                     self.blockedUsers.append(user)
                                 }
                             }
+                        } catch {
+                            print("An error occurred with fetching a user: \(error)")
                         }
                     }
-                    
                     DispatchQueue.main.async {
                         self.hasLoadedBlacklist = true
                         self.isLoadingBlacklist = false

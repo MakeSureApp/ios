@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
-import AuthenticationServices
+//import AuthenticationServices
 
 enum LoginSteps: Int, CaseIterable {
     case initial
@@ -92,14 +92,14 @@ class LoginViewModel: NSObject, ObservableObject {
     }
     
     func handleSignInWithApple() {
-        let provider = ASAuthorizationAppleIDProvider()
-        let request = provider.createRequest()
-        request.requestedScopes = [.fullName, .email]
-        
-        let controller = ASAuthorizationController(authorizationRequests: [request])
-        controller.delegate = self
-        controller.presentationContextProvider = self
-        controller.performRequests()
+//        let provider = ASAuthorizationAppleIDProvider()
+//        let request = provider.createRequest()
+//        request.requestedScopes = [.fullName, .email]
+//
+//        let controller = ASAuthorizationController(authorizationRequests: [request])
+//        controller.delegate = self
+//        controller.presentationContextProvider = self
+//        controller.performRequests()
     }
     
     func resetAllData() {
@@ -113,8 +113,10 @@ class LoginViewModel: NSObject, ObservableObject {
     }
     
     func completeAuthorization() {
-        authService.authState = .isLoggedIn
-        resetAllData()
+        DispatchQueue.main.async {
+            self.authService.authState = .isLoggedIn
+            self.resetAllData()
+        }
     }
     
     func openTermsOfUse() {
@@ -127,21 +129,21 @@ class LoginViewModel: NSObject, ObservableObject {
     
 }
 
-extension LoginViewModel: ASAuthorizationControllerDelegate {
-    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-            // Handle successful sign-in with Apple ID
-            authService.authState = .isLoggedIn
-        }
-    }
-
-    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        // Handle errors
-    }
-}
-
-extension LoginViewModel: ASAuthorizationControllerPresentationContextProviding {
-    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        return UIApplication.shared.windows.first { $0.isKeyWindow }!
-    }
-}
+//extension LoginViewModel: ASAuthorizationControllerDelegate {
+//    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+//        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
+//            // Handle successful sign-in with Apple ID
+//            authService.authState = .isLoggedIn
+//        }
+//    }
+//
+//    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+//        // Handle errors
+//    }
+//}
+//
+//extension LoginViewModel: ASAuthorizationControllerPresentationContextProviding {
+//    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+//        return UIApplication.shared.windows.first { $0.isKeyWindow }!
+//    }
+//}

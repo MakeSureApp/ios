@@ -98,36 +98,36 @@ class TestsViewModel: ObservableObject {
         let components = calendar.dateComponents([.day], from: date, to: now)
         
         guard let days = components.day else {
-            return "Unknown"
+            return "unknown_label".localized
         }
         
         switch days {
         case 0:
-            return "Today"
+            return "today_label".localized
         case 1:
-            return "Yesterday"
+            return "yesterday_label".localized
         case 2...7:
-            return "Last week"
+            return "last_week_label".localized
         case 8...14:
-            return "Last 2 weeks"
+            return "last_2_weeks_label".localized
         case 15...21:
-            return "Last 3 weeks"
+            return "last_3_weeks_label".localized
         case 22...(calendar.range(of: .day, in: .month, for: now)?.count ?? 31):
-            return "Past month"
+            return "past_month_label".localized
         case let day where day > 31:
             let months = calendar.dateComponents([.month], from: date, to: now).month ?? 0
             if months < 12 {
-                return "Past \(months) months"
+                return String(format: "past_x_months_label".localized, months)
             } else {
                 let years = calendar.dateComponents([.year], from: date, to: now).year ?? 0
                 if years == 1 {
-                    return "Past year"
+                    return "past_year_label".localized
                 } else {
-                    return "Past \(years) years"
+                    return String(format: "met_years_ago".localized, years)
                 }
             }
         default:
-            return "Unknown"
+            return "unknown_label".localized
         }
     }
     

@@ -20,11 +20,11 @@ struct EmailSignUpView: View {
         VStack {
             // Title
             VStack(alignment: .leading, spacing: 8) {
-                Text("What's your \nemail?")
+                Text("whats_your_email".localized)
                     .font(.rubicBoldFont(size: 44))
                     .fontWeight(.bold)
                 
-                Text("Verify your email")
+                Text("verify_email".localized)
                     .font(.interLightFont(size: 14))
                     .foregroundColor(CustomColors.darkGray)
             }
@@ -34,7 +34,7 @@ struct EmailSignUpView: View {
             
             // Email input
             CustomUnderlinedView {
-                TextField("Enter Email", text: $viewModel.email)
+                TextField("enter_email_placeholder".localized, text: $viewModel.email)
                     .font(.interRegularFont(size: 23))
                     .foregroundColor(.black)
                     .keyboardType(.emailAddress)

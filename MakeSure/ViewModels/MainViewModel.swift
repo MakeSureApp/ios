@@ -18,13 +18,18 @@ enum MainNavigation: CaseIterable {
     func destinationView(viewModelFactory: ViewModelFactory) -> some View {
         switch self {
         case .home:
-            HomeView(viewModel: viewModelFactory.getHomeViewModel())
+            HomeView()
+                .environmentObject(viewModelFactory.getHomeViewModel())
         case .tests:
-            TestsView(viewModel: viewModelFactory.getTestsViewModel())
+            TestsView()
+                .environmentObject(viewModelFactory.getTestsViewModel())
         case .scanner:
             ScannerView()
         case .contacts:
-            ContactsView(viewModel: viewModelFactory.getContactsViewModel(), testsViewModel: viewModelFactory.getTestsViewModel(), homeViewModel: viewModelFactory.getHomeViewModel())
+            ContactsView()
+                .environmentObject(viewModelFactory.getContactsViewModel())
+                .environmentObject(viewModelFactory.getTestsViewModel())
+                .environmentObject(viewModelFactory.getHomeViewModel())
         }
     }
     
@@ -76,4 +81,6 @@ class MainViewModel: ObservableObject {
         self.authService = authService
         
     }
+    
+    @Published var currentTab: MainNavigation = .home
 }

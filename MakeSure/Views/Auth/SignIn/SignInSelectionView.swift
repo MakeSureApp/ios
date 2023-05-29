@@ -53,7 +53,7 @@ struct SignInSelectionView: View {
                             .font(.rubicBoldFont(size: 16))
                         Spacer()
                         
-                        Text("SIGN IN WITH APPLE")
+                        Text("sign_in_with_apple".localized.uppercased())
                             .font(.rubicBoldFont(size: 16))
                             .foregroundColor(.white)
                         Spacer()
@@ -73,7 +73,7 @@ struct SignInSelectionView: View {
                             .font(.rubicBoldFont(size: 16))
                         Spacer()
                         
-                        Text("SIGN IN WITH PHONE NUMBER")
+                        Text("sign_in_with_phone".localized.uppercased())
                             .font(.rubicBoldFont(size: 16))
                             .foregroundColor(.white)
                         Spacer()
@@ -89,7 +89,7 @@ struct SignInSelectionView: View {
                 Button {
                     isVisible = false
                 } label: {
-                    Text("Trouble signing in?")
+                    Text("trouble_signing_in".localized)
                         .font(.rubicRegularFont(size: 17))
                         .padding()
                         .foregroundColor(.white)

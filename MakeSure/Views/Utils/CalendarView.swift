@@ -86,7 +86,7 @@ struct CustomCalendarView: View {
                         }
                         
                         let contactsMetOnTheDay = viewModel.contactsMetOn(date: date)
-                        if let contactsMetOnTheDay, !contactsMetOnTheDay.isEmpty {
+                        if !contactsMetOnTheDay.isEmpty {
                             ForEach(Array(contactsMetOnTheDay.enumerated()), id: \.element.id) { (index, contact) in
                                 if let image = viewModel.contactsImages[contact.id] {
                                     Image(uiImage: image)
@@ -109,7 +109,7 @@ struct CustomCalendarView: View {
                                 .frame(width: 40, height: 40)
                                 .foregroundColor(.gradientPurple.opacity(0.9))
                         }
-                        if let contactsMetOnTheDay, !contactsMetOnTheDay.isEmpty {
+                        if !contactsMetOnTheDay.isEmpty {
                             Text("\(dateStr)")
                                 .font(.poppinsRegularFont(size: 20))
                                 .foregroundColor(isSelectedDate ? .white : .black)
@@ -148,16 +148,16 @@ struct CustomCalendarView: View {
         let endOfMonth = calendar.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth)!
         let numberOfDays = calendar.dateComponents([.day], from: startOfMonth, to: endOfMonth).day! + 1
         let numberOfWeeks = Int(ceil(Double(numberOfDays + calendar.component(.weekday, from: startOfMonth) - 1) / 7))
-        
-        var dates: [[Date]] = Array(repeating: Array(repeating: startOfMonth, count: 7), count: numberOfWeeks)
-        
+
+        var dates: [[Date]] = Array(repeating: [], count: numberOfWeeks)
+
         var currentDate = startOfMonth
         for i in 0..<numberOfWeeks {
             for j in 0..<7 {
                 if (i == 0 && j < calendar.component(.weekday, from: startOfMonth) - 1) || currentDate > endOfMonth {
-                    dates[i][j] = Date.distantPast
+                    dates[i].append(Date.distantPast)
                 } else {
-                    dates[i][j] = currentDate
+                    dates[i].append(currentDate)
                     currentDate = calendar.date(byAdding: .day, value: 1, to: currentDate)!
                 }
             }
@@ -203,14 +203,21 @@ struct CustomCalendarView: View {
                         .foregroundColor(.gray)
                 }
             }
-
-            ForEach(weeks(in: currentMonth), id: \.self) { week in
+            
+            ForEach(weeks(in: currentMonth).indices, id: \.self) { weekIndex in
                 HStack {
-                    ForEach(week, id: \.self) { date in
-                        dayView(for: date)
+                    ForEach(weeks(in: currentMonth)[weekIndex].indices, id: \.self) { dateIndex in
+                        let date = weeks(in: currentMonth)[weekIndex][dateIndex]
+                        if date != Date.distantPast {
+                            dayView(for: date)
+                        } else {
+                            Spacer()
+                                .frame(width: 47, height: 30)
+                        }
                     }
                 }
             }
+
             
             if isAddBtnClicked, selectedDate == nil {
                 Text("select_date".localized)

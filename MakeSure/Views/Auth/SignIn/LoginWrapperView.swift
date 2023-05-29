@@ -33,7 +33,7 @@ struct LoginWrapperView: View {
                 let _ = self.authorizationCompleted()
             }
             
-            RoundedGradientButton(text: "CONTINUE", isEnabled: viewModel.canProceedToNextStep) {
+            RoundedGradientButton(text: "continue_button".localized.uppercased(), isEnabled: viewModel.canProceedToNextStep) {
                 viewModel.moveToNextStep()
             }
         }
@@ -41,7 +41,9 @@ struct LoginWrapperView: View {
     
     func onBackPressed() {
         presentationMode.wrappedValue.dismiss()
-        viewModel.resetAllData()
+        DispatchQueue.main.async {
+            viewModel.resetAllData()
+        }
     }
     
     func authorizationCompleted() {

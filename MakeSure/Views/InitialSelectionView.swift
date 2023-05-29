@@ -76,7 +76,9 @@ struct InitialSelectionView: View {
     func mainInitialView() -> some View {
         VStack {
             VStack {
-                NavigationLink(destination: RegistrationWrapperView(viewModel: registrationViewModel)) {
+                NavigationLink(destination:
+                                RegistrationWrapperView(viewModel: registrationViewModel)
+                    .navigationBarHidden(true)) {
                     Text("get_started_button".localized.uppercased())
                         .font(.rubicBoldFont(size: 20))
                         .frame(maxWidth: .infinity)

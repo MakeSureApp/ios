@@ -14,7 +14,7 @@ struct AddPhotoSignUpView: View {
     var body: some View {
         VStack {
             // Title
-            Text("Add your photo")
+            Text("add_photo".localized)
                 .font(.rubicBoldFont(size: 44))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()

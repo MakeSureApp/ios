@@ -10,7 +10,7 @@ import Combine
 import SwiftUI
 import PhotosUI
 
-enum Gender {
+enum Gender: String {
     case male
     case female
 }
@@ -20,7 +20,7 @@ enum RegistrationSteps: Int, CaseIterable {
     case phoneNumber
     case code
     case email
-    case verifyEmail
+    // case verifyEmail
     case firstName
     case birthday
     case gender
@@ -82,6 +82,11 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
         return countryCode.rawValue + partOfPhoneNumber
     }
     
+    var birthdayDate: Date? {
+        let dateStr = birthdayFields.joined().dateStringFromDateInput
+        return dateStr.dateFromString
+    }
+    
     var canProceedToNextStep: Bool {
         switch currentStep {
         case .phoneNumber:
@@ -107,7 +112,7 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
         switch currentStep {
         case .phoneNumber, .code:
             return .phoneNumber
-        case .email, .verifyEmail:
+        case .email:
             return .email
         case .firstName:
             return .firstName
@@ -130,11 +135,13 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
     }
     
     var isSkipButtonShow: Bool {
-        if currentStep == .email || currentStep == .verifyEmail || currentStep == .profilePhoto {
+        if currentStep == .email || currentStep == .profilePhoto {
             return true
         }
         return false
     }
+    
+    private let userService = UserSupabaseService()
     
     init(authService: AuthService) {
         self.authService = authService
@@ -151,17 +158,11 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
     }
     
     func moveToPreviousStep() {
-        if currentStep == .verifyEmail {
-            currentStep = currentStep.previous().previous()
-        } else {
-            currentStep = currentStep.previous()
-        }
+        currentStep = currentStep.previous()
     }
     
     func skipPage() {
-        if currentStep == .email {
-            currentStep = currentStep.next().next()
-        } else if currentStep == .verifyEmail || currentStep == .profilePhoto {
+        if currentStep == .email || currentStep == .profilePhoto {
             currentStep = currentStep.next()
         }
     }
@@ -330,8 +331,16 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
     }
     
     func completeRegistration() {
-        authService.authState = .isLoggedIn
-        resetAllData()
+        let id = UUID()
+        let user = UserModel(id: id, name: firstName, birthdate: birthdayDate!, sex: gender!.rawValue, phone: phoneNumber)
+        Task {
+            //try await userService.create(item: user)
+        }
+        
+        DispatchQueue.main.async {
+            self.authService.authState = .isLoggedIn
+            self.resetAllData()
+        }
     }
     
     func resetAllData() {

@@ -14,11 +14,11 @@ struct TermsOfUseSignUpView: View {
     var body: some View {
         VStack {
             VStack(alignment: .leading, spacing: 8) {
-                Text("We’re glad that you have joined us!")
+                Text("welcome_message".localized)
                     .font(.rubicBoldFont(size: 23))
                     .fontWeight(.bold)
                 
-                Text("Please follow these rules")
+                Text("rules_heading".localized)
                     .font(.interRegularFont(size: 17))
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -31,13 +31,13 @@ struct TermsOfUseSignUpView: View {
                         Image("checkmark")
                             .padding(.leading, 0)
                             .padding(.bottom, -12)
-                        Text("Be yourself.")
+                        Text("rule_1".localized)
                             .font(.interSemiBoldFont(size: 17))
                             .fontWeight(.bold)
                             .padding([.top, .trailing])
                         Spacer()
                     }
-                    Text("Make sure your photo and age are true to who you are.")
+                    Text("rule_2".localized)
                         .font(.interRegularFont(size: 13))
                         .multilineTextAlignment(.leading)
                 }
@@ -48,13 +48,13 @@ struct TermsOfUseSignUpView: View {
                         Image("checkmark")
                             .padding(.leading, 0)
                             .padding(.bottom, -12)
-                        Text("Be honest.")
+                        Text("rule_3".localized)
                             .font(.interSemiBoldFont(size: 17))
                             .fontWeight(.bold)
                             .padding([.top, .trailing])
                         Spacer()
                     }
-                    Text("Do not attempt to falsify the results of express-tests. This may result in suspension or termination of account and criminal liability.")
+                    Text("rule_4".localized)
                         .font(.interRegularFont(size: 13))
                         .multilineTextAlignment(.leading)
                 }
@@ -65,13 +65,13 @@ struct TermsOfUseSignUpView: View {
                         Image("checkmark")
                             .padding(.leading, 0)
                             .padding(.bottom, -12)
-                        Text("Be responsible.")
+                        Text("rule_5".localized)
                             .font(.interSemiBoldFont(size: 17))
                             .fontWeight(.bold)
                             .padding([.top, .trailing])
                         Spacer()
                     }
-                    Text("In case of a positive test, send a notification to all partners you may have infected. The app provides a simple and safe way to do it.")
+                    Text("rule_6".localized)
                         .font(.interRegularFont(size: 13))
                         .multilineTextAlignment(.leading)
                 }
@@ -82,13 +82,13 @@ struct TermsOfUseSignUpView: View {
                         Image("checkmark")
                             .padding(.leading, 0)
                             .padding(.bottom, -12)
-                        Text("Be respectful.")
+                        Text("rule_7".localized)
                             .font(.interSemiBoldFont(size: 17))
                             .fontWeight(.bold)
                             .padding([.top, .trailing])
                         Spacer()
                     }
-                    Text("We does not tolerate harassment or bullying of any kind, and users who engage in these behaviors will have their account suspended.")
+                    Text("rule_8".localized)
                         .font(.interRegularFont(size: 13))
                         .multilineTextAlignment(.leading)
                 }

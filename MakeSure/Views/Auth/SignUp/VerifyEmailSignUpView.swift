@@ -15,11 +15,11 @@ struct VerifyEmailSignUpView: View {
         VStack {
             // Title
             VStack(alignment: .leading, spacing: 8) {
-                Text("We sent a link \nto your email")
+                Text("email_sent_message".localized)
                     .font(.rubicBoldFont(size: 44))
                     .fontWeight(.bold)
                 
-                Text("Click it to verify the email address")
+                Text("click_to_verify_email".localized)
                     .font(.interLightFont(size: 14))
                     .foregroundColor(CustomColors.darkGray)
             }

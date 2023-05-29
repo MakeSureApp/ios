@@ -15,7 +15,7 @@ struct CodeSignUpView: View {
     var body: some View {
         VStack {
             VStack(alignment: .leading, spacing: 8) {
-                Text("My code is")
+                Text("my_code_is".localized)
                     .font(.rubicBoldFont(size: 44))
                     .fontWeight(.bold)
                 
@@ -29,7 +29,7 @@ struct CodeSignUpView: View {
                         viewModel.codeFields = Array<String>(repeating: "", count: 6)
                         activeField = .field1
                     } label: {
-                        Text("Resend")
+                        Text("resend_button".localized)
                             .font(.rubicRegularFont(size: 16))
                             .foregroundColor(.black)
                             .padding(2)

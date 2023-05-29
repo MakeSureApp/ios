@@ -11,14 +11,23 @@ import SwiftUI
 struct BirthdaySignUpView: View {
     @ObservedObject var viewModel: RegistrationViewModel
 
-    let placeholders = ["D", "D", "M", "M", "Y", "Y", "Y", "Y"]
+    let placeholders = [
+        "day_placeholder".localized,
+        "day_placeholder".localized,
+        "month_placeholder".localized,
+        "month_placeholder".localized,
+        "year_placeholder".localized,
+        "year_placeholder".localized,
+        "year_placeholder".localized,
+        "year_placeholder".localized
+    ]
 
     @FocusState private var activeField: FieldIndex?
 
     var body: some View {
         VStack {
             // Title
-            Text("My \nbirthday is")
+            Text("my_birthday_is".localized)
                 .font(.rubicBoldFont(size: 44))
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)

@@ -9,7 +9,7 @@ import SwiftUI
 import QRCode
 
 struct MyQRCodeView: View {
-    @ObservedObject var viewModel: HomeViewModel
+    @EnvironmentObject var viewModel: HomeViewModel
     @State private var isAnimating = false
     
     var body: some View {
@@ -98,6 +98,7 @@ struct MyQRCodeView: View {
 
 struct MyQRCodeView_Previews: PreviewProvider {
     static var previews: some View {
-        MyQRCodeView(viewModel: HomeViewModel())
+        MyQRCodeView()
+            .environmentObject(HomeViewModel())
     }
 }

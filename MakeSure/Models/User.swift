@@ -56,3 +56,15 @@ struct UserModel: Codable, Identifiable, Hashable {
         }
     }
 }
+
+struct OTPResponse: Codable {
+    let status: String
+    let mobile: String?
+    let transactionId: String?
+    let statusCode: String
+    let type: String?
+    let reason: String
+    let createTime: String?
+    let expiryTime: String?
+    let retryAfter: String?
+}

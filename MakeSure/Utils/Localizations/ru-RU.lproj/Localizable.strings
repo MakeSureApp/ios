@@ -1,6 +1,7 @@
 "my_number_is" = "Мой номер";
 "send_verification_code" = "Мы отправим вам текст с кодом подтверждения.";
 "continue_button" = "Продолжить";
+"agree_button" = "Согласен";
 "my_code_is" = "Мой код";
 "resend_button" = "Отправить еще раз";
 "back_button" = "Назад";

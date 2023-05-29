@@ -61,43 +61,43 @@ struct BlacklistView: View {
                             
                             ForEach(viewModel.blockedUsers, id: \.self) { user in
                                 HStack {
-                                        if let image = viewModel.blacklistImages[user.id] {
-                                            Image(uiImage: image)
-                                                .resizable()
-                                                .frame(width: 63, height: 63)
-                                                .clipShape(Circle())
-                                                .padding(.trailing, 10)
-                                                .shadow(radius: 10)
-                                        } else if user.photoUrl == nil {
-                                            Image(systemName: "person.circle.fill")
-                                                .resizable()
-                                                .foregroundColor(.white)
-                                                .frame(width: 63, height: 63)
-                                                .clipShape(Circle())
-                                                .padding(.trailing, 10)
-                                        } else {
-                                            Circle()
-                                                .foregroundColor(.gradientDarkBlue)
-                                                .frame(width: 63, height: 63)
-                                                .overlay(
-                                                    RotatingShapesLoader(animate: $isAnimatingImage)
-                                                        .frame(maxWidth: 25)
-                                                        .onAppear {
-                                                            isAnimatingImage = true
-                                                        }
-                                                        .onDisappear {
-                                                            isAnimatingImage = false
-                                                        }
-                                                )
-                                        }
-                                        Text(user.name)
-                                            .font(.poppinsBoldFont(size: 16))
+                                    if let image = viewModel.blacklistImages[user.id] {
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .frame(width: 63, height: 63)
+                                            .clipShape(Circle())
+                                            .padding(.trailing, 10)
+                                            .shadow(radius: 10)
+                                    } else if user.photoUrl == nil {
+                                        Image(systemName: "person.circle.fill")
+                                            .resizable()
                                             .foregroundColor(.white)
+                                            .frame(width: 63, height: 63)
+                                            .clipShape(Circle())
+                                            .padding(.trailing, 10)
+                                    } else {
+                                        Circle()
+                                            .foregroundColor(.gradientDarkBlue)
+                                            .frame(width: 63, height: 63)
+                                            .overlay(
+                                                RotatingShapesLoader(animate: $isAnimatingImage)
+                                                    .frame(maxWidth: 25)
+                                                    .onAppear {
+                                                        isAnimatingImage = true
+                                                    }
+                                                    .onDisappear {
+                                                        isAnimatingImage = false
+                                                    }
+                                            )
+                                    }
+                                    Text(user.name)
+                                        .font(.poppinsBoldFont(size: 16))
+                                        .foregroundColor(.white)
                                     Spacer()
                                     Button(action: {
-                                            Task {
-                                                await viewModel.unlockUser(user.id, contacts: homeViewModel.user?.contacts)
-                                            }
+                                        Task {
+                                            await viewModel.unlockUser(user.id, contacts: homeViewModel.user?.contacts)
+                                        }
                                     }) {
                                         Text("unlock_button".localized)
                                             .font(.poppinsRegularFont(size: 14))

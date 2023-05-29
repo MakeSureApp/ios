@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TestsView: View {
-    @ObservedObject var viewModel: TestsViewModel
+    @EnvironmentObject var viewModel: TestsViewModel
     @State private var isAnimating: Bool = false
     
     var body: some View {
@@ -329,6 +329,7 @@ struct TestGroupView: View {
 
 struct TestsView_Previews: PreviewProvider {
     static var previews: some View {
-        TestsView(viewModel: TestsViewModel())
+        TestsView()
+            .environmentObject(TestsViewModel())
     }
 }

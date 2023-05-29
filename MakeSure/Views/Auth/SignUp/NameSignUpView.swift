@@ -20,11 +20,11 @@ struct NameSignUpView: View {
         VStack {
             VStack(alignment: .leading, spacing: 8) {
                 // Title
-                Text("My first \nname is")
+                Text("my_first_name_is".localized)
                     .font(.rubicBoldFont(size: 44))
                     .fontWeight(.bold)
                 
-                Text("Pay attention: you will be able to change your name only by contacting the support service.")
+                Text("name_change_warning".localized)
                     .font(.interLightFont(size: 14))
                     .foregroundColor(CustomColors.darkGray)
                 
@@ -34,7 +34,7 @@ struct NameSignUpView: View {
             
             // First name input
             CustomUnderlinedView {
-                TextField("First name", text: $viewModel.firstName)
+                TextField("first_name".localized, text: $viewModel.firstName)
                     .font(.interRegularFont(size: 23))
                     .foregroundColor(.black)
                     .padding(4)

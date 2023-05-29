@@ -40,26 +40,35 @@ extension String {
     var isValidFirstName: Bool {
         guard self.count > 4, self.count < 18 else { return false }
 
-        let predicateTest = NSPredicate(format: "SELF MATCHES %@", "^(([^ ]?)(^[a-zA-Z].*[a-zA-Z]$)([^ ]?))$")
+        let predicateTest = NSPredicate(format: "SELF MATCHES %@", "^(([^ ]?)(^[a-zA-Zа-яА-Я].*[a-zA-Zа-яА-Я]$)([^ ]?))$")
         return predicateTest.evaluate(with: self)
     }
     
     var isValidBirthdayDate: Bool {
         if self.count == 8 {
-            var dateString = self
-            dateString.insert(":", ind: 2)
-            dateString.insert(":", ind: 5)
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "dd:MM:yyyy"
-            print("date == \(dateString)")
+            let dateString = self.dateStringFromDateInput
             
-            if dateFormatter.date(from: dateString) != nil {
+            if dateString.dateFromString != nil {
                 return true
             } else {
                 return false
             }
         }
         return false
+    }
+    
+    var dateStringFromDateInput: String {
+        var dateString = self
+        dateString.insert(":", ind: 2)
+        dateString.insert(":", ind: 5)
+        return dateString
+    }
+    
+    var dateFromString: Date? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd:MM:yyyy"
+        
+        return dateFormatter.date(from: self)
     }
     
     mutating func insert(_ string: String, ind: Int) {

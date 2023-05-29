@@ -194,9 +194,11 @@ class SettingsViewModel: ObservableObject {
     }
     
     func emailResetAllData() {
-        emailCurrentStep = .email
-        changingEmail = ""
-        emailValidated = false
+        DispatchQueue.main.async {
+            self.emailCurrentStep = .email
+            self.changingEmail = ""
+            self.emailValidated = false
+        }
     }
     
 }

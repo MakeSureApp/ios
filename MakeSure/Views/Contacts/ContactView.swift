@@ -8,10 +8,12 @@
 import SwiftUI
 
 struct ContactView: View {
+    
+    @EnvironmentObject var viewModel: ContactsViewModel
+    @EnvironmentObject var testsViewModel: TestsViewModel
+    @EnvironmentObject var homeViewModel: HomeViewModel
+    
     let contact: UserModel
-    @ObservedObject var viewModel: ContactsViewModel
-    @ObservedObject var testsViewModel: TestsViewModel
-    @ObservedObject var homeViewModel: HomeViewModel
     @State private var showSharingTestView = false
     @State private var isAnimating: Bool = false
     @Environment(\.presentationMode) var presentationMode
@@ -71,7 +73,7 @@ struct ContactView: View {
                     
                     if testsViewModel.isLoadingContactTests {
                         RotatingShapesLoader(animate: $isAnimating)
-                            .frame(maxWidth: 100)
+                            .frame(width: 100)
                             .padding(.top, 50)
                             .onAppear {
                                 isAnimating = true
@@ -184,7 +186,8 @@ struct ContactView: View {
             if showSharingTestView, let date = testsViewModel.lastTests.first?.date {
                 VStack {
                     Spacer()
-                    ShareLastTestView(viewModel: viewModel, isShowView: $showSharingTestView, contact: contact, date: date)
+                    ShareLastTestView(isShowView: $showSharingTestView, contact: contact, date: date)
+                        .environmentObject(viewModel)
                 }
             }
             if viewModel.showContactCalendar {
@@ -205,7 +208,7 @@ struct ContactView: View {
 }
 
 struct ShareLastTestView: View {
-    @ObservedObject var viewModel: ContactsViewModel
+    @EnvironmentObject var viewModel: ContactsViewModel
     @Binding var isShowView: Bool
     let contact: UserModel
     let date: Date
