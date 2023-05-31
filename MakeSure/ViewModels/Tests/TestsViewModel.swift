@@ -35,7 +35,7 @@ class TestsViewModel: ObservableObject {
         }
         Task {
             do {
-                let fetchedTests = try await testService.fetchByUserId(columnName: "user_id", userId: userId)
+                let fetchedTests = try await testService.fetchById(columnName: "user_id", id: userId)
                 DispatchQueue.main.async {
                     self.tests = fetchedTests
                     self.isLoading = false
@@ -157,7 +157,7 @@ class TestsViewModel: ObservableObject {
         }
         Task {
             do {
-                let fetchedTests = try await testService.fetchByUserId(columnName: "user_id", userId: id)
+                let fetchedTests = try await testService.fetchById(columnName: "user_id", id: id)
                 DispatchQueue.main.async {
                     self.contactTests = fetchedTests
                     self.isLoadingContactTests = false

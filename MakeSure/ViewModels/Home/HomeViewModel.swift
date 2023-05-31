@@ -68,7 +68,7 @@ class HomeViewModel: NSObject, ObservableObject {
     private let userService = UserSupabaseService()
     private let testService = TestSupabaseService()
     private let tipsService = TipsSupabaseService()
-    private let friensLinksService = FriendsLinksSupabaseService()
+    private let friendsLinksService = FriendsLinksSupabaseService()
     let userId = UUID(uuidString: "79295454-e8f0-11ed-a05b-0242ac120003")!
     
     func fetchUserData() async {
@@ -101,7 +101,7 @@ class HomeViewModel: NSObject, ObservableObject {
             self.isLoadingTests = true
         }
         do {
-            let fetchedTests = try await testService.fetchByUserId(columnName: "user_id", userId: userId)
+            let fetchedTests = try await testService.fetchById(columnName: "user_id", id: userId)
            
             DispatchQueue.main.async {
                 self.testsDone = fetchedTests.filter { $0.date != nil }.count
@@ -222,18 +222,19 @@ class HomeViewModel: NSObject, ObservableObject {
             self.isGeneratingQRCode = true
         }
         do {
-            let fetchedLinks = try await friensLinksService.fetchLinksByUserId(userId: userId)
+            let fetchedLinks = try await friendsLinksService.fetchLinksByUserId(userId: userId)
             var id = UUID()
             if fetchedLinks.isEmpty {
                 let createdAt = Date()
                 let model = FriendLinkModel(id: id, createdAt: createdAt, userId: userId)
-                try await friensLinksService.create(item: model)
+                try await friendsLinksService.create(item: model)
             } else {
-                if let linkId = fetchedLinks.first?.id{
+                if let linkId = fetchedLinks.first?.id {
                     id = linkId
                 }
             }
             let text = id.uuidString
+           
             DispatchQueue.main.async {
                 self.qrCodeText = text
                 self.isGeneratingQRCode = false

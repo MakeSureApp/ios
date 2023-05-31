@@ -13,6 +13,7 @@ struct MainTabView: View {
     @ObservedObject private var settingsViewModel: SettingsViewModel
     @ObservedObject private var contactsViewModel: ContactsViewModel
     @ObservedObject private var testsViewModel: TestsViewModel
+    @ObservedObject private var scannerViewModel: ScannerViewModel
     @State private var showSettings = false
     
     @State private var activeSheet: ActiveSheet?
@@ -31,6 +32,7 @@ struct MainTabView: View {
         _settingsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getSettingsViewModel())
         _contactsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getContactsViewModel())
         _testsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getTestsViewModel())
+        _scannerViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getScannerViewModel())
     }
     
     var body: some View {
@@ -40,6 +42,7 @@ struct MainTabView: View {
             bottomNavigationBar
         }
         .contentShape(Rectangle())
+        .background(.white)
         .onTapGesture {
             contactsViewModel.showCalendar = false
             homeViewModel.showPhotoMenu = false
@@ -122,7 +125,8 @@ private extension MainTabView {
                         .resizable()
                         .renderingMode(.template)
                         .frame(width: 25, height: 17)
-                        .foregroundColor(viewModel.currentTab == .tests ? .white : .black)
+                        .foregroundColor(viewModel.currentTab == .tests ||
+                                         viewModel.currentTab == .scanner ? .white : .black)
                         .padding(.leading, 6)
                 }
                 Spacer()
@@ -139,7 +143,7 @@ private extension MainTabView {
                     Text("MAKE SURE")
                         .font(.custom("BebasNeue", size: 28))
                         .overlay {
-                            if viewModel.currentTab == .tests {
+                            if viewModel.currentTab == .tests || viewModel.currentTab == .scanner {
                                 CustomColors.whiteGradient
                                     .mask(
                                         Text("MAKE SURE")
@@ -174,8 +178,9 @@ private extension MainTabView {
                         }) {
                             Image("scannerNavBarIcon")
                                 .resizable()
+                                .renderingMode(.template)
                                 .frame(width: 18, height: 18)
-                                .foregroundColor(.black)
+                                .foregroundColor(viewModel.currentTab == .scanner ? .white : .black)
                         }
                     }
                     Button(action: {
@@ -185,14 +190,14 @@ private extension MainTabView {
                             .resizable()
                             .renderingMode(.template)
                             .frame(width: 15, height: 19)
-                            .foregroundColor(viewModel.currentTab == .tests ? .white : .black)
+                            .foregroundColor(viewModel.currentTab == .tests || viewModel.currentTab == .scanner ? .white : .black)
                     }
                     .padding(.leading, 8)
                 }
                 .padding(.trailing, 8)
             }
             .padding(.horizontal, 12)
-            .background(viewModel.currentTab == .tests ? Color.gradientPurple2 : .white)
+            .background(viewModel.currentTab == .tests || viewModel.currentTab == .scanner ? Color.gradientPurple2 : .white)
             .zIndex(1)
             Spacer()
         }
@@ -229,6 +234,11 @@ private extension MainTabView {
                         viewModel.currentTab == tab
                     }, set: { isSelected in
                         viewModel.currentTab = tab
+                        if tab == .scanner, !scannerViewModel.isShowUser {
+                            withAnimation {
+                                scannerViewModel.isPresentingScanner = true
+                            }
+                        }
                     }), selectedIndex: $viewModel.currentTab)
                     .frame(maxWidth: .infinity)
                 }

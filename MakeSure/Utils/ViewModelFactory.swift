@@ -16,6 +16,7 @@ class ViewModelFactory {
     private lazy var settingsViewModel = SettingsViewModel(authService: authService)
     private lazy var contactsViewModel = ContactsViewModel()
     private lazy var testsViewModel = TestsViewModel()
+    private lazy var scannerViewModel = ScannerViewModel()
     
     init(authService: AuthService) {
         self.authService = authService
@@ -47,6 +48,10 @@ class ViewModelFactory {
     
     func getTestsViewModel() -> TestsViewModel {
         return testsViewModel
+    }
+    
+    func getScannerViewModel() -> ScannerViewModel {
+        return scannerViewModel
     }
     
     // Add factory methods for other view models

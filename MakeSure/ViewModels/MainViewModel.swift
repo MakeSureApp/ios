@@ -25,6 +25,9 @@ enum MainNavigation: CaseIterable {
                 .environmentObject(viewModelFactory.getTestsViewModel())
         case .scanner:
             ScannerView()
+                .environmentObject(viewModelFactory.getScannerViewModel())
+                .environmentObject(viewModelFactory.getContactsViewModel())
+                .environmentObject(viewModelFactory.getMainViewModel())
         case .contacts:
             ContactsView()
                 .environmentObject(viewModelFactory.getContactsViewModel())

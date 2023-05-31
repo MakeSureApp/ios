@@ -30,6 +30,7 @@ class ContactsViewModel: ObservableObject {
     @Published var isDeletingContact: Bool = false
     @Published var isUnlocingContact: Bool = false
     @Published var isAddingDate: Bool = false
+    @Published var isAddingUserToContacts: Bool = false
     @Published var isAddingUserToBlacklist: Bool = false
     @Published var contactsImages: [UUID: UIImage] = [:]
     @Published var blacklistImages: [UUID: UIImage] = [:]
@@ -40,6 +41,7 @@ class ContactsViewModel: ObservableObject {
     @Published private(set) var hasUnlockedContact: Bool = false
     @Published private(set) var hasAddedDate: Bool = false
     @Published private(set) var hasAddedUserToBlacklist: Bool = false
+    @Published private(set) var hasAddedUserToContacts: Bool = false
     
     private let blockedUsersQueue = DispatchQueue(label: "ru.turbopro.makesure.blockedUsersQueue", attributes: .concurrent)
     
@@ -367,6 +369,7 @@ class ContactsViewModel: ObservableObject {
     func addUserToBlacklist(id: UUID, contacts: [UUID]?) async {
         DispatchQueue.main.async {
             self.isAddingUserToBlacklist = true
+            self.hasAddedUserToContacts = false
         }
 
         do {
@@ -400,6 +403,28 @@ class ContactsViewModel: ObservableObject {
                 self.isAddingUserToBlacklist = false
             }
             print("Error adding user to blacklist: \(error.localizedDescription)")
+        }
+    }
+    
+    func addUserToContacts(user: UserModel) async {
+        DispatchQueue.main.async {
+            self.isAddingUserToContacts = true
+        }
+        do {
+            var contactsCopy: [UUID] = contactsM.map { $0.id }
+            contactsCopy.append(user.id)
+            try await userService.update(id: userId, fields: [
+                "contacts" : contactsCopy.isEmpty ? nil : contactsCopy])
+            DispatchQueue.main.async {
+                self.contactsM.append(user)
+                self.isAddingUserToContacts = false
+                self.hasAddedUserToContacts = true
+            }
+        } catch {
+            print("Error adding user to contacts: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.isAddingUserToContacts = false
+            }
         }
     }
 
@@ -548,6 +573,14 @@ class ContactsViewModel: ObservableObject {
         UIPasteboard.general.string = "My link: \(UUID().uuidString)"
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
             self?.isShowLinkIsCopied = false
+        }
+    }
+    
+    func checkIfUserAlreadyIsContact(id: UUID) -> Bool {
+        if contactsM.first(where: { $0.id == id }) != nil {
+            return true
+        } else {
+            return false
         }
     }
     

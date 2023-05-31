@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		525B641B2A26338700B3E56E /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 525B641A2A26338700B3E56E /* CodeScanner */; };
+		525B641E2A263A0800B3E56E /* ScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525B641D2A263A0800B3E56E /* ScannerViewModel.swift */; };
 		CE1BD32F2A0522FF0018B7E2 /* Tips.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1BD32E2A0522FF0018B7E2 /* Tips.swift */; };
 		CE2268652A08DB52004D1138 /* RefreshableScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2268642A08DB52004D1138 /* RefreshableScrollView.swift */; };
 		CE27C8DE29F7F7C0006ACFED /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27C8DD29F7F7C0006ACFED /* SettingsViewModel.swift */; };
@@ -138,6 +140,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		525B641D2A263A0800B3E56E /* ScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewModel.swift; sourceTree = "<group>"; };
 		CE1BD32E2A0522FF0018B7E2 /* Tips.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tips.swift; sourceTree = "<group>"; };
 		CE2268642A08DB52004D1138 /* RefreshableScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefreshableScrollView.swift; sourceTree = "<group>"; };
 		CE27C8DD29F7F7C0006ACFED /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
@@ -276,12 +279,21 @@
 				CEB10AC12A02758600B7B5DF /* Supabase in Frameworks */,
 				CE8E0BB42A0A899C00C4D098 /* BottomSheet in Frameworks */,
 				CE3BB3C929F1376800213B9E /* NavigationStack in Frameworks */,
+				525B641B2A26338700B3E56E /* CodeScanner in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		525B641C2A2639FA00B3E56E /* Scanner */ = {
+			isa = PBXGroup;
+			children = (
+				525B641D2A263A0800B3E56E /* ScannerViewModel.swift */,
+			);
+			path = Scanner;
+			sourceTree = "<group>";
+		};
 		CE27C8DC29F7F7AE006ACFED /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -477,6 +489,7 @@
 		CE9166B629F047A900612933 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				525B641C2A2639FA00B3E56E /* Scanner */,
 				CE30F22A2A0147C4009EE06A /* Tests */,
 				CE27C8F129F91A44006ACFED /* Contacts */,
 				CE27C8DC29F7F7AE006ACFED /* Settings */,
@@ -692,6 +705,7 @@
 				CEB10AC02A02758600B7B5DF /* Supabase */,
 				CE8E0BB32A0A899C00C4D098 /* BottomSheet */,
 				CE8DBC4A2A0F7F83005D3A79 /* QRCode */,
+				525B641A2A26338700B3E56E /* CodeScanner */,
 			);
 			productName = MakeSure;
 			productReference = CE9166A429F0419100612933 /* MakeSure.app */;
@@ -727,6 +741,7 @@
 				CEB10ABF2A02758600B7B5DF /* XCRemoteSwiftPackageReference "supabase-swift" */,
 				CE8E0BB22A0A899C00C4D098 /* XCRemoteSwiftPackageReference "bottom-sheet" */,
 				CE8DBC492A0F7F83005D3A79 /* XCRemoteSwiftPackageReference "qrcode" */,
+				525B64192A26338700B3E56E /* XCRemoteSwiftPackageReference "CodeScanner" */,
 			);
 			productRefGroup = CE9166A529F0419100612933 /* Products */;
 			projectDirPath = "";
@@ -800,6 +815,7 @@
 				CE71A52329FFC25200608B03 /* MyQRCodeView.swift in Sources */,
 				CE99574A29F2B1E90079B39A /* NumberSignInView.swift in Sources */,
 				CE99575129F2D9870079B39A /* CustomColors.swift in Sources */,
+				525B641E2A263A0800B3E56E /* ScannerViewModel.swift in Sources */,
 				CE8DBC392A0F675A005D3A79 /* FriendLinkModel.swift in Sources */,
 				CE99575329F2DF430079B39A /* Text+Ext.swift in Sources */,
 				CED1D7E829F6C76500693DC2 /* AppleSignInButton.swift in Sources */,
@@ -1109,6 +1125,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		525B64192A26338700B3E56E /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twostraws/CodeScanner.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		CE3BB3C729F1376800213B9E /* XCRemoteSwiftPackageReference "swiftui-navigation-stack" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/biobeats/swiftui-navigation-stack";
@@ -1144,6 +1168,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		525B641A2A26338700B3E56E /* CodeScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 525B64192A26338700B3E56E /* XCRemoteSwiftPackageReference "CodeScanner" */;
+			productName = CodeScanner;
+		};
 		CE3BB3C829F1376800213B9E /* NavigationStack */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = CE3BB3C729F1376800213B9E /* XCRemoteSwiftPackageReference "swiftui-navigation-stack" */;

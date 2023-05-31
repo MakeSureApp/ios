@@ -23,8 +23,8 @@ class SupabaseService<T: Codable> {
         return response
     }
     
-    func fetchByUserId(columnName: String, userId: UUID) async throws -> [T] {
-        let response: [T] = try await supabase.database.from(tableName).select().eq(column: columnName, value: userId).execute().value
+    func fetchById(columnName: String, id: UUID) async throws -> [T] {
+        let response: [T] = try await supabase.database.from(tableName).select().eq(column: columnName, value: id).execute().value
         return response
     }
     
@@ -48,7 +48,7 @@ class UserSupabaseService: SupabaseService<UserModel> {
     }
     
     func fetchUsersByUserId(userId: UUID) async throws -> [UserModel] {
-        return try await fetchByUserId(columnName: "id", userId: userId)
+        return try await fetchById(columnName: "id", id: userId)
     }
     
     func fetchUserById(id: UUID) async throws -> UserModel? {
@@ -63,7 +63,7 @@ class MeetingSupabaseService: SupabaseService<MeetingModel> {
     }
     
     func fetchMeetingsByUserId(userId: UUID) async throws -> [MeetingModel] {
-        return try await fetchByUserId(columnName: "user_id", userId: userId)
+        return try await fetchById(columnName: "user_id", id: userId)
     }
 }
 
@@ -73,7 +73,7 @@ class TestSupabaseService: SupabaseService<TestModel> {
     }
     
     func fetchTestsByUserId(userId: UUID) async throws -> [TestModel] {
-        return try await fetchByUserId(columnName: "user_id", userId: userId)
+        return try await fetchById(columnName: "user_id", id: userId)
     }
 }
 
@@ -89,6 +89,10 @@ class FriendsLinksSupabaseService: SupabaseService<FriendLinkModel> {
     }
     
     func fetchLinksByUserId(userId: UUID) async throws -> [FriendLinkModel] {
-        return try await fetchByUserId(columnName: "user_id", userId: userId)
+        return try await fetchById(columnName: "user_id", id: userId)
+    }
+    
+    func fetchLinksById(id: UUID) async throws -> [FriendLinkModel] {
+        return try await fetchById(columnName: "id", id: id)
     }
 }
