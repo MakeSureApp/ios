@@ -6,11 +6,13 @@
 //
 
 import SwiftUI
+import _AuthenticationServices_SwiftUI
 
 struct InitialSelectionView: View {
     @ObservedObject private var registrationViewModel: RegistrationViewModel
     @ObservedObject private var loginViewModel: LoginViewModel
     @State private var showSignInSelectionView = false
+    @State private var isAnimating: Bool = false
     
     init() {
         _registrationViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getRegistrationViewModel())
@@ -29,19 +31,21 @@ struct InitialSelectionView: View {
                 }
                 .padding()
                 .padding(.top, 30)
-                Spacer(minLength: 90)
+                Spacer()
             } else {
-                Spacer(minLength: 90)
+                Spacer()
             }
             
             VStack(alignment: .trailing) {
-                Text("Be confident in your")
+                Text("confidence_message".localized)
                     .font(.interRegularFont(size: 23))
+                    .multilineTextAlignment(.trailing)
                     .foregroundColor(.white)
-                Text("pleasure")
-                    .font(.interRegularFont(size: 23))
-                    .foregroundColor(.white)
+//                Text("pleasure")
+//                    .font(.interRegularFont(size: 23))
+//                    .foregroundColor(.white)
             }
+            .padding(.horizontal, 20)
             .padding(.leading, 40)
             
             VStack(alignment: .leading, spacing: -60) {
@@ -63,13 +67,40 @@ struct InitialSelectionView: View {
                 mainInitialView()
             }
         }
+        .frame(height: UIScreen.main.bounds.height)
         .background(
             Image("AuthenticationSelectionImage")
                 .resizable()
                 .edgesIgnoringSafeArea(.all)
                 .aspectRatio(contentMode: .fill)
         )
-        .edgesIgnoringSafeArea(.all)
+        .overlay {
+            if loginViewModel.isLoggingInWithApple || loginViewModel.isLoadingUser {
+                VStack {
+                    RotatingShapesLoader(animate: $isAnimating)
+                        .frame(maxWidth: 80)
+                        .onAppear {
+                            isAnimating = true
+                        }
+                        .onDisappear {
+                            isAnimating = false
+                        }
+                }
+                .frame(width: 100, height: 100)
+                .background(.black.opacity(0.8))
+                .cornerRadius(16)
+            }
+            if let error = loginViewModel.loginError {
+                withAnimation {
+                    Text(error == .isNotRegistered ? "You haven't registered yet" : "An error occurred")
+                        .padding(20)
+                        .foregroundColor(.red)
+                        .font(.poppinsMediumFont(size: 20))
+                        .background(.black.opacity(0.9))
+                        .cornerRadius(16)
+                }
+            }
+        }
     }
         
     @ViewBuilder
@@ -127,18 +158,21 @@ struct InitialSelectionView: View {
                         }
                 }
             }
-            .padding(20)
+            .padding(10)
+            .padding(.bottom, 20)
         }
     }
     
     @ViewBuilder
     func signInInitialView() -> some View {
         VStack(spacing: 16) {
-            NavigationLink(destination: AppleSignInView(viewModel: loginViewModel)) {
+            Button {
+                loginViewModel.signInWithApple()
+            } label: {
                 HStack {
                     Image(systemName: "applelogo")
                         .foregroundColor(.white)
-                        .font(.rubicBoldFont(size: 20))
+                        .font(.rubicBoldFont(size: 16))
                     Spacer()
                     
                     Text("sign_in_with_apple".localized.uppercased())
@@ -152,8 +186,8 @@ struct InitialSelectionView: View {
                     RoundedRectangle(cornerRadius: 30)
                         .stroke(Color.white, lineWidth: 1)
                 )
-                .padding(.horizontal, 10)
             }
+
             
             NavigationLink(destination: LoginWrapperView(viewModel: loginViewModel)) {
                 HStack {
@@ -185,7 +219,8 @@ struct InitialSelectionView: View {
                     .foregroundColor(.white)
             }
         }
-        .padding(20)
+        .padding(.horizontal, 10)
+        .padding(.bottom, 30)
     }
     
 }

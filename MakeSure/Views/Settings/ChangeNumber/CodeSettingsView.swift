@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CodeSettingsView: View {
-    @ObservedObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: SettingsViewModel
     @FocusState private var activeField: CodeFields?
     
     var body: some View {
@@ -17,6 +17,7 @@ struct CodeSettingsView: View {
                 Text("My code is")
                     .font(.rubicBoldFont(size: 44))
                     .fontWeight(.bold)
+                    .foregroundColor(.black)
                 
                 HStack {
                     Text(viewModel.phoneNumber)
@@ -115,6 +116,7 @@ struct CodeSettingsView: View {
 
 struct CodeSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        CodeSettingsView(viewModel: SettingsViewModel(authService: AuthService()))
+        CodeSettingsView()
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
     }
 }

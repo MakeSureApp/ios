@@ -58,7 +58,7 @@ enum SettingsEmailSteps: Int, CaseIterable {
 
 class SettingsViewModel: ObservableObject {
     
-    @ObservedObject var authService: AuthService
+    @Published var mainViewModel: MainViewModel
     @Published var notificationsEnabled = true
     @Published var selectedLanguage = appEnvironment.localizationManager.getLanguage() {
         didSet {
@@ -66,18 +66,18 @@ class SettingsViewModel: ObservableObject {
         }
     }
     @Published var emailAddress = "example@email.com"
-    @Published var isEmail = true
+    @Published var isEmail = false
     @Published var isVerified = true
-    @Published var mobileNumber = "+1 (555) 123-4567"
+    @Published var mobileNumber = ""
     
     private let localizationManager = appEnvironment.localizationManager
     
-    init(authService: AuthService) {
-        self.authService = authService
+    init(mainViewModel: MainViewModel) {
+        self.mainViewModel = mainViewModel
     }
     
     func signOutBtnClicked() {
-        authService.authState = .isLoggedOut
+        mainViewModel.authService.authState = .isLoggedOut
     }
     
     //MARK: Changing phone number
@@ -141,13 +141,15 @@ class SettingsViewModel: ObservableObject {
     }
     
     func phoneResetAllData() {
-        phoneCurrentStep = .phoneNumber
-        partOfPhoneNumber = ""
-        countryCode = .RU
-        codeFields = Array<String>(repeating: "", count: 6)
-        canSendCode = false
-        codeValidated = false
-        codeSent = false
+        DispatchQueue.main.async {
+            self.phoneCurrentStep = .phoneNumber
+            self.partOfPhoneNumber = ""
+            self.countryCode = .RU
+            self.codeFields = Array<String>(repeating: "", count: 6)
+            self.canSendCode = false
+            self.codeValidated = false
+            self.codeSent = false
+        }
     }
     
     func completeChangingPhoneNumber() {

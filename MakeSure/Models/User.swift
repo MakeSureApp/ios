@@ -57,6 +57,13 @@ struct UserModel: Codable, Identifiable, Hashable {
     }
 }
 
+struct UserApple: Codable {
+    var id: String
+    var email: String
+    var firstName: String
+    var lastName: String
+}
+
 struct OTPResponse: Codable {
     let status: String
     let mobile: String?

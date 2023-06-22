@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
-//import AuthenticationServices
+import AuthenticationServices
 
 enum LoginSteps: Int, CaseIterable {
     case initial
@@ -26,6 +26,11 @@ class LoginViewModel: NSObject, ObservableObject {
         case login
     }
     
+    enum LoginError {
+        case isNotRegistered
+        case other
+    }
+    
     @Published var navState: InitialNavigation = .main
     
     @Published var currentStep: LoginSteps = .phoneNumber
@@ -36,6 +41,22 @@ class LoginViewModel: NSObject, ObservableObject {
     @Published var codeSent = false
     @Published var codeValidated = false
     @Published var canSendCode = false
+    
+    private let signInApple = AppleSignIn()
+    private let authSupabaseService = AuthSupabaseService()
+    private let userServiceSupabase = UserSupabaseService()
+    
+    @Published var isLoggingInWithApple: Bool = false
+    @Published var loginError: LoginError? {
+        didSet {
+            if loginError != nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+                    self.loginError = nil
+                }
+            }
+        }
+    }
+    @Published var isLoadingUser: Bool = false
     
     var phoneNumber: String {
         return countryCode.rawValue + partOfPhoneNumber
@@ -91,16 +112,6 @@ class LoginViewModel: NSObject, ObservableObject {
         
     }
     
-    func handleSignInWithApple() {
-//        let provider = ASAuthorizationAppleIDProvider()
-//        let request = provider.createRequest()
-//        request.requestedScopes = [.fullName, .email]
-//
-//        let controller = ASAuthorizationController(authorizationRequests: [request])
-//        controller.delegate = self
-//        controller.presentationContextProvider = self
-//        controller.performRequests()
-    }
     
     func resetAllData() {
         currentStep = .phoneNumber
@@ -113,8 +124,9 @@ class LoginViewModel: NSObject, ObservableObject {
     }
     
     func completeAuthorization() {
+        // todo: fetch userdata
         DispatchQueue.main.async {
-            self.authService.authState = .isLoggedIn
+            //self.authService.authState = .isLoggedIn
             self.resetAllData()
         }
     }
@@ -127,23 +139,74 @@ class LoginViewModel: NSObject, ObservableObject {
         print("privacy policy")
     }
     
+    // MARK: Apple Sign In
+    
+    func signInWithApple() {
+        signInApple.signInWithApple { result in
+            switch result {
+            case .success(let result):
+                print(result)
+                self.authWithApple(result: result)
+            case .failure(let error):
+                print("Error with signing in with apple id: \(error.localizedDescription)")
+            }
+        }
+    }
+        
+    private func authWithApple(result: SignInAppleResult) {
+        DispatchQueue.main.async {
+            self.isLoggingInWithApple = true
+        }
+        Task {
+            do {
+                if let id = try await authSupabaseService.authWithApple(idToken: result.idToken, nonce: result.nonce) {
+                    DispatchQueue.main.async {
+                        self.isLoggingInWithApple = false
+                        print("Successfully logged In with Apple. User id = \(id)")
+                        self.fetchUserData(id: id)
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self.isLoggingInWithApple = false
+                        self.loginError = .isNotRegistered
+                        print("Error with signing in to supabase with apple id")
+                    }
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.isLoggingInWithApple = false
+                    self.loginError = .other
+                    print("Error with signing in to supabase with apple id : \(error.localizedDescription)")
+                }
+            }
+        }
+    }
+    
+    private func fetchUserData(id: UUID) {
+        DispatchQueue.main.async {
+            self.isLoadingUser = true
+        }
+        Task {
+            do {
+                if let user = try await userServiceSupabase.fetchUserById(id: id) {
+                    DispatchQueue.main.async {
+                        self.authService.authState = .isLoggedIn(user)
+                    }
+                } else {
+                    print("No user found with the specified ID")
+                    DispatchQueue.main.async {
+                        self.isLoadingUser = false
+                        self.loginError = .isNotRegistered
+                    }
+                }
+            } catch {
+                print("An error occurred with fetching the user!")
+                DispatchQueue.main.async {
+                    self.isLoadingUser = false
+                    self.loginError = .other
+                }
+            }
+        }
+    }
+    
 }
-
-//extension LoginViewModel: ASAuthorizationControllerDelegate {
-//    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
-//        if let appleIDCredential = authorization.credential as? ASAuthorizationAppleIDCredential {
-//            // Handle successful sign-in with Apple ID
-//            authService.authState = .isLoggedIn
-//        }
-//    }
-//
-//    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-//        // Handle errors
-//    }
-//}
-//
-//extension LoginViewModel: ASAuthorizationControllerPresentationContextProviding {
-//    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-//        return UIApplication.shared.windows.first { $0.isKeyWindow }!
-//    }
-//}

@@ -338,7 +338,7 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
         }
         
         DispatchQueue.main.async {
-            self.authService.authState = .isLoggedIn
+            self.authService.authState = .isLoggedIn(user)
             self.resetAllData()
         }
     }

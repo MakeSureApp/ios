@@ -12,6 +12,7 @@ let appEnvironment = AppEnvironment()
 class AppEnvironment: ObservableObject {
     
     @Published var authService = AuthService()
+    private(set) lazy var deeplinkHandler = DeeplinkHandler(authService: authService)
     private(set) lazy var viewModelFactory = ViewModelFactory(authService: authService)
     private(set) lazy var supabaseManager = SupabaseManager()
     private(set) lazy var localizationManager = LocalizationManager()

@@ -23,6 +23,7 @@ enum MainNavigation: CaseIterable {
         case .tests:
             TestsView()
                 .environmentObject(viewModelFactory.getTestsViewModel())
+                .environmentObject(viewModelFactory.getContactsViewModel())
         case .scanner:
             ScannerView()
                 .environmentObject(viewModelFactory.getScannerViewModel())
@@ -32,7 +33,6 @@ enum MainNavigation: CaseIterable {
             ContactsView()
                 .environmentObject(viewModelFactory.getContactsViewModel())
                 .environmentObject(viewModelFactory.getTestsViewModel())
-                .environmentObject(viewModelFactory.getHomeViewModel())
         }
     }
     
@@ -78,12 +78,11 @@ enum MainNavigation: CaseIterable {
 
 class MainViewModel: ObservableObject {
     
-    @ObservedObject var authService: AuthService
-    
-    init(authService: AuthService) {
-        self.authService = authService
-        
-    }
+    @ObservedObject var authService: AuthService = appEnvironment.authService
+    @Published var user: UserModel?
+    //@Published var userId: UUID = UUID(uuidString: "4239D90A-E8F0-11ED-A05B-0242AC120003")! // Yennefer
+    @Published var userId: UUID = UUID(uuidString: "79295454-E8F0-11ED-A05B-0242AC120003")! // Geralt
+    //@Published var userId: UUID = UUID(uuidString: "70cbf4a2-e8ef-11ed-a05b-0242ac120003")! // Joyce
     
     @Published var currentTab: MainNavigation = .home
 }

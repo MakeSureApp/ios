@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TestsView: View {
     @EnvironmentObject var viewModel: TestsViewModel
+    @EnvironmentObject var contactsViewModel: ContactsViewModel
     @State private var isAnimating: Bool = false
     
     var body: some View {
@@ -51,7 +52,8 @@ struct TestsView: View {
             .padding(.horizontal, 20)
         }
         .task {
-           await viewModel.fetchTests()
+            await viewModel.fetchTests()
+            await contactsViewModel.fetchContacts()
         }
     }
 }
@@ -331,5 +333,6 @@ struct TestsView_Previews: PreviewProvider {
     static var previews: some View {
         TestsView()
             .environmentObject(TestsViewModel())
+            .environmentObject(ContactsViewModel())
     }
 }

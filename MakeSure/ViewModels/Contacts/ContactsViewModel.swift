@@ -9,10 +9,9 @@ import Foundation
 import SwiftUI
 import Combine
 
-class ContactsViewModel: ObservableObject {
+class ContactsViewModel: MainViewModel {
     
-    @Published var contacts: [User] = []
-    @Published var contactsM: [UserModel] = []
+    @Published var contacts: [UserModel] = []
     @Published var sortBy: SortBy = .dateFollowed
     @Published var blockedUsers: [UserModel] = []
     @Published var tests: [Test] = []
@@ -54,13 +53,16 @@ class ContactsViewModel: ObservableObject {
     
     private let meetingsService = MeetingSupabaseService()
     private let userService = UserSupabaseService()
-    let userId = UUID(uuidString: "79295454-e8f0-11ed-a05b-0242ac120003")!
     
     private var cancellables = Set<AnyCancellable>()
     
-    let myUserId = UUID()
-    
-    init() {
+    override init() {
+        super.init()
+        
+        Task {
+            await fetchContacts()
+            await fetchBlacklist()
+        }
         $sortBy
             .sink { [weak self] sortBy in
                 self?.sortContacts(by: sortBy)
@@ -72,41 +74,11 @@ class ContactsViewModel: ObservableObject {
                 self?.dateToStartInCalendar = Date()
             }
         }.store(in: &cancellables)
-        
-        tests.append(Test(id: UUID(), name: "HIV"))
-        tests.append(Test(id: UUID(), name: "Syphilis"))
-        tests.append(Test(id: UUID(), name: "Chlamydia"))
-        tests.append(Test(id: UUID(), name: "Gonorrhea"))
-        tests.append(Test(id: UUID(), name: "Hepatite B"))
-        tests.append(Test(id: UUID(), name: "HPV"))
-        
-        myTests[Date.from(year: 2023, month: 3, day: 23)] = tests
-        myTests[Date.from(year: 2023, month: 3, day: 14)] = tests
-        myTests[Date.from(year: 2023, month: 4, day: 28)] = tests
-        myTests[Date.from(year: 2023, month: 4, day: 5)] = tests
-        myTests[Date.from(year: 2023, month: 2, day: 20)] = tests
-        
-        let userId1 = UUID()
-        let userId2 = UUID()
-        let userId3 = UUID()
-        let userId4 = UUID()
-        let userId5 = UUID()
-        contacts.append(User(id: userId1, name: "Ryan", dates: [ myUserId : [Date.from(year: 2023, month: 4, day: 26)]], testsData: [Date.from(year: 2023, month: 4, day: 15) : tests], image: UIImage(named: "mockContactImage1")!, followedDate: Date.from(year: 2023, month: 3, day: 20)))
-        contacts.append(User(id: userId2, name: "Joyce", dates: [ myUserId : [Date.from(year: 2023, month: 4, day: 22)]], testsData: [Date.from(year: 2023, month: 1, day: 13) : tests], image: UIImage(named: ("mockContactImage2"))!, followedDate: Date.from(year: 2023, month: 2, day: 16)))
-        contacts.append(User(id: userId3, name: "Teresa", dates: [ myUserId : [Date.from(year: 2023, month: 4, day: 12)]], testsData: [Date.from(year: 2023, month: 4, day: 15) : tests.reversed()], image: UIImage(named: ("mockContactImage3"))!, followedDate: Date()))
-        contacts.append(User(id: userId4, name: "Ryan", dates: [ myUserId : [Date.from(year: 2023, month: 4, day: 26)]], testsData: [Date.from(year: 2023, month: 4, day: 10) : tests], image: UIImage(named: ("mockContactImage4"))!, followedDate: Date()))
-        contacts.append(User(id: userId5, name: "Ken", dates: [ myUserId : [Date.from(year: 2023, month: 2, day: 10)]], testsData: [Date.from(year: 2023, month: 4, day: 25) : tests], image: UIImage(named: ("mockContactImage5"))!, followedDate: Date()))
-        
-        myDates[userId1] = [Date.from(year: 2023, month: 4, day: 26)]
-        myDates[userId2] = [Date.from(year: 2023, month: 3, day: 20)]
-        myDates[userId3] = [Date.from(year: 2023, month: 4, day: 12)]
-        myDates[userId4] = [Date.from(year: 2023, month: 4, day: 26)]
-        myDates[userId5] = [Date.from(year: 2023, month: 2, day: 10)]
     }
     
     func fetchContacts() async {
         DispatchQueue.main.async {
-            self.contactsM.removeAll()
+            self.contacts.removeAll()
             self.isLoadingContacts = true
         }
         
@@ -141,8 +113,9 @@ class ContactsViewModel: ObservableObject {
                         
                         for await user in group {
                             if let user {
+                                print("user \(user.name) == \(user.id)")
                                 DispatchQueue.main.async {
-                                    self.contactsM.append(user)
+                                    self.contacts.append(user)
                                 }
                             }
                         }
@@ -266,7 +239,7 @@ class ContactsViewModel: ObservableObject {
             }
         }
         if !ids.isEmpty {
-            return contactsM.filter { contact in
+            return contacts.filter { contact in
                 if ids.contains(contact.id) {
                     return true
                 }
@@ -295,9 +268,10 @@ class ContactsViewModel: ObservableObject {
     func sortContacts(by sortBy: SortBy) {
         switch sortBy {
         case .dateFollowed:
-            contacts.sort { $0.followedDate > $1.followedDate }
+            break
+            //contacts.sort { $0.followedDate > $1.followedDate }
         case .dateRecentMeetings:
-            contactsM.sort {
+            contacts.sort {
                 if let date1 = getLastDateWith(contact: $0), let date2 = getLastDateWith(contact: $1) {
                     return date1 > date2
                 }
@@ -366,17 +340,17 @@ class ContactsViewModel: ObservableObject {
         }
     }
     
-    func addUserToBlacklist(id: UUID, contacts: [UUID]?) async {
+    func addUserToBlacklist(id: UUID) async {
         DispatchQueue.main.async {
             self.isAddingUserToBlacklist = true
             self.hasAddedUserToContacts = false
         }
 
         do {
-            var contactsCopy: [UUID] = contacts ?? []
+            var contactsCopy: [UUID] = contacts.map { $0.id }
             var blacklistUsersIds: [UUID] = blockedUsers.map { $0.id }
-            if let userIndex = contactsM.firstIndex(where: { $0.id == id }) {
-                let userToBlock = contactsM[userIndex]
+            if let userIndex = contacts.firstIndex(where: { $0.id == id }) {
+                let userToBlock = contacts[userIndex]
                 contactsCopy.remove(at: userIndex)
                 blacklistUsersIds.append(id)
 
@@ -385,7 +359,7 @@ class ContactsViewModel: ObservableObject {
                     "blocked_users" : blacklistUsersIds.isEmpty ? nil : blacklistUsersIds])
 
                 DispatchQueue.main.async {
-                    self.contactsM.remove(at: userIndex)
+                    self.contacts.remove(at: userIndex)
                     if self.blockedUsers.first(where: { $0.id == id }) == nil {
                         self.blockedUsers.append(userToBlock)
                     }
@@ -411,12 +385,12 @@ class ContactsViewModel: ObservableObject {
             self.isAddingUserToContacts = true
         }
         do {
-            var contactsCopy: [UUID] = contactsM.map { $0.id }
+            var contactsCopy: [UUID] = contacts.map { $0.id }
             contactsCopy.append(user.id)
             try await userService.update(id: userId, fields: [
                 "contacts" : contactsCopy.isEmpty ? nil : contactsCopy])
             DispatchQueue.main.async {
-                self.contactsM.append(user)
+                self.contacts.append(user)
                 self.isAddingUserToContacts = false
                 self.hasAddedUserToContacts = true
             }
@@ -428,15 +402,14 @@ class ContactsViewModel: ObservableObject {
         }
     }
 
-
-    func unlockUser(_ id: UUID, contacts: [UUID]?) async {
+    func unlockUser(_ id: UUID) async {
         DispatchQueue.main.async {
             self.isUnlocingContact = true
         }
 
         do {
             if !blockedUsers.isEmpty {
-                var contactsCopy: [UUID] = contacts ?? []
+                var contactsCopy: [UUID] = contacts.map { $0.id }
                 var blacklistUsersIds: [UUID] = blockedUsers.map { $0.id }
                 if let userIndex = blacklistUsersIds.firstIndex(where: { $0 == id }) {
                     blacklistUsersIds.remove(at: userIndex)
@@ -451,7 +424,7 @@ class ContactsViewModel: ObservableObject {
                     let user = blockedUsers[userIndex]
                     DispatchQueue.main.async {
                         self.blockedUsers.remove(at: userIndex)
-                        self.contactsM.append(user)
+                        self.contacts.append(user)
                         self.isUnlocingContact = false
                         self.hasUnlockedContact = true
                     }
@@ -474,22 +447,22 @@ class ContactsViewModel: ObservableObject {
         }
     }
     
-    func deleteContact(id: UUID, contacts: [UUID]?) async {
+    func deleteContact(id: UUID) async {
         DispatchQueue.main.async {
             self.isDeletingContact = true
         }
         
         do {
-            if let contacts, !contacts.isEmpty {
-                var contacts: [UUID] = contacts
-                if let userIndex = contacts.firstIndex(where: { $0 == id }) {
-                    contacts.remove(at: userIndex)
+            var contactsIds = contacts.map { $0.id }
+            if !contactsIds.isEmpty {
+                if let userIndex = contactsIds.firstIndex(where: { $0 == id }) {
+                    contactsIds.remove(at: userIndex)
                 }
                 try await userService.update(id: userId, fields: [
-                    "contacts" : contacts.isEmpty ? nil : contacts])
+                    "contacts" : contactsIds.isEmpty ? nil : contactsIds])
                 DispatchQueue.main.async {
-                    if let userIndex = self.contactsM.firstIndex(where: { $0.id == id }) {
-                        self.contactsM.remove(at: userIndex)
+                    if let userIndex = self.contacts.firstIndex(where: { $0.id == id }) {
+                        self.contacts.remove(at: userIndex)
                     }
                     self.isDeletingContact = false
                     self.hasDeletedContact = true
@@ -568,6 +541,13 @@ class ContactsViewModel: ObservableObject {
         }
     }
     
+    func checkIfContactBlockedMe(user: UserModel) -> Bool {
+        if (user.blockedUsers?.first(where: { $0 == userId })) != nil {
+            return true
+        }
+        return false
+    }
+    
     func copyLinkBtnClicked() {
         isShowLinkIsCopied = true
         UIPasteboard.general.string = "My link: \(UUID().uuidString)"
@@ -577,7 +557,15 @@ class ContactsViewModel: ObservableObject {
     }
     
     func checkIfUserAlreadyIsContact(id: UUID) -> Bool {
-        if contactsM.first(where: { $0.id == id }) != nil {
+        if contacts.first(where: { $0.id == id }) != nil {
+            return true
+        } else {
+            return false
+        }
+    }
+    
+    func checkIfUserBlocked(id: UUID) -> Bool {
+        if blockedUsers.first(where: { $0.id == id }) != nil {
             return true
         } else {
             return false

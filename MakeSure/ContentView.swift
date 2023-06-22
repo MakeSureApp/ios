@@ -6,32 +6,36 @@
 //
 
 import SwiftUI
-import NavigationStack
-
 struct ContentView: View {
-    @ObservedObject private var authService: AuthService
 
-    init() {
-        _authService = Self.createAuthServiceObservedObject()
-    }
-        
-    private static func createAuthServiceObservedObject() -> ObservedObject<AuthService> {
-        return ObservedObject(wrappedValue: appEnvironment.authService)
-    }
+    @ObservedObject private var authService = appEnvironment.authService
+    
+//    @ObservedObject private var authService: AuthService
+//
+//    init() {
+//        _authService = Self.createAuthServiceObservedObject()
+//    }
+//
+//    private static func createAuthServiceObservedObject() -> ObservedObject<AuthService> {
+//        return ObservedObject(wrappedValue: appEnvironment.authService)
+//    }
 
+    @ViewBuilder
     var body: some View {
         switch authService.authState {
-            case .isLoggedIn:
-                MainTabView()
+        case .isLoggedIn:
+            MainTabView()
+                .environmentObject(appEnvironment)
+           
+        case .isLoggedOut:
+            NavigationView {
+                InitialSelectionView()
                     .environmentObject(appEnvironment)
-            case .isLoggedOut:
-                NavigationView {
-                    InitialSelectionView()
-                        .environmentObject(appEnvironment)
-                        .navigationBarHidden(true)
-                }
+                    .navigationBarHidden(true)
             }
+        }
     }
+    
 }
 
 struct ContentView_Previews: PreviewProvider {

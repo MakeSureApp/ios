@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct EmailSettingsView: View {
-    @ObservedObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: SettingsViewModel
     
     enum FocusField: Hashable {
         case field
@@ -22,6 +22,7 @@ struct EmailSettingsView: View {
                 Text("whats_your_email".localized)
                     .font(.rubicBoldFont(size: 44))
                     .fontWeight(.bold)
+                    .foregroundColor(.black)
                 
                 Text("verify_email".localized)
                     .font(.interLightFont(size: 14))
@@ -59,6 +60,7 @@ struct EmailSettingsView: View {
 
 struct EmailSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        EmailSettingsView(viewModel: SettingsViewModel(authService: AuthService()))
+        EmailSettingsView()
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
     }
 }

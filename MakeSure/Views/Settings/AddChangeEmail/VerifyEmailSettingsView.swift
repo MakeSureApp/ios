@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 struct VerifyEmailSettingsView: View {
-    @ObservedObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: SettingsViewModel
 
     var body: some View {
         VStack {
@@ -18,6 +18,7 @@ struct VerifyEmailSettingsView: View {
                 Text("email_sent_message".localized)
                     .font(.rubicBoldFont(size: 44))
                     .fontWeight(.bold)
+                    .foregroundColor(.black)
                 
                 Text("click_to_verify_email".localized)
                     .font(.interLightFont(size: 14))
@@ -33,7 +34,8 @@ struct VerifyEmailSettingsView: View {
 
 struct VerifyEmailSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        VerifyEmailSettingsView(viewModel: SettingsViewModel(authService: AuthService()))
+        VerifyEmailSettingsView()
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
     }
 }
 

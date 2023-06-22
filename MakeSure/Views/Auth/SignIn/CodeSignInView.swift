@@ -44,6 +44,10 @@ struct CodeSignInView: View {
             
             Spacer()
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            activeField = nil
+        }
         .onChange(of: viewModel.codeFields) { newValue in
             DOBConditions(value: newValue)
         }

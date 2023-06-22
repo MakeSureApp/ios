@@ -88,17 +88,32 @@ struct CustomCalendarView: View {
                         let contactsMetOnTheDay = viewModel.contactsMetOn(date: date)
                         if !contactsMetOnTheDay.isEmpty {
                             ForEach(Array(contactsMetOnTheDay.enumerated()), id: \.element.id) { (index, contact) in
+                                let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
                                 if let image = viewModel.contactsImages[contact.id] {
-                                    Image(uiImage: image)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 33, height: 33)
-                                        .clipShape(Circle())
-                                        .offset(x: CGFloat(index) * -4, y: 0)
-                                        .overlay {
-                                            Circle()
-                                                .strokeBorder(.white.opacity(0.5), lineWidth: 1)
-                                        }
+                                    if isEnabled {
+                                        Image(uiImage: image)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: 33, height: 33)
+                                            .clipShape(Circle())
+                                            .offset(x: CGFloat(index) * -4, y: 0)
+                                            .overlay {
+                                                Circle()
+                                                    .strokeBorder(.white.opacity(0.5), lineWidth: 1)
+                                            }
+                                    } else {
+                                        Image(systemName: "person.circle.fill")
+                                            .resizable()
+                                            .foregroundColor(.gray)
+                                            .scaledToFill()
+                                            .frame(width: 33, height: 33)
+                                            .clipShape(Circle())
+                                            .offset(x: CGFloat(index) * -4, y: 0)
+                                            .overlay {
+                                                Circle()
+                                                    .strokeBorder(.white.opacity(0.5), lineWidth: 1)
+                                            }
+                                    }
                                 }
                             }
                         }

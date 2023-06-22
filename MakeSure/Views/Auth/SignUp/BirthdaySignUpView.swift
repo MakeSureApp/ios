@@ -42,6 +42,10 @@ struct BirthdaySignUpView: View {
 
             Spacer()
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            activeField = nil
+        }
         .onChange(of: viewModel.birthdayFields) { newValue in
             DOBConditions(value: newValue)
         }

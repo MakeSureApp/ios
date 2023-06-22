@@ -13,9 +13,10 @@ struct SettingsView: View {
     @GestureState private var dragOffset = CGSize.zero
     @Binding var activeSheet: MainTabView.ActiveSheet?
     @State private var isShowingLanguageSelection = false
+    @State private var isAnimating: Bool = false
     
     private var yOffset: CGFloat {
-        isShowing ? UIScreen.main.bounds.height * 0.15 + dragOffset.height : UIScreen.main.bounds.height
+        isShowing ? UIScreen.main.bounds.height * 0.04 + dragOffset.height : UIScreen.main.bounds.height
     }
     
     var body: some View {
@@ -99,103 +100,116 @@ struct SettingsView: View {
                         .padding(4)
                     }
                     
-                    // Email
-                    Button(action: { activeSheet = .addEmail }) {
-                        VStack(alignment: .leading, spacing: 4) {
-                            HStack {
-                                Image("ChangeEmailIcon")
-                                    .foregroundColor(.white)
-                                Text(viewModel.isEmail ? "change_email".localized : "add_email".localized)
-                                    .foregroundColor(.white)
-                                    .font(.poppinsRegularFont(size: 20))
-                                    .padding(.leading, 6)
+                    if let user = viewModel.mainViewModel.user {
+                        // Email
+                        Button(action: { activeSheet = .addEmail }) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack {
+                                    Image("ChangeEmailIcon")
+                                        .foregroundColor(.white)
+                                    Text(user.email != nil ? "change_email".localized : "add_email".localized)
+                                        .foregroundColor(.white)
+                                        .font(.poppinsRegularFont(size: 20))
+                                        .padding(.leading, 6)
+                                }
+                                if let email = user.email {
+                                    Text(viewModel.isVerified ? email : "not_verified_label".localized)
+                                        .font(.poppinsRegularFont(size: 12))
+                                        .foregroundColor(.white)
+                                        .underline()
+                                        .padding(.leading, 30)
+                                }
                             }
-                            if viewModel.isEmail {
-                                Text(viewModel.isVerified ? viewModel.emailAddress : "not_verified_label".localized)
+                            .padding(4)
+                        }
+                        
+                        // Phone Number
+                        Button(action: { activeSheet = .changePhoneNumber }) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                HStack {
+                                    Image("ChangePhoneNumberIcon")
+                                        .foregroundColor(.white)
+                                    Text("change_phone_number_button".localized)
+                                        .foregroundColor(.white)
+                                        .font(.poppinsRegularFont(size: 20))
+                                        .padding(.leading, 6)
+                                }
+                                Text(user.phone)
                                     .font(.poppinsRegularFont(size: 12))
                                     .foregroundColor(.white)
                                     .underline()
                                     .padding(.leading, 30)
                             }
+                            .padding(4)
                         }
-                        .padding(4)
-                    }
-                    
-                    // Phone Number
-                    Button(action: { activeSheet = .changePhoneNumber }) {
-                        VStack(alignment: .leading, spacing: 4) {
+                        
+                        // Legal & Policies
+                        Button(action: { activeSheet = .legalPolicies }) {
                             HStack {
-                                Image("ChangePhoneNumberIcon")
+                                Image("LegalPiliciesIcon")
                                     .foregroundColor(.white)
-                                Text("change_phone_number_button".localized)
-                                    .foregroundColor(.white)
+                                Text("legal_policies_section".localized)
                                     .font(.poppinsRegularFont(size: 20))
+                                    .foregroundColor(.white)
                                     .padding(.leading, 6)
                             }
-                            Text(viewModel.mobileNumber)
-                                .font(.poppinsRegularFont(size: 12))
-                                .foregroundColor(.white)
-                                .underline()
-                                .padding(.leading, 30)
+                            .padding(4)
                         }
-                        .padding(4)
-                    }
-                    
-                    // Legal & Policies
-                    Button(action: { activeSheet = .legalPolicies }) {
+                        
+                        // Blacklist
+                        Button(action: { activeSheet = .blacklist }) {
+                            HStack {
+                                Image("BlocklistIcon")
+                                    .foregroundColor(.white)
+                                Text("blacklist_section".localized)
+                                    .font(.poppinsRegularFont(size: 20))
+                                    .foregroundColor(.white)
+                                    .padding(.leading, 6)
+                            }
+                            .padding(4)
+                        }
+                        
+                        // Delete Profile
                         HStack {
-                            Image("LegalPiliciesIcon")
+                            Image("DeleteIcon")
                                 .foregroundColor(.white)
-                            Text("legal_policies_section".localized)
+                            Text("delete_profile_button".localized)
                                 .font(.poppinsRegularFont(size: 20))
                                 .foregroundColor(.white)
                                 .padding(.leading, 6)
                         }
                         .padding(4)
-                    }
-                    
-                    // Blacklist
-                    Button(action: { activeSheet = .blacklist }) {
-                        HStack {
-                            Image("BlocklistIcon")
+                        
+                    } else {
+                        VStack(alignment: .center) {
+                            Spacer()
+                            Text("check_internet_connection".localized)
+                                .font(.interSemiBoldFont(size: 16))
                                 .foregroundColor(.white)
-                            Text("blacklist_section".localized)
-                                .font(.poppinsRegularFont(size: 20))
-                                .foregroundColor(.white)
-                                .padding(.leading, 6)
+                            Spacer()
                         }
-                        .padding(4)
                     }
-                    
-                    // Delete Profile
-                    HStack {
-                        Image("DeleteIcon")
-                            .foregroundColor(.white)
-                        Text("delete_profile_button".localized)
-                            .font(.poppinsRegularFont(size: 20))
-                            .foregroundColor(.white)
-                            .padding(.leading, 6)
-                    }
-                    .padding(4)
                 }
                 .padding(8)
                 .padding(.horizontal, 20)
-                Button {
-                    viewModel.signOutBtnClicked()
-                } label: {
-                    Text("sign_out".localized.uppercased())
-                        .font(.poppinsBoldFont(size: 20))
-                        .frame(maxWidth: .infinity)
-                        .foregroundColor(.white)
-                        .padding()
-                        .background(Color.gradientPurple2)
-                        .cornerRadius(20)
-                }
-                .padding()
                 Spacer()
+                if viewModel.mainViewModel.user != nil {
+                    Button {
+                        viewModel.signOutBtnClicked()
+                    } label: {
+                        Text("sign_out".localized.uppercased())
+                            .font(.poppinsBoldFont(size: 20))
+                            .frame(maxWidth: .infinity)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.gradientPurple2)
+                            .cornerRadius(20)
+                    }
+                    .padding()
+                    .padding(.bottom, 16)
+                }
             }
             .background(CustomColors.thirdGradient.edgesIgnoringSafeArea(.all))
-            .edgesIgnoringSafeArea(.bottom)
         }
         .frame(minHeight: UIScreen.main.bounds.height * 0.85)
         .cornerRadius(20, antialiased: true)

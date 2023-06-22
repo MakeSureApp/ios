@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CongratulationsNumberSettingsView: View {
-    @ObservedObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: SettingsViewModel
 
     var body: some View {
         VStack {
@@ -16,6 +16,7 @@ struct CongratulationsNumberSettingsView: View {
             Text("new_number_linked_message".localized)
                 .font(.rubicBoldFont(size: 34))
                 .fontWeight(.bold)
+                .foregroundColor(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .padding(.top, 30)
@@ -35,6 +36,7 @@ struct CongratulationsNumberSettingsView: View {
 
 struct CongratulationsNumberSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        CongratulationsNumberSettingsView(viewModel: SettingsViewModel(authService: AuthService()))
+        CongratulationsNumberSettingsView()
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
     }
 }

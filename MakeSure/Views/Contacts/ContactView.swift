@@ -11,7 +11,6 @@ struct ContactView: View {
     
     @EnvironmentObject var viewModel: ContactsViewModel
     @EnvironmentObject var testsViewModel: TestsViewModel
-    @EnvironmentObject var homeViewModel: HomeViewModel
     
     let contact: UserModel
     @State private var showSharingTestView = false
@@ -45,12 +44,6 @@ struct ContactView: View {
                                 .frame(width: 157, height: 157)
                                 .clipShape(Circle())
                                 .shadow(color: .white, radius: 30)
-                        } else {
-                            Image(systemName: "person.circle.fill")
-                                .resizable()
-                                .frame(width: 157, height: 157)
-                                .clipShape(Circle())
-                                .shadow(color: .white, radius: 30)
                         }
                         
                         let date = viewModel.getLastDateWith(contact: contact)
@@ -73,8 +66,8 @@ struct ContactView: View {
                     
                     if testsViewModel.isLoadingContactTests {
                         RotatingShapesLoader(animate: $isAnimating)
-                            .frame(width: 100)
                             .padding(.top, 50)
+                            .frame(width: 100)
                             .onAppear {
                                 isAnimating = true
                             }
@@ -163,7 +156,7 @@ struct ContactView: View {
                     HStack {
                         Button {
                             Task {
-                                await viewModel.addUserToBlacklist(id: contact.id, contacts: homeViewModel.user?.contacts)
+                                await viewModel.addUserToBlacklist(id: contact.id)
                             }
                             if viewModel.hasAddedUserToBlacklist {
                                 presentationMode.wrappedValue.dismiss()

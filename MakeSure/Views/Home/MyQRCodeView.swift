@@ -28,7 +28,7 @@ struct MyQRCodeView: View {
                     }
                     Spacer()
                     if viewModel.hasGeneratedQRCode {
-                        ShareLink(item: viewModel.user?.name ?? "") {
+                        ShareLink(item: viewModel.name) {
                             Label("", systemImage: "square.and.arrow.up")
                                 .frame(width: 18, height: 24)
                                 .foregroundColor(.white)
@@ -73,7 +73,7 @@ struct MyQRCodeView: View {
                                     .frame(width: 200, height: 200)
                                 }
                             }
-                            Text(viewModel.user?.name.uppercased() ?? "")
+                            Text(viewModel.name.uppercased() ?? "")
                                 .font(.rubicBoldFont(size: 22))
                                 .foregroundColor(Color(red: 114/255, green: 146/255, blue: 174/255))
                         }
@@ -99,6 +99,6 @@ struct MyQRCodeView: View {
 struct MyQRCodeView_Previews: PreviewProvider {
     static var previews: some View {
         MyQRCodeView()
-            .environmentObject(HomeViewModel())
+            .environmentObject(HomeViewModel(mainViewModel: MainViewModel()))
     }
 }

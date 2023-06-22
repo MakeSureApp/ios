@@ -89,6 +89,6 @@ struct ZoomableScrollView<Content: View>: UIViewRepresentable {
 struct ViewingImageView_Previews: PreviewProvider {
     static var previews: some View {
         ViewingImageView()
-            .environmentObject(HomeViewModel())
+            .environmentObject(HomeViewModel(mainViewModel: MainViewModel()))
     }
 }

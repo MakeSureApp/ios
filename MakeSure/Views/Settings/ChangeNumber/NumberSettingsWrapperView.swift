@@ -10,7 +10,7 @@ import SwiftUI
 
 struct NumberSettingsWrapperView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @ObservedObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: SettingsViewModel
     
     var body: some View {
         VStack {
@@ -26,11 +26,14 @@ struct NumberSettingsWrapperView: View {
             case .initial:
                 let _ = self.onBackPressed()
             case .phoneNumber:
-                NumberSettingsView(viewModel: viewModel)
+                NumberSettingsView()
+                    .environmentObject(viewModel)
             case .code:
-                CodeSettingsView(viewModel: viewModel)
+                CodeSettingsView()
+                    .environmentObject(viewModel)
             case .congratulations:
-                CongratulationsNumberSettingsView(viewModel: viewModel)
+                CongratulationsNumberSettingsView()
+                    .environmentObject(viewModel)
             case .final:
                 let _ = self.authorizationCompleted()
             }
@@ -39,6 +42,7 @@ struct NumberSettingsWrapperView: View {
                 viewModel.phoneMoveToNextStep()
             }
         }
+        .background(.white)
     }
     
     func onBackPressed() {

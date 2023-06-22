@@ -14,9 +14,12 @@ struct MainTabView: View {
     @ObservedObject private var contactsViewModel: ContactsViewModel
     @ObservedObject private var testsViewModel: TestsViewModel
     @ObservedObject private var scannerViewModel: ScannerViewModel
+    @ObservedObject private var notificationsViewModel: NotificationsViewModel
+    @ObservedObject private var deeplinkHandler: DeeplinkHandler
     @State private var showSettings = false
     
     @State private var activeSheet: ActiveSheet?
+    @State private var shouldPresentSearchedUserSheet: Bool = false
     
     enum ActiveSheet: Identifiable {
         case privacySafety, help, addEmail, changePhoneNumber, legalPolicies, blacklist
@@ -27,12 +30,15 @@ struct MainTabView: View {
     }
     
     init() {
-        _viewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getMainViewModel())
-        _homeViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getHomeViewModel())
-        _settingsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getSettingsViewModel())
-        _contactsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getContactsViewModel())
-        _testsViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getTestsViewModel())
-        _scannerViewModel = ObservedObject(wrappedValue: appEnvironment.viewModelFactory.getScannerViewModel())
+        let viewmodels = appEnvironment.viewModelFactory
+        _viewModel = ObservedObject(wrappedValue: viewmodels.getMainViewModel())
+        _homeViewModel = ObservedObject(wrappedValue: viewmodels.getHomeViewModel())
+        _settingsViewModel = ObservedObject(wrappedValue: viewmodels.getSettingsViewModel())
+        _contactsViewModel = ObservedObject(wrappedValue: viewmodels.getContactsViewModel())
+        _testsViewModel = ObservedObject(wrappedValue: viewmodels.getTestsViewModel())
+        _scannerViewModel = ObservedObject(wrappedValue: viewmodels.getScannerViewModel())
+        _notificationsViewModel = ObservedObject(wrappedValue: viewmodels.getNotificationsViewModel())
+        _deeplinkHandler = ObservedObject(wrappedValue: appEnvironment.deeplinkHandler)
     }
     
     var body: some View {
@@ -48,17 +54,15 @@ struct MainTabView: View {
             homeViewModel.showPhotoMenu = false
         }
         .overlay {
-            VStack {
-                if contactsViewModel.showCalendar {
+            if contactsViewModel.showCalendar {
+                VStack {
                     GraphicalDatePicker(viewModel: contactsViewModel, testsViewModel: testsViewModel, currentMonth: contactsViewModel.dateToStartInCalendar, isFromContactView: false)
                         .padding(.top, 50)
                     Spacer()
                 }
             }
-        }
-        .overlay {
-            Group {
-                if showSettings {
+            if showSettings {
+                Group {
                     Color.clear
                         .ignoresSafeArea()
                         .onTapGesture {
@@ -66,7 +70,6 @@ struct MainTabView: View {
                                 showSettings.toggle()
                             }
                         }
-                    
                     SettingsView(
                         isShowing: $showSettings,
                         activeSheet: $activeSheet
@@ -75,22 +78,50 @@ struct MainTabView: View {
                     .transition(.move(edge: .bottom))
                 }
             }
-        }
-        .overlay {
             if let date = contactsViewModel.selectedDate {
                 SelectContactForDateView(viewModel: contactsViewModel, date: date)
             }
-        }
-        .overlay {
             if homeViewModel.showMyQRCode {
                 MyQRCodeView()
                     .environmentObject(homeViewModel)
             }
-        }
-        .overlay {
             if homeViewModel.showImagePhoto {
                 ViewingImageView()
                     .environmentObject(homeViewModel)
+            }
+            if homeViewModel.showNotificationsView {
+                NotificationsView()
+                    .environmentObject(notificationsViewModel)
+                    .environmentObject(homeViewModel)
+            }
+            
+        }
+        .onChange(of: deeplinkHandler.deeplinkNavigation) { navigation in
+            if let navigation {
+                switch navigation {
+                case .addContact(_):
+                    shouldPresentSearchedUserSheet = true
+                case .setUsername: break;
+                case .profile:
+                    viewModel.currentTab = .home
+                    shouldPresentSearchedUserSheet = false
+                    deeplinkHandler.deeplinkNavigation = nil
+                }
+            }
+        }
+        .sheet(isPresented: $shouldPresentSearchedUserSheet, onDismiss: {
+            scannerViewModel.resetData()
+            deeplinkHandler.addToContactWithUserId = nil
+            deeplinkHandler.deeplinkNavigation = nil
+        }) {
+            if let userId = deeplinkHandler.addToContactWithUserId {
+                SearchedUserView(isShowView: $shouldPresentSearchedUserSheet, userId: userId) {
+                    scannerViewModel.resetData()
+                    deeplinkHandler.addToContactWithUserId = nil
+                    deeplinkHandler.deeplinkNavigation = nil
+                }
+                .environmentObject(scannerViewModel)
+                .environmentObject(contactsViewModel)
             }
         }
         .sheet(item: $activeSheet) { item in
@@ -100,13 +131,17 @@ struct MainTabView: View {
             case .help:
                 HelpView()
             case .addEmail:
-                EmailSettingsWrapperView(viewModel: settingsViewModel)
+                EmailSettingsWrapperView()
+                    .environmentObject(settingsViewModel)
             case .changePhoneNumber:
-                NumberSettingsWrapperView(viewModel: settingsViewModel)
+                NumberSettingsWrapperView()
+                    .environmentObject(settingsViewModel)
             case .legalPolicies:
                 LegalPoliciesView()
             case .blacklist:
-                BlacklistView(viewModel: appEnvironment.viewModelFactory.getContactsViewModel(), homeViewModel: appEnvironment.viewModelFactory.getHomeViewModel())
+                BlacklistView()
+                    .environmentObject(appEnvironment.viewModelFactory.getContactsViewModel())
+                   
             }
         }
     }
@@ -184,7 +219,9 @@ private extension MainTabView {
                         }
                     }
                     Button(action: {
-                        // Add action to open notifications view
+                        withAnimation {
+                            homeViewModel.showNotificationsView.toggle()
+                        }
                     }) {
                         Image("notificationNavBarIcon")
                             .resizable()
@@ -218,7 +255,7 @@ private extension MainTabView {
                 viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
             }
         }
-        .padding(.vertical, 38)
+        .padding(.vertical, 32)
         .zIndex(0)
     }
 }

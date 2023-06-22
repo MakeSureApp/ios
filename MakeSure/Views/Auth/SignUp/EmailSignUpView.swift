@@ -53,6 +53,10 @@ struct EmailSignUpView: View {
             
             Spacer()
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            focusedField = nil
+        }
     }
 }
 

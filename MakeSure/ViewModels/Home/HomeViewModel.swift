@@ -35,9 +35,11 @@ struct TipsCategory: Hashable {
 
 class HomeViewModel: NSObject, ObservableObject {
     
+    @Published var mainViewModel: MainViewModel
     @Published var testsDone: Int = 0
-    @Published var name: String = "JANE"
+    @Published var name: String = ""
     @Published var age: Int = 28
+    @Published var birthdate: Date = Date()
     @Published var image: UIImage?
     @Published var tipCategories: [TipsCategory] = []
     @Published var selectedCategories: [TipsCategory] = []
@@ -52,7 +54,7 @@ class HomeViewModel: NSObject, ObservableObject {
     @Published var showPhotoMenu = false
     @Published var showImagePhoto = false
     @Published var showMyQRCode = false
-    @Published var user: UserModel?
+    @Published var showNotificationsView = false
     @Published var isLoadingUser: Bool = false
     @Published var isLoadingTests: Bool = false
     @Published var isLoadingImage: Bool = false
@@ -69,16 +71,21 @@ class HomeViewModel: NSObject, ObservableObject {
     private let testService = TestSupabaseService()
     private let tipsService = TipsSupabaseService()
     private let friendsLinksService = FriendsLinksSupabaseService()
-    let userId = UUID(uuidString: "79295454-e8f0-11ed-a05b-0242ac120003")!
+    
+    init(mainViewModel: MainViewModel) {
+        self.mainViewModel = mainViewModel
+    }
     
     func fetchUserData() async {
         DispatchQueue.main.async {
             self.isLoadingUser = true
         }
         do {
-            if let user = try await userService.fetchUserById(id: userId) {
+            if let user = try await userService.fetchUserById(id: mainViewModel.userId) {
                 DispatchQueue.main.async {
-                    self.user = user
+                    self.mainViewModel.user = user
+                    self.name = user.name
+                    self.birthdate = user.birthdate
                     self.isLoadingUser = false
                     self.hasLoadedUser = true
                 }
@@ -101,7 +108,7 @@ class HomeViewModel: NSObject, ObservableObject {
             self.isLoadingTests = true
         }
         do {
-            let fetchedTests = try await testService.fetchById(columnName: "user_id", id: userId)
+            let fetchedTests = try await testService.fetchById(columnName: "user_id", id: mainViewModel.userId)
            
             DispatchQueue.main.async {
                 self.testsDone = fetchedTests.filter { $0.date != nil }.count
@@ -161,7 +168,7 @@ class HomeViewModel: NSObject, ObservableObject {
             self.isLoadingImage = true
         }
         do {
-            if let urlStr = user?.photoUrl, let url = URL(string: urlStr) {
+            if let urlStr = await mainViewModel.user?.photoUrl, let url = URL(string: urlStr) {
                 let (data, _) = try await URLSession.shared.data(from: url)
                 DispatchQueue.main.async {
                     self.image = UIImage(data: data)
@@ -222,11 +229,11 @@ class HomeViewModel: NSObject, ObservableObject {
             self.isGeneratingQRCode = true
         }
         do {
-            let fetchedLinks = try await friendsLinksService.fetchLinksByUserId(userId: userId)
+            let fetchedLinks = try await friendsLinksService.fetchLinksByUserId(userId: mainViewModel.userId)
             var id = UUID()
             if fetchedLinks.isEmpty {
                 let createdAt = Date()
-                let model = FriendLinkModel(id: id, createdAt: createdAt, userId: userId)
+                let model = await FriendLinkModel(id: id, createdAt: createdAt, userId: mainViewModel.userId)
                 try await friendsLinksService.create(item: model)
             } else {
                 if let linkId = fetchedLinks.first?.id {

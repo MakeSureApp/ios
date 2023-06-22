@@ -40,6 +40,7 @@ struct HomeView: View {
                 }
             }
             .padding(.horizontal)
+            .padding(.bottom, 30)
         }
     }
 }
@@ -118,24 +119,20 @@ private extension HomeView {
                                 
                                 Spacer()
                                 
-                                if let user = viewModel.user {
-                                    Text(user.name)
+                                    Text(viewModel.name)
                                         .font(.poppinsBoldFont(size: 18))
                                         .foregroundColor(.white)
                                         .frame(maxWidth: .infinity)
-                                }
                                 
                                 Spacer()
                                 
                                 VStack {
-                                    if let user = viewModel.user {
-                                        Text("\(user.birthdate.getAge)")
+                                        Text("\(viewModel.birthdate.getAge)")
                                             .font(.interRegularFont(size: 20))
                                             .foregroundColor(.white)
                                         Text("years_old".localized)
                                             .font(.interRegularFont(size: 12))
                                             .foregroundColor(.white)
-                                    }
                                 }
                                 .frame(width: 80)
                             }
@@ -277,36 +274,40 @@ private extension HomeView {
     var cardList: some View {
         VStack(alignment: .leading, spacing: 20) {
             ForEach(viewModel.filteredCards) { card in
-                ZStack(alignment: .bottomLeading) {
-                    cardBackgroundImage(for: card.id)
-                    VStack(alignment: .leading, spacing: 5) {
-                        categoryImage(for: card.category)
-                            .fontWeight(.bold)
-                            .padding(.top, 12)
-                        Spacer()
-                        if let description = card.description {
-                            Text(description)
-                                .font(.poppinsRegularFont(size: 13))
+                GeometryReader { geometry in
+                    ZStack(alignment: .bottomLeading) {
+                        cardBackgroundImage(for: card.id)
+                        VStack(alignment: .leading, spacing: 5) {
+                            categoryImage(for: card.category)
+                                .fontWeight(.bold)
+                                .padding(.top, 12)
+                            Spacer()
+                            if let description = card.description {
+                                Text(description)
+                                    .font(.poppinsRegularFont(size: 13))
+                                    .foregroundColor(.white)
+                            }
+                            Text(card.title)
+                                .font(.poppinsMediumFont(size: 32))
                                 .foregroundColor(.white)
+                                .padding(.bottom, 10)
                         }
-                        Text(card.title)
-                            .font(.poppinsMediumFont(size: 32))
-                            .foregroundColor(.white)
-                            .padding(.bottom, 10)
+                        .padding(.leading, 10)
                     }
-                    .padding(.leading, 10)
+                    .frame(height: 200)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10)
+                            .fill(Color.gray.opacity(0.1))
+                    )
+                    .onTapGesture {
+                        viewModel.openTipsDetails(card.url)
+                    }
+                    .contentShape(Rectangle())
+                    .onAppear {
+                        viewModel.loadImageIfNeeded(for: card)
+                    }
                 }
-                .frame(height: 200)
-                .background(
-                    RoundedRectangle(cornerRadius: 10)
-                        .fill(Color.gray.opacity(0.1))
-                )
-                .onTapGesture {
-                    viewModel.openTipsDetails(card.url)
-                }
-                .onAppear {
-                    viewModel.loadImageIfNeeded(for: card)
-                }
+                .frame(height: 200, alignment: .top)
             }
         }
     }
@@ -373,6 +374,6 @@ private extension HomeView {
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
         HomeView()
-            .environmentObject(HomeViewModel())
+            .environmentObject(HomeViewModel(mainViewModel: MainViewModel()))
     }
 }

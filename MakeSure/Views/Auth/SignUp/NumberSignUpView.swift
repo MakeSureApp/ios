@@ -76,6 +76,10 @@ struct NumberSignUpView: View {
                 
                 Spacer()
             }
+            .contentShape(Rectangle())
+            .onTapGesture {
+                focusedField = nil
+            }
             .navigationBarBackButtonHidden(true)
             
             if showCountryPicker {
@@ -94,8 +98,10 @@ struct NumberSignUpView: View {
                         .navigationBarTitle("select_country_code".localized, displayMode: .inline)
                     }
                 }
-                .background(Color(.systemBackground))
-                .edgesIgnoringSafeArea(.bottom)
+                .padding(.bottom)
+                .onAppear {
+                    focusedField = nil
+                }
             }
         }
     }

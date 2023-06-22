@@ -9,14 +9,15 @@ import Foundation
 
 class ViewModelFactory {
     private let authService: AuthService
-    private lazy var mainViewModel = MainViewModel(authService: authService)
-    private lazy var homeViewModel = HomeViewModel()
+    private lazy var mainViewModel = MainViewModel()
+    private lazy var homeViewModel = HomeViewModel(mainViewModel: mainViewModel)
     private lazy var loginViewModel = LoginViewModel(authService: authService)
     private lazy var registrationViewModel = RegistrationViewModel(authService: authService)
-    private lazy var settingsViewModel = SettingsViewModel(authService: authService)
+    private lazy var settingsViewModel = SettingsViewModel(mainViewModel: mainViewModel)
     private lazy var contactsViewModel = ContactsViewModel()
     private lazy var testsViewModel = TestsViewModel()
     private lazy var scannerViewModel = ScannerViewModel()
+    private lazy var notificationsViewModel = NotificationsViewModel(mainViewModel: mainViewModel)
     
     init(authService: AuthService) {
         self.authService = authService
@@ -54,5 +55,8 @@ class ViewModelFactory {
         return scannerViewModel
     }
     
-    // Add factory methods for other view models
+    func getNotificationsViewModel() -> NotificationsViewModel {
+        return notificationsViewModel
+    }
+    
 }

@@ -50,6 +50,10 @@ struct NameSignUpView: View {
             
             Spacer()
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            focusedField = nil
+        }
     }
 }
 

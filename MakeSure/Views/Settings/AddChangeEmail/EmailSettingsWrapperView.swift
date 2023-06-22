@@ -10,7 +10,7 @@ import SwiftUI
 
 struct EmailSettingsWrapperView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
-    @ObservedObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: SettingsViewModel
     
     var body: some View {
         VStack {
@@ -26,11 +26,14 @@ struct EmailSettingsWrapperView: View {
             case .initial:
                 let _ = self.onBackPressed()
             case .email:
-                EmailSettingsView(viewModel: viewModel)
+                EmailSettingsView()
+                    .environmentObject(viewModel)
             case .verifyEmail:
-                VerifyEmailSettingsView(viewModel: viewModel)
+                VerifyEmailSettingsView()
+                    .environmentObject(viewModel)
             case .congratulations:
-                CongratulationsEmailSettingsView(viewModel: viewModel)
+                CongratulationsEmailSettingsView()
+                    .environmentObject(viewModel)
             case .final:
                 let _ = self.authorizationCompleted()
             }
@@ -39,6 +42,7 @@ struct EmailSettingsWrapperView: View {
                 viewModel.emailMoveToNextStep()
             }
         }
+        .background(.white)
     }
     
     func onBackPressed() {

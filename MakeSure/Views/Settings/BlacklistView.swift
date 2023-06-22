@@ -9,8 +9,7 @@ import SwiftUI
 
 struct BlacklistView: View {
     @Environment(\.presentationMode) var presentationMode
-    @ObservedObject var viewModel: ContactsViewModel
-    @ObservedObject var homeViewModel: HomeViewModel
+    @EnvironmentObject var viewModel: ContactsViewModel
     @State private var isAnimating: Bool = false
     @State private var isAnimatingImage: Bool = false
     
@@ -96,7 +95,7 @@ struct BlacklistView: View {
                                     Spacer()
                                     Button(action: {
                                         Task {
-                                            await viewModel.unlockUser(user.id, contacts: homeViewModel.user?.contacts)
+                                            await viewModel.unlockUser(user.id)
                                         }
                                     }) {
                                         Text("unlock_button".localized)
@@ -104,6 +103,8 @@ struct BlacklistView: View {
                                             .foregroundColor(.black)
                                             .padding(.horizontal, 10)
                                             .padding(.vertical, 5)
+                                            .lineLimit(1)
+                                            .minimumScaleFactor(0.8)
                                             .background(Color(red: 247/255, green: 213/255, blue: 1))
                                             .cornerRadius(5)
                                     }
@@ -132,6 +133,7 @@ struct BlacklistView: View {
 
 struct BlacklistView_Previews: PreviewProvider {
     static var previews: some View {
-        BlacklistView(viewModel: ContactsViewModel(), homeViewModel: HomeViewModel())
+        BlacklistView()
+            .environmentObject(ContactsViewModel())
     }
 }

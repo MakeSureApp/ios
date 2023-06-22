@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CongratulationsEmailSettingsView: View {
-    @ObservedObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: SettingsViewModel
 
     var body: some View {
         VStack {
@@ -16,6 +16,7 @@ struct CongratulationsEmailSettingsView: View {
             Text("new_email_linked_message".localized)
                 .font(.rubicBoldFont(size: 34))
                 .fontWeight(.bold)
+                .foregroundColor(.black)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
                 .padding(.top, 30)
@@ -35,6 +36,7 @@ struct CongratulationsEmailSettingsView: View {
 
 struct CongratulationsEmailSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        CongratulationsEmailSettingsView(viewModel: SettingsViewModel(authService: AuthService()))
+        CongratulationsEmailSettingsView()
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
     }
 }

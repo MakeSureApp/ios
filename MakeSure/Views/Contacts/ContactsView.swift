@@ -11,7 +11,6 @@ struct ContactsView: View {
     
     @EnvironmentObject var viewModel: ContactsViewModel
     @EnvironmentObject var testsViewModel: TestsViewModel
-    @EnvironmentObject var homeViewModel: HomeViewModel
     
     @State private var showMenu = false
     @State private var showContact = false
@@ -66,7 +65,7 @@ struct ContactsView: View {
                 .padding(.horizontal)
                 .padding(.bottom, -14)
                 
-                if viewModel.isLoadingContacts && viewModel.contactsM.isEmpty {
+                if viewModel.isLoadingContacts && viewModel.contacts.isEmpty {
                     RotatingShapesLoader(animate: $isAnimating, color: .black)
                         .frame(maxWidth: 100)
                         .padding(.top, 50)
@@ -77,15 +76,23 @@ struct ContactsView: View {
                             isAnimating = false
                         }
                     Spacer()
-                } else if viewModel.hasLoadedContacts || !viewModel.contactsM.isEmpty {
+                } else if viewModel.hasLoadedContacts || !viewModel.contacts.isEmpty {
                     ScrollView {
                         LazyVStack {
-                            ForEach(viewModel.contactsM) { contact in
+                            ForEach(viewModel.contacts) { contact in
                                 GeometryReader { geometry in
-                                    ContactItemView(viewModel: viewModel, contact: contact, showMenu: $showMenu, showContact: $showContact, selectedContact: $selectedContact, isAnimatingMeetings: $isAnimatingMeetings)
+                                    ContactItemView(
+                                        viewModel: viewModel,
+                                        contact: contact,
+                                        isEnabled: !viewModel.checkIfContactBlockedMe(user: contact),
+                                        showMenu: $showMenu,
+                                        showContact: $showContact,
+                                        selectedContact: $selectedContact,
+                                        isAnimatingMeetings: $isAnimatingMeetings
+                                    )
                                         .onTapGesture {
                                             if showMenu {
-                                                showMenu = false
+                                                showMenu.toggle()
                                             } else {
                                                 withAnimation {
                                                     showContact = true
@@ -96,11 +103,11 @@ struct ContactsView: View {
                                             }
                                         }
                                         .onLongPressGesture {
-                                            withAnimation {
-                                                showMenu = true
-                                                selectedContact = contact
-                                                menuYOffset = geometry.frame(in: .global).minY + geometry.size.height
-                                                print("press \(menuYOffset)")
+                                            if !showMenu {
+                                                withAnimation {
+                                                    showMenu = true
+                                                    selectedContact = contact
+                                                }
                                             }
                                         }
                                 }
@@ -110,6 +117,12 @@ struct ContactsView: View {
                                 }
                             }
                         }
+                    }
+                    .onTapGesture {
+                        viewModel.showCalendar = false
+                        viewModel.showContactCalendar = false
+                        showMenu = false
+                        selectedContact = nil
                     }
                 } else {
                     Spacer()
@@ -125,7 +138,6 @@ struct ContactsView: View {
                     ContactView(contact: contact)
                         .environmentObject(viewModel)
                         .environmentObject(testsViewModel)
-                        .environmentObject(homeViewModel)
                 }
             }
             Button(action: {
@@ -142,10 +154,15 @@ struct ContactsView: View {
             }
             .zIndex(-1)
             if showMenu, let contact = selectedContact {
-                ContactMenu(contact: contact, showMenu: $showMenu, showSharingTest: $showSharingTestView)
-                    .environmentObject(viewModel)
-                    .environmentObject(homeViewModel)
-                    .offset(y: menuYOffset)
+                let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
+                ContactMenu(
+                    contact: contact,
+                    isEnabled: isEnabled,
+                    showMenu: $showMenu,
+                    showSharingTest: $showSharingTestView
+                )
+                .environmentObject(viewModel)
+                .offset(y: menuYOffset)
             }
             if showSharingTestView, let date = testsViewModel.lastTests.first?.date, let contact = selectedContact {
                 VStack {
@@ -198,6 +215,7 @@ extension VerticalAlignment {
 struct ContactItemView: View {
     @ObservedObject var viewModel: ContactsViewModel
     let contact: UserModel
+    let isEnabled: Bool
     @Binding var showMenu: Bool
     @Binding var showContact: Bool
     @Binding var selectedContact: UserModel?
@@ -207,16 +225,16 @@ struct ContactItemView: View {
 
     var body: some View {
         HStack {
-            if let image = viewModel.contactsImages[contact.id] {
+            if let image = viewModel.contactsImages[contact.id], isEnabled {
                 Image(uiImage: image)
                     .resizable()
                     .frame(width: 63, height: 63)
                     .clipShape(Circle())
                     .padding(.trailing, 10)
-            } else if contact.photoUrl == nil {
+            } else if contact.photoUrl == nil || !isEnabled {
                 Image(systemName: "person.circle.fill")
                     .resizable()
-                    .foregroundColor(.white)
+                    .foregroundColor(.gray)
                     .frame(width: 63, height: 63)
                     .clipShape(Circle())
                     .padding(.trailing, 10)
@@ -239,8 +257,9 @@ struct ContactItemView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(contact.name)
                     .font(.poppinsBoldFont(size: 14))
+                    .foregroundColor(isEnabled ? .black : .gray)
                 
-                if viewModel.isLoadingMeetings && viewModel.contactsM.isEmpty  {
+                if viewModel.isLoadingMeetings && viewModel.contacts.isEmpty  {
                     HStack(alignment: .center) {
                         RowOfShapesLoader(animate: $isAnimatingMeetings, color: .gray.opacity(0.8), count: 3, spacing: 3)
                             .frame(maxWidth: 60, maxHeight: 18)
@@ -255,7 +274,7 @@ struct ContactItemView: View {
                     .padding(.top, 6)
                     .background(.gray.opacity(0.1))
                     .cornerRadius(8)
-                } else if viewModel.hasLoadedMeetings || !viewModel.contactsM.isEmpty  {
+                } else if viewModel.hasLoadedMeetings || !viewModel.contacts.isEmpty  {
                     let date = viewModel.getLastDateWith(contact: contact)
                     
                     if let metDateString = viewModel.getMetDateString(date), let date {
@@ -266,9 +285,6 @@ struct ContactItemView: View {
                             .padding(.vertical, 4)
                             .background(viewModel.metDateColor(date: date))
                             .cornerRadius(8)
-//                            .onAppear {
-//                                print("last date with \(contact.name) = \(date)")
-//                            }
                     }
                 }
             }
@@ -313,11 +329,11 @@ struct ContactItemView: View {
         .padding(.horizontal, 6)
         .contentShape(Rectangle())
         .onTapGesture {
-           // if !viewModel.showCalendar {
-            selectedContact = contact
-            showMenu = false
-            showContact.toggle()
-            //}
+            if isEnabled {
+                selectedContact = contact
+                showMenu = false
+                showContact.toggle()
+            }
         }
     }
 }
@@ -339,18 +355,33 @@ struct DayView: View {
                 ZStack {
                     ForEach(metContacts.indices, id: \.self) { index in
                         let contact = metContacts[index]
+                        let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
                         if let image = viewModel.contactsImages[contact.id] {
                             ZStack(alignment: .center) {
-                                Image(uiImage: image)
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: 25, height: 25)
-                                    .clipShape(Circle())
-                                    .offset(x: CGFloat(index) * -4, y: 0)
-                                    .overlay {
-                                        Circle()
-                                            .strokeBorder(.white.opacity(0.5), lineWidth: 1)
-                                    }
+                                if isEnabled {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 25, height: 25)
+                                        .clipShape(Circle())
+                                        .offset(x: CGFloat(index) * -4, y: 0)
+                                        .overlay {
+                                            Circle()
+                                                .strokeBorder(.white.opacity(0.5), lineWidth: 1)
+                                        }
+                                } else {
+                                    Image(systemName: "person.circle.fill")
+                                        .resizable()
+                                        .foregroundColor(.gray)
+                                        .scaledToFill()
+                                        .frame(width: 25, height: 25)
+                                        .clipShape(Circle())
+                                        .offset(x: CGFloat(index) * -4, y: 0)
+                                        .overlay {
+                                            Circle()
+                                                .strokeBorder(.white.opacity(0.5), lineWidth: 1)
+                                        }
+                                }
                                 
                                 Text(dateString)
                                     .font(.poppinsBoldFont(size: 15))
@@ -448,41 +479,43 @@ struct ContactsCalendarScrollView: View {
 
 struct ContactMenu: View {
     @EnvironmentObject var viewModel: ContactsViewModel
-    @EnvironmentObject var homeViewModel: HomeViewModel
     let contact: UserModel
+    let isEnabled: Bool
     @Binding var showMenu: Bool
     @Binding var showSharingTest: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
-            VStack {
-                Button(action: shareMyTest) {
-                    Text("share_my_test_button".localized)
-                        .font(.poppinsRegularFont(size: 16))
-                        .foregroundColor(.black)
-                        .padding(.horizontal)
-                        .padding(.vertical, 3)
+            if isEnabled {
+                VStack {
+                    Button(action: shareMyTest) {
+                        Text("share_my_test_button".localized)
+                            .font(.poppinsRegularFont(size: 16))
+                            .foregroundColor(.black)
+                            .padding(.horizontal)
+                            .padding(.vertical, 3)
+                    }
+                    Divider()
+                        .frame(width: 140)
+                    Button(action: addDate) {
+                        Text("add_date_button".localized)
+                            .font(.poppinsRegularFont(size: 16))
+                            .foregroundColor(.black)
+                            .padding(.horizontal)
+                            .padding(.vertical, 3)
+                    }
+                    Divider()
+                        .frame(width: 140)
+                    Button(action: rename) {
+                        Text("rename_button".localized)
+                            .font(.poppinsRegularFont(size: 16))
+                            .foregroundColor(.black)
+                            .padding(.horizontal)
+                            .padding(.vertical, 3)
+                    }
+                    Divider()
+                        .frame(width: 140)
                 }
-                Divider()
-                    .frame(width: 140)
-                Button(action: addDate) {
-                    Text("add_date_button".localized)
-                        .font(.poppinsRegularFont(size: 16))
-                        .foregroundColor(.black)
-                        .padding(.horizontal)
-                        .padding(.vertical, 3)
-                }
-                Divider()
-                    .frame(width: 140)
-                Button(action: rename) {
-                    Text("rename_button".localized)
-                        .font(.poppinsRegularFont(size: 16))
-                        .foregroundColor(.black)
-                        .padding(.horizontal)
-                        .padding(.vertical, 3)
-                }
-                Divider()
-                    .frame(width: 140)
             }
             VStack {
                 Button(action: delete) {
@@ -545,7 +578,7 @@ struct ContactMenu: View {
             showMenu = false
         }
         Task {
-            await viewModel.deleteContact(id: contact.id, contacts: homeViewModel.user?.contacts)
+            await viewModel.deleteContact(id: contact.id)
         }
     }
 
@@ -554,7 +587,7 @@ struct ContactMenu: View {
             showMenu = false
         }
         Task {
-            await viewModel.addUserToBlacklist(id: contact.id, contacts: homeViewModel.user?.contacts)
+            await viewModel.addUserToBlacklist(id: contact.id)
         }
     }
 
@@ -570,7 +603,6 @@ struct ContactsView_Previews: PreviewProvider {
     static var previews: some View {
         ContactsView()
             .environmentObject(ContactsViewModel())
-            .environmentObject(HomeViewModel())
             .environmentObject(TestsViewModel())
     }
 }

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct NumberSettingsView: View {
-    @ObservedObject var viewModel: SettingsViewModel
+    @EnvironmentObject var viewModel: SettingsViewModel
     @State private var showCountryPicker = false
     
     enum FocusField: Hashable {
@@ -22,6 +22,7 @@ struct NumberSettingsView: View {
                 // Title
                 Text("my_number_is".localized)
                     .font(.rubicBoldFont(size: 44))
+                    .foregroundColor(.black)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding()
                 
@@ -101,6 +102,7 @@ struct NumberSettingsView: View {
 
 struct NumberSettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        NumberSettingsView(viewModel: SettingsViewModel(authService: AuthService()))
+        NumberSettingsView()
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
     }
 }

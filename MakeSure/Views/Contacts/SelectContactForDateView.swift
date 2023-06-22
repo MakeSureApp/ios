@@ -50,8 +50,11 @@ struct SelectContactForDateView: View {
             
             ScrollView {
                 LazyVStack {
-                    ForEach(viewModel.contactsM) { contact in
-                        SelectContactItemView(viewModel: viewModel, contact: contact, selectedContactId: $selectedContactIdForDate)
+                    ForEach(viewModel.contacts) { contact in
+                        let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
+                        if isEnabled {
+                            SelectContactItemView(viewModel: viewModel, contact: contact, selectedContactId: $selectedContactIdForDate)
+                        }
                     }
                 }
             }

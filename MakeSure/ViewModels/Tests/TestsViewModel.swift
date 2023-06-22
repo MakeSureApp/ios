@@ -7,7 +7,7 @@
 
 import Foundation
 
-class TestsViewModel: ObservableObject {
+class TestsViewModel: MainViewModel {
     
     @Published var tests: [TestModel] = []
     @Published var contactTests: [TestModel] = []
@@ -22,7 +22,6 @@ class TestsViewModel: ObservableObject {
     private(set) lazy var groupedTests: [Date: [TestModel]] = [:]
     
     private var testService = TestSupabaseService()
-    let userId = UUID(uuidString: "79295454-e8f0-11ed-a05b-0242ac120003")!
     
     enum LatestTestFor {
         case myself
@@ -80,7 +79,9 @@ class TestsViewModel: ObservableObject {
     
     func uniqueDateRanges() -> [String] {
         var sortedDates = Array(groupedTests.keys.compactMap { $0 }).sorted()
-        sortedDates.removeLast()
+        if !sortedDates.isEmpty {
+            sortedDates.removeLast()
+        }
         sortedDates = sortedDates.reversed()
         var dateRanges: [String] = []
         for date in sortedDates {

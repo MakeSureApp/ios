@@ -7,15 +7,25 @@
 
 import Foundation
 import Supabase
+import Realtime
 
 class SupabaseService<T: Codable> {
     
     let supabase: SupabaseClient
+    var supabaseRealtime: RealtimeClient
     let tableName: String
+   
     
     init(tableName: String) {
-        supabase = appEnvironment.supabaseManager.supabase
         self.tableName = tableName
+        
+        supabase = appEnvironment.supabaseManager.supabase
+        
+        supabaseRealtime = appEnvironment.supabaseManager.supabaseRealtime
+        supabaseRealtime.connect()
+        supabaseRealtime.onOpen { print("Socket opened.") }
+        supabaseRealtime.onError { error in print("Socket error: ", error.localizedDescription) }
+        supabaseRealtime.onClose { print("Socket closed") }
     }
     
     func fetchAll() async throws -> [T] {
@@ -39,6 +49,32 @@ class SupabaseService<T: Codable> {
     func delete(id: UUID) async throws {
         try await supabase.database.from(tableName).delete().eq(column: "id", value: id).execute()
     }
+    
+    func subscribeToChanges(columnName: String, value: String, callback: @escaping ([T]?) -> Void) {
+        let channel = supabaseRealtime.channel(.column(columnName, value: value, table: tableName, schema: "public"))
+        channel.on(.all) { message in
+            DispatchQueue.main.async {
+                let decoder = JSONDecoder()
+                if let data = try? JSONSerialization.data(withJSONObject: message.payload, options: []),
+                   let model = try? decoder.decode([T].self, from: data) {
+                    callback(model)
+                } else {
+                    callback(nil)
+                }
+            }
+        }
+         channel.subscribe()
+     }
+
+     func unsubscribeFromChanges(columnName: String, value: String) {
+         let channel = supabaseRealtime.channel(.column(columnName, value: value, table: tableName, schema: "public"))
+         channel.off(.all)
+         channel.unsubscribe()
+     }
+
+     func disconnect() {
+         supabaseRealtime.disconnect()
+     }
     
 }
 
@@ -94,5 +130,70 @@ class FriendsLinksSupabaseService: SupabaseService<FriendLinkModel> {
     
     func fetchLinksById(id: UUID) async throws -> [FriendLinkModel] {
         return try await fetchById(columnName: "id", id: id)
+    }
+}
+
+class NotificationsSupabaseService: SupabaseService<NotificationModel> {
+    init() {
+        super.init(tableName: "notifications")
+    }
+    
+    func fetchNotificationsByUserId(userId: UUID) async throws -> [NotificationModel] {
+        return try await fetchById(columnName: "user_id", id: userId)
+    }
+    
+    func subscribeToUserIdChanges(userId: UUID, callback: @escaping ([NotificationModel]?) -> Void) {
+        subscribeToChanges(columnName: "user_id", value: userId.uuidString, callback: callback)
+    }
+
+    func unsubscribeFromUserIdChanges(userId: UUID) {
+        unsubscribeFromChanges(columnName: "user_id", value: userId.uuidString)
+    }
+}
+
+
+class AuthSupabaseService {
+    
+    private let supabase: SupabaseClient
+    
+    init() {
+        self.supabase = appEnvironment.supabaseManager.supabase
+    }
+    
+    func authWithPhoneNumber(phoneNumber: String, otp: String, type: AuthType) async throws -> UUID? {
+        let response = try await supabase.auth.verifyOTP(phone: phoneNumber, token: otp, type: type == .signIn ? .sms : .signup)
+        
+        return response.user?.id
+    }
+    
+    
+    func sendOTP(phoneNumber: String) async throws {
+        //        let response = await supabase.auth.sendOTP(phone: phoneNumber)
+        //
+        //        switch response {
+        //        case .success(_):
+        //            print("OTP sent successfully")
+        //        case .failure(let error):
+        //            throw error
+        //        }
+    }
+    
+    func authWithApple(idToken: String, nonce: String) async throws -> UUID? {
+        let response = try await supabase.auth.signInWithIdToken(credentials: .init(provider: .apple, idToken: idToken, nonce: nonce))
+        return response.user.id
+    }
+    
+    func currentUserId() async -> UUID? {
+        var id: UUID?
+        do {
+            id = try await supabase.auth.session.user.id
+        } catch {
+            print("AuthSupabaseService: Error: Unable to get user id")
+        }
+        return id
+    }
+    
+    func signOut() async throws {
+        try await supabase.auth.signOut()
     }
 }
