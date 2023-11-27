@@ -29,6 +29,5 @@ struct RoundedGradientButton: View {
         }
         .disabled(!isEnabled)
         .padding(.bottom)
-        .padding(.horizontal)
     }
 }

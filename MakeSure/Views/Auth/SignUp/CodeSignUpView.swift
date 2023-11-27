@@ -11,6 +11,9 @@ import SwiftUI
 struct CodeSignUpView: View {
     @ObservedObject var viewModel: RegistrationViewModel
     @FocusState private var activeField: CodeFields?
+    @State private var remainingTime = 59
+    @State private var isTimerRunning = false
+    private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
     
     var body: some View {
         VStack {
@@ -24,15 +27,34 @@ struct CodeSignUpView: View {
                         .font(.rubicRegularFont(size: 16))
                         .foregroundColor(CustomColors.darkGray)
                         .padding(2)
-                    Button {
-                        viewModel.resendCode()
-                        viewModel.codeFields = Array<String>(repeating: "", count: 6)
-                        activeField = .field1
-                    } label: {
-                        Text("resend_button".localized)
+                    if isTimerRunning && remainingTime > 0 {
+                        Text(String(format: "resend_code_after".localized, remainingTime))
                             .font(.rubicRegularFont(size: 16))
-                            .foregroundColor(.black)
+                            .foregroundColor(.gray)
                             .padding(2)
+                    } else {
+                        Button {
+                            startTimer()
+                            viewModel.resendCode()
+                            viewModel.codeFields = Array<String>(repeating: "", count: 6)
+                            activeField = .field1
+                        } label: {
+                            Text("resend_button".localized)
+                                .font(.rubicRegularFont(size: 16))
+                                .foregroundColor(.black)
+                                .padding(2)
+                        }
+                    }
+                }
+                .onAppear {
+                    startTimer()
+                }
+                .onReceive(timer) { _ in
+                    if self.remainingTime > 0 && self.isTimerRunning {
+                        self.remainingTime -= 1
+                    } else {
+                        self.isTimerRunning = false
+                        self.timer.upstream.connect().cancel()
                     }
                 }
             }
@@ -52,6 +74,11 @@ struct CodeSignUpView: View {
             DOBConditions(value: newValue)
         }
         .navigationBarBackButtonHidden(true)
+    }
+    
+    func startTimer() {
+        self.isTimerRunning = true
+        self.remainingTime = 59
     }
     
     @ViewBuilder

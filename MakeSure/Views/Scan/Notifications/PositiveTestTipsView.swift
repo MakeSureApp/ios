@@ -9,7 +9,18 @@ import SwiftUI
 
 struct PositiveTestTipsView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            HStack {
+                Text("tips_heading".localized)
+                    .font(.rubicBoldFont(size: 34))
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+                Spacer()
+            }
+            Spacer()
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 20)
     }
 }
 

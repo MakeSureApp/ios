@@ -9,6 +9,7 @@ import Foundation
 
 class TestsViewModel: MainViewModel {
     
+    @Published var mainViewModel: MainViewModel
     @Published var tests: [TestModel] = []
     @Published var contactTests: [TestModel] = []
     @Published var isLoading: Bool = false
@@ -28,7 +29,15 @@ class TestsViewModel: MainViewModel {
         case contact
     }
     
+    init(mainViewModel: MainViewModel) {
+        self.mainViewModel = mainViewModel
+    }
+    
     func fetchTests() async {
+        guard let userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.isLoading = true
         }
@@ -71,10 +80,6 @@ class TestsViewModel: MainViewModel {
                 contactLastTests = contactTests.filter { $0.date?.startOfDay == latestDate.startOfDay }
             }
         }
-    }
-    
-    func orderNewBoxClicked() {
-        print("Order new box")
     }
     
     func uniqueDateRanges() -> [String] {

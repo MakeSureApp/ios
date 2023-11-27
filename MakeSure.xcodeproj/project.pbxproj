@@ -7,12 +7,58 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		520972B12A4F0AFD00B69128 /* ServerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520972B02A4F0AFD00B69128 /* ServerService.swift */; };
+		520972B32A4F0DE700B69128 /* TestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520972B22A4F0DE700B69128 /* TestResult.swift */; };
+		520972B52A4F1D0F00B69128 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520972B42A4F1D0F00B69128 /* CameraPreview.swift */; };
+		520972B72A4F42A700B69128 /* Data+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520972B62A4F42A700B69128 /* Data+Ext.swift */; };
+		520972B92A4F503B00B69128 /* View+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520972B82A4F503B00B69128 /* View+Ext.swift */; };
+		52225D452AB88AE700173A87 /* PositiveTestNotificationsWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D442AB88AE700173A87 /* PositiveTestNotificationsWrapperView.swift */; };
+		52225D482AB88C1200173A87 /* PositiveTestWarningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D472AB88C1200173A87 /* PositiveTestWarningView.swift */; };
+		52225D4A2AB88C2D00173A87 /* PositiveTestTipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D492AB88C2D00173A87 /* PositiveTestTipsView.swift */; };
+		52225D4C2AB88C6B00173A87 /* PositiveTestContactsSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D4B2AB88C6B00173A87 /* PositiveTestContactsSelectionView.swift */; };
+		52225D4E2AB88CC800173A87 /* PositiveTestSendNotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D4D2AB88CC800173A87 /* PositiveTestSendNotificationsView.swift */; };
+		52225D502AB88CF400173A87 /* PositiveTestVisitDoctorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D4F2AB88CF400173A87 /* PositiveTestVisitDoctorView.swift */; };
 		5222FD732A3A07D4000C86DB /* AppleSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5222FD722A3A07D4000C86DB /* AppleSignIn.swift */; };
+		5231605C2A97EDFB0038C024 /* LinkAppleSignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5231605B2A97EDFB0038C024 /* LinkAppleSignUpView.swift */; };
 		5246AF732A4079130084D5CF /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5246AF722A4079130084D5CF /* NotificationsView.swift */; };
 		5246AF752A407BC30084D5CF /* NotificationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5246AF742A407BC30084D5CF /* NotificationsViewModel.swift */; };
 		5246AF772A407CD40084D5CF /* NotificationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5246AF762A407CD40084D5CF /* NotificationModel.swift */; };
+		5252E0012AFB80E600198302 /* SelectContactItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5252E0002AFB80E600198302 /* SelectContactItemView.swift */; };
+		5252E0032AFB816500198302 /* ContactItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5252E0022AFB816500198302 /* ContactItemView.swift */; };
 		525B641B2A26338700B3E56E /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = 525B641A2A26338700B3E56E /* CodeScanner */; };
 		525B641E2A263A0800B3E56E /* ScannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525B641D2A263A0800B3E56E /* ScannerViewModel.swift */; };
+		528AD8622A9E5B0400B7F44D /* OneSignalExtension in Frameworks */ = {isa = PBXBuildFile; productRef = 528AD8612A9E5B0400B7F44D /* OneSignalExtension */; };
+		528AD8642A9E5B0400B7F44D /* OneSignalFramework in Frameworks */ = {isa = PBXBuildFile; productRef = 528AD8632A9E5B0400B7F44D /* OneSignalFramework */; };
+		528AD8662A9E5B0400B7F44D /* OneSignalInAppMessages in Frameworks */ = {isa = PBXBuildFile; productRef = 528AD8652A9E5B0400B7F44D /* OneSignalInAppMessages */; };
+		528AD86E2A9E5D0600B7F44D /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528AD86D2A9E5D0600B7F44D /* NotificationService.swift */; };
+		528AD8722A9E5D0600B7F44D /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 528AD86B2A9E5D0600B7F44D /* OneSignalNotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		528AD88B2A9F876800B7F44D /* Montserrat-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8792A9F876500B7F44D /* Montserrat-Bold.ttf */; };
+		528AD88C2A9F876800B7F44D /* Montserrat-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD87A2A9F876500B7F44D /* Montserrat-LightItalic.ttf */; };
+		528AD88D2A9F876800B7F44D /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD87B2A9F876500B7F44D /* Montserrat-SemiBold.ttf */; };
+		528AD88E2A9F876800B7F44D /* Montserrat-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD87C2A9F876600B7F44D /* Montserrat-ExtraLightItalic.ttf */; };
+		528AD88F2A9F876800B7F44D /* Montserrat-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD87D2A9F876600B7F44D /* Montserrat-ExtraBold.ttf */; };
+		528AD8902A9F876800B7F44D /* Montserrat-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD87E2A9F876600B7F44D /* Montserrat-ExtraBoldItalic.ttf */; };
+		528AD8912A9F876800B7F44D /* Montserrat-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD87F2A9F876600B7F44D /* Montserrat-Italic.ttf */; };
+		528AD8922A9F876800B7F44D /* Montserrat-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8802A9F876600B7F44D /* Montserrat-ThinItalic.ttf */; };
+		528AD8932A9F876800B7F44D /* Montserrat-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8812A9F876600B7F44D /* Montserrat-Light.ttf */; };
+		528AD8942A9F876800B7F44D /* Montserrat-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8822A9F876600B7F44D /* Montserrat-ExtraLight.ttf */; };
+		528AD8952A9F876800B7F44D /* Montserrat-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8832A9F876700B7F44D /* Montserrat-Black.ttf */; };
+		528AD8962A9F876800B7F44D /* Montserrat-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8842A9F876700B7F44D /* Montserrat-BoldItalic.ttf */; };
+		528AD8972A9F876800B7F44D /* Montserrat-BlackItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8852A9F876700B7F44D /* Montserrat-BlackItalic.ttf */; };
+		528AD8982A9F876800B7F44D /* Montserrat-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8862A9F876700B7F44D /* Montserrat-Medium.ttf */; };
+		528AD8992A9F876800B7F44D /* Montserrat-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8872A9F876700B7F44D /* Montserrat-Thin.ttf */; };
+		528AD89A2A9F876800B7F44D /* Montserrat-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8882A9F876700B7F44D /* Montserrat-MediumItalic.ttf */; };
+		528AD89B2A9F876800B7F44D /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD8892A9F876800B7F44D /* Montserrat-Regular.ttf */; };
+		528AD89C2A9F876800B7F44D /* Montserrat-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 528AD88A2A9F876800B7F44D /* Montserrat-SemiBoldItalic.ttf */; };
+		529755D32B11E52800C0CBFC /* OrderBoxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529755D22B11E52800C0CBFC /* OrderBoxView.swift */; };
+		529755D52B1219D700C0CBFC /* OrderBoxAddressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529755D42B1219D700C0CBFC /* OrderBoxAddressView.swift */; };
+		529755D72B121A1100C0CBFC /* OrderBoxAddressAndDeliveryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529755D62B121A1100C0CBFC /* OrderBoxAddressAndDeliveryView.swift */; };
+		529755D92B121A2F00C0CBFC /* OrderBoxReceiverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529755D82B121A2F00C0CBFC /* OrderBoxReceiverView.swift */; };
+		529755DB2B121A4300C0CBFC /* OrderBoxPaymentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529755DA2B121A4300C0CBFC /* OrderBoxPaymentView.swift */; };
+		529755DD2B12230400C0CBFC /* Calendar+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529755DC2B12230400C0CBFC /* Calendar+Ext.swift */; };
+		529755E02B13611A00C0CBFC /* OrderBoxViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529755DF2B13611900C0CBFC /* OrderBoxViewModel.swift */; };
+		529755E22B147A4500C0CBFC /* AlertMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529755E12B147A4500C0CBFC /* AlertMenu.swift */; };
+		529755E42B148CA800C0CBFC /* AlertTextFieldMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529755E32B148CA800C0CBFC /* AlertTextFieldMenu.swift */; };
 		529F3FE52A4098E300CC65E5 /* Realtime in Frameworks */ = {isa = PBXBuildFile; productRef = 529F3FE42A4098E300CC65E5 /* Realtime */; };
 		52DF81D02A42F1F5008DA5E6 /* URL+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DF81CF2A42F1F5008DA5E6 /* URL+Ext.swift */; };
 		52DF81D22A430137008DA5E6 /* DeeplinkHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52DF81D12A430137008DA5E6 /* DeeplinkHandler.swift */; };
@@ -127,7 +173,7 @@
 		CEB10ABE2A02674600B7B5DF /* SupabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB10ABD2A02674600B7B5DF /* SupabaseService.swift */; };
 		CEB10AC12A02758600B7B5DF /* Supabase in Frameworks */ = {isa = PBXBuildFile; productRef = CEB10AC02A02758600B7B5DF /* Supabase */; };
 		CEB10AC32A02B56800B7B5DF /* Meeting.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB10AC22A02B56800B7B5DF /* Meeting.swift */; };
-		CEB10ACB2A02B9D900B7B5DF /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB10ACA2A02B9D900B7B5DF /* SupabaseManager.swift */; };
+		CEB10ACB2A02B9D900B7B5DF /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB10ACA2A02B9D900B7B5DF /* NetworkManager.swift */; };
 		CEB10ACD2A02CA4900B7B5DF /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB10ACC2A02CA4900B7B5DF /* LoadingView.swift */; };
 		CEB46D7F29FC0968003F6345 /* Test.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEB46D7E29FC0968003F6345 /* Test.swift */; };
 		CECBA2F429FA7B3500A81F45 /* Date+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECBA2F329FA7B3500A81F45 /* Date+Ext.swift */; };
@@ -144,12 +190,81 @@
 		CED1D7F729F6DB3D00693DC2 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CED1D7F629F6DB3D00693DC2 /* HomeViewModel.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		528AD8702A9E5D0600B7F44D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CE91669C29F0419100612933 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 528AD86A2A9E5D0600B7F44D;
+			remoteInfo = OneSignalNotificationServiceExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		528AD8762A9E5D0600B7F44D /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				528AD8722A9E5D0600B7F44D /* OneSignalNotificationServiceExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		520972B02A4F0AFD00B69128 /* ServerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerService.swift; sourceTree = "<group>"; };
+		520972B22A4F0DE700B69128 /* TestResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResult.swift; sourceTree = "<group>"; };
+		520972B42A4F1D0F00B69128 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
+		520972B62A4F42A700B69128 /* Data+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Ext.swift"; sourceTree = "<group>"; };
+		520972B82A4F503B00B69128 /* View+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Ext.swift"; sourceTree = "<group>"; };
+		52225D442AB88AE700173A87 /* PositiveTestNotificationsWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestNotificationsWrapperView.swift; sourceTree = "<group>"; };
+		52225D472AB88C1200173A87 /* PositiveTestWarningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestWarningView.swift; sourceTree = "<group>"; };
+		52225D492AB88C2D00173A87 /* PositiveTestTipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestTipsView.swift; sourceTree = "<group>"; };
+		52225D4B2AB88C6B00173A87 /* PositiveTestContactsSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestContactsSelectionView.swift; sourceTree = "<group>"; };
+		52225D4D2AB88CC800173A87 /* PositiveTestSendNotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestSendNotificationsView.swift; sourceTree = "<group>"; };
+		52225D4F2AB88CF400173A87 /* PositiveTestVisitDoctorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestVisitDoctorView.swift; sourceTree = "<group>"; };
 		5222FD722A3A07D4000C86DB /* AppleSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSignIn.swift; sourceTree = "<group>"; };
+		5231605B2A97EDFB0038C024 /* LinkAppleSignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkAppleSignUpView.swift; sourceTree = "<group>"; };
 		5246AF722A4079130084D5CF /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		5246AF742A407BC30084D5CF /* NotificationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewModel.swift; sourceTree = "<group>"; };
 		5246AF762A407CD40084D5CF /* NotificationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationModel.swift; sourceTree = "<group>"; };
+		5252E0002AFB80E600198302 /* SelectContactItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectContactItemView.swift; sourceTree = "<group>"; };
+		5252E0022AFB816500198302 /* ContactItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactItemView.swift; sourceTree = "<group>"; };
 		525B641D2A263A0800B3E56E /* ScannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerViewModel.swift; sourceTree = "<group>"; };
+		528AD86B2A9E5D0600B7F44D /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		528AD86D2A9E5D0600B7F44D /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		528AD86F2A9E5D0600B7F44D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		528AD8772A9E5EAE00B7F44D /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
+		528AD8792A9F876500B7F44D /* Montserrat-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Bold.ttf"; sourceTree = "<group>"; };
+		528AD87A2A9F876500B7F44D /* Montserrat-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-LightItalic.ttf"; sourceTree = "<group>"; };
+		528AD87B2A9F876500B7F44D /* Montserrat-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-SemiBold.ttf"; sourceTree = "<group>"; };
+		528AD87C2A9F876600B7F44D /* Montserrat-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		528AD87D2A9F876600B7F44D /* Montserrat-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-ExtraBold.ttf"; sourceTree = "<group>"; };
+		528AD87E2A9F876600B7F44D /* Montserrat-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		528AD87F2A9F876600B7F44D /* Montserrat-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Italic.ttf"; sourceTree = "<group>"; };
+		528AD8802A9F876600B7F44D /* Montserrat-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-ThinItalic.ttf"; sourceTree = "<group>"; };
+		528AD8812A9F876600B7F44D /* Montserrat-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Light.ttf"; sourceTree = "<group>"; };
+		528AD8822A9F876600B7F44D /* Montserrat-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-ExtraLight.ttf"; sourceTree = "<group>"; };
+		528AD8832A9F876700B7F44D /* Montserrat-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Black.ttf"; sourceTree = "<group>"; };
+		528AD8842A9F876700B7F44D /* Montserrat-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-BoldItalic.ttf"; sourceTree = "<group>"; };
+		528AD8852A9F876700B7F44D /* Montserrat-BlackItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-BlackItalic.ttf"; sourceTree = "<group>"; };
+		528AD8862A9F876700B7F44D /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Medium.ttf"; sourceTree = "<group>"; };
+		528AD8872A9F876700B7F44D /* Montserrat-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Thin.ttf"; sourceTree = "<group>"; };
+		528AD8882A9F876700B7F44D /* Montserrat-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-MediumItalic.ttf"; sourceTree = "<group>"; };
+		528AD8892A9F876800B7F44D /* Montserrat-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-Regular.ttf"; sourceTree = "<group>"; };
+		528AD88A2A9F876800B7F44D /* Montserrat-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		529755D22B11E52800C0CBFC /* OrderBoxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderBoxView.swift; sourceTree = "<group>"; };
+		529755D42B1219D700C0CBFC /* OrderBoxAddressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderBoxAddressView.swift; sourceTree = "<group>"; };
+		529755D62B121A1100C0CBFC /* OrderBoxAddressAndDeliveryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderBoxAddressAndDeliveryView.swift; sourceTree = "<group>"; };
+		529755D82B121A2F00C0CBFC /* OrderBoxReceiverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderBoxReceiverView.swift; sourceTree = "<group>"; };
+		529755DA2B121A4300C0CBFC /* OrderBoxPaymentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderBoxPaymentView.swift; sourceTree = "<group>"; };
+		529755DC2B12230400C0CBFC /* Calendar+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Calendar+Ext.swift"; sourceTree = "<group>"; };
+		529755DF2B13611900C0CBFC /* OrderBoxViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderBoxViewModel.swift; sourceTree = "<group>"; };
+		529755E12B147A4500C0CBFC /* AlertMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertMenu.swift; sourceTree = "<group>"; };
+		529755E32B148CA800C0CBFC /* AlertTextFieldMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertTextFieldMenu.swift; sourceTree = "<group>"; };
 		52DF81CF2A42F1F5008DA5E6 /* URL+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Ext.swift"; sourceTree = "<group>"; };
 		52DF81D12A430137008DA5E6 /* DeeplinkHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeeplinkHandler.swift; sourceTree = "<group>"; };
 		52DF81D32A4308E4008DA5E6 /* SearchedUserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchedUserView.swift; sourceTree = "<group>"; };
@@ -261,7 +376,7 @@
 		CEA0DFB029FD4961006CFFE6 /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		CEB10ABD2A02674600B7B5DF /* SupabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseService.swift; sourceTree = "<group>"; };
 		CEB10AC22A02B56800B7B5DF /* Meeting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Meeting.swift; sourceTree = "<group>"; };
-		CEB10ACA2A02B9D900B7B5DF /* SupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseManager.swift; sourceTree = "<group>"; };
+		CEB10ACA2A02B9D900B7B5DF /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
 		CEB10ACC2A02CA4900B7B5DF /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		CEB46D7E29FC0968003F6345 /* Test.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Test.swift; sourceTree = "<group>"; };
 		CECBA2F329FA7B3500A81F45 /* Date+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ext.swift"; sourceTree = "<group>"; };
@@ -280,11 +395,21 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		528AD8682A9E5D0600B7F44D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CE9166A129F0419100612933 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				528AD8642A9E5B0400B7F44D /* OneSignalFramework in Frameworks */,
+				528AD8622A9E5B0400B7F44D /* OneSignalExtension in Frameworks */,
 				CE8DBC4B2A0F7F83005D3A79 /* QRCode in Frameworks */,
+				528AD8662A9E5B0400B7F44D /* OneSignalInAppMessages in Frameworks */,
 				CEB10AC12A02758600B7B5DF /* Supabase in Frameworks */,
 				CE8E0BB42A0A899C00C4D098 /* BottomSheet in Frameworks */,
 				529F3FE52A4098E300CC65E5 /* Realtime in Frameworks */,
@@ -296,6 +421,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		52225D462AB88BEC00173A87 /* Notifications */ = {
+			isa = PBXGroup;
+			children = (
+				52225D442AB88AE700173A87 /* PositiveTestNotificationsWrapperView.swift */,
+				52225D472AB88C1200173A87 /* PositiveTestWarningView.swift */,
+				52225D492AB88C2D00173A87 /* PositiveTestTipsView.swift */,
+				52225D4B2AB88C6B00173A87 /* PositiveTestContactsSelectionView.swift */,
+				52225D4D2AB88CC800173A87 /* PositiveTestSendNotificationsView.swift */,
+				52225D4F2AB88CF400173A87 /* PositiveTestVisitDoctorView.swift */,
+			);
+			path = Notifications;
+			sourceTree = "<group>";
+		};
 		5246AF712A4078D90084D5CF /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
@@ -318,6 +456,61 @@
 				525B641D2A263A0800B3E56E /* ScannerViewModel.swift */,
 			);
 			path = Scanner;
+			sourceTree = "<group>";
+		};
+		528AD86C2A9E5D0600B7F44D /* OneSignalNotificationServiceExtension */ = {
+			isa = PBXGroup;
+			children = (
+				528AD8772A9E5EAE00B7F44D /* OneSignalNotificationServiceExtension.entitlements */,
+				528AD86D2A9E5D0600B7F44D /* NotificationService.swift */,
+				528AD86F2A9E5D0600B7F44D /* Info.plist */,
+			);
+			path = OneSignalNotificationServiceExtension;
+			sourceTree = "<group>";
+		};
+		528AD8782A9F872400B7F44D /* Montserrat */ = {
+			isa = PBXGroup;
+			children = (
+				528AD8832A9F876700B7F44D /* Montserrat-Black.ttf */,
+				528AD8852A9F876700B7F44D /* Montserrat-BlackItalic.ttf */,
+				528AD8792A9F876500B7F44D /* Montserrat-Bold.ttf */,
+				528AD8842A9F876700B7F44D /* Montserrat-BoldItalic.ttf */,
+				528AD87D2A9F876600B7F44D /* Montserrat-ExtraBold.ttf */,
+				528AD87E2A9F876600B7F44D /* Montserrat-ExtraBoldItalic.ttf */,
+				528AD8822A9F876600B7F44D /* Montserrat-ExtraLight.ttf */,
+				528AD87C2A9F876600B7F44D /* Montserrat-ExtraLightItalic.ttf */,
+				528AD87F2A9F876600B7F44D /* Montserrat-Italic.ttf */,
+				528AD8812A9F876600B7F44D /* Montserrat-Light.ttf */,
+				528AD87A2A9F876500B7F44D /* Montserrat-LightItalic.ttf */,
+				528AD8862A9F876700B7F44D /* Montserrat-Medium.ttf */,
+				528AD8882A9F876700B7F44D /* Montserrat-MediumItalic.ttf */,
+				528AD8892A9F876800B7F44D /* Montserrat-Regular.ttf */,
+				528AD87B2A9F876500B7F44D /* Montserrat-SemiBold.ttf */,
+				528AD88A2A9F876800B7F44D /* Montserrat-SemiBoldItalic.ttf */,
+				528AD8872A9F876700B7F44D /* Montserrat-Thin.ttf */,
+				528AD8802A9F876600B7F44D /* Montserrat-ThinItalic.ttf */,
+			);
+			path = Montserrat;
+			sourceTree = "<group>";
+		};
+		529755D12B11E50000C0CBFC /* OrderBox */ = {
+			isa = PBXGroup;
+			children = (
+				529755D22B11E52800C0CBFC /* OrderBoxView.swift */,
+				529755D42B1219D700C0CBFC /* OrderBoxAddressView.swift */,
+				529755D62B121A1100C0CBFC /* OrderBoxAddressAndDeliveryView.swift */,
+				529755D82B121A2F00C0CBFC /* OrderBoxReceiverView.swift */,
+				529755DA2B121A4300C0CBFC /* OrderBoxPaymentView.swift */,
+			);
+			path = OrderBox;
+			sourceTree = "<group>";
+		};
+		529755DE2B13610100C0CBFC /* OrderBox */ = {
+			isa = PBXGroup;
+			children = (
+				529755DF2B13611900C0CBFC /* OrderBoxViewModel.swift */,
+			);
+			path = OrderBox;
 			sourceTree = "<group>";
 		};
 		CE27C8DC29F7F7AE006ACFED /* Settings */ = {
@@ -369,6 +562,7 @@
 		CE47D05029F3D3CB00AEC9DA /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				528AD8782A9F872400B7F44D /* Montserrat */,
 				CE47D07E29F3DAC300AEC9DA /* Poppins */,
 				CE47D06B29F3D94D00AEC9DA /* Inter */,
 				CE47D06529F3D4D500AEC9DA /* Rubic */,
@@ -457,6 +651,7 @@
 			isa = PBXGroup;
 			children = (
 				CE9166A629F0419100612933 /* MakeSure */,
+				528AD86C2A9E5D0600B7F44D /* OneSignalNotificationServiceExtension */,
 				CE9166A529F0419100612933 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -465,6 +660,7 @@
 			isa = PBXGroup;
 			children = (
 				CE9166A429F0419100612933 /* MakeSure.app */,
+				528AD86B2A9E5D0600B7F44D /* OneSignalNotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -498,6 +694,7 @@
 		CE9166B529F047A200612933 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				529755D12B11E50000C0CBFC /* OrderBox */,
 				5246AF712A4078D90084D5CF /* Notifications */,
 				CED9CBC42A000197004AB9E7 /* Extensions */,
 				CE9ADC6829F7EEFB00C5861A /* Settings */,
@@ -516,6 +713,7 @@
 		CE9166B629F047A900612933 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				529755DE2B13610100C0CBFC /* OrderBox */,
 				5246AF782A407F920084D5CF /* Notifications */,
 				525B641C2A2639FA00B3E56E /* Scanner */,
 				CE30F22A2A0147C4009EE06A /* Tests */,
@@ -539,6 +737,7 @@
 				CE1BD32E2A0522FF0018B7E2 /* Tips.swift */,
 				CE8DBC382A0F675A005D3A79 /* FriendLinkModel.swift */,
 				5246AF762A407CD40084D5CF /* NotificationModel.swift */,
+				520972B22A4F0DE700B69128 /* TestResult.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -548,9 +747,10 @@
 			children = (
 				CE99573C29F296200079B39A /* AuthService.swift */,
 				CEB10ABD2A02674600B7B5DF /* SupabaseService.swift */,
-				CEB10ACA2A02B9D900B7B5DF /* SupabaseManager.swift */,
+				CEB10ACA2A02B9D900B7B5DF /* NetworkManager.swift */,
 				5222FD722A3A07D4000C86DB /* AppleSignIn.swift */,
 				52DF81D12A430137008DA5E6 /* DeeplinkHandler.swift */,
+				520972B02A4F0AFD00B69128 /* ServerService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -566,6 +766,9 @@
 				CE8DBC3A2A0F74E1005D3A79 /* Image+Ext.swift */,
 				CE8DBC512A0F97EA005D3A79 /* Int+Ext.swift */,
 				52DF81CF2A42F1F5008DA5E6 /* URL+Ext.swift */,
+				520972B62A4F42A700B69128 /* Data+Ext.swift */,
+				520972B82A4F503B00B69128 /* View+Ext.swift */,
+				529755DC2B12230400C0CBFC /* Calendar+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -591,6 +794,7 @@
 				CE9166CD29F0F44700612933 /* BirthdaySignUpView.swift */,
 				CE9166CF29F0F4C700612933 /* GenderSignUpView.swift */,
 				CE9166D129F0F4E300612933 /* AddPhotoSignUpView.swift */,
+				5231605B2A97EDFB0038C024 /* LinkAppleSignUpView.swift */,
 				CE9166D329F0F63100612933 /* TermsOfUseSignUpView.swift */,
 				CE9166D529F0F66400612933 /* CongratulationSignUpView.swift */,
 				CECCA89C29F1581800D6FC30 /* RegistrationWrapperView.swift */,
@@ -657,6 +861,8 @@
 				CEA0DFB029FD4961006CFFE6 /* CalendarView.swift */,
 				CEB10ACC2A02CA4900B7B5DF /* LoadingView.swift */,
 				CE2268642A08DB52004D1138 /* RefreshableScrollView.swift */,
+				529755E12B147A4500C0CBFC /* AlertMenu.swift */,
+				529755E32B148CA800C0CBFC /* AlertTextFieldMenu.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -684,6 +890,8 @@
 			children = (
 				CED1D7F129F6D29800693DC2 /* ScannerView.swift */,
 				52DF81D32A4308E4008DA5E6 /* SearchedUserView.swift */,
+				520972B42A4F1D0F00B69128 /* CameraPreview.swift */,
+				52225D462AB88BEC00173A87 /* Notifications */,
 			);
 			path = Scan;
 			sourceTree = "<group>";
@@ -695,6 +903,8 @@
 				CECBA2F529FA950400A81F45 /* BlurView.swift */,
 				CEA0DFAE29FD0E6B006CFFE6 /* ContactView.swift */,
 				CE71A51E29FF87CD00608B03 /* SelectContactForDateView.swift */,
+				5252E0002AFB80E600198302 /* SelectContactItemView.swift */,
+				5252E0022AFB816500198302 /* ContactItemView.swift */,
 			);
 			path = Contacts;
 			sourceTree = "<group>";
@@ -717,6 +927,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		528AD86A2A9E5D0600B7F44D /* OneSignalNotificationServiceExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 528AD8732A9E5D0600B7F44D /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */;
+			buildPhases = (
+				528AD8672A9E5D0600B7F44D /* Sources */,
+				528AD8682A9E5D0600B7F44D /* Frameworks */,
+				528AD8692A9E5D0600B7F44D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = OneSignalNotificationServiceExtension;
+			productName = OneSignalNotificationServiceExtension;
+			productReference = 528AD86B2A9E5D0600B7F44D /* OneSignalNotificationServiceExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		CE9166A329F0419100612933 /* MakeSure */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = CE9166B229F0419300612933 /* Build configuration list for PBXNativeTarget "MakeSure" */;
@@ -724,10 +951,12 @@
 				CE9166A029F0419100612933 /* Sources */,
 				CE9166A129F0419100612933 /* Frameworks */,
 				CE9166A229F0419100612933 /* Resources */,
+				528AD8762A9E5D0600B7F44D /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				528AD8712A9E5D0600B7F44D /* PBXTargetDependency */,
 			);
 			name = MakeSure;
 			packageProductDependencies = (
@@ -737,6 +966,9 @@
 				CE8DBC4A2A0F7F83005D3A79 /* QRCode */,
 				525B641A2A26338700B3E56E /* CodeScanner */,
 				529F3FE42A4098E300CC65E5 /* Realtime */,
+				528AD8612A9E5B0400B7F44D /* OneSignalExtension */,
+				528AD8632A9E5B0400B7F44D /* OneSignalFramework */,
+				528AD8652A9E5B0400B7F44D /* OneSignalInAppMessages */,
 			);
 			productName = MakeSure;
 			productReference = CE9166A429F0419100612933 /* MakeSure.app */;
@@ -749,9 +981,12 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1400;
+				LastSwiftUpdateCheck = 1430;
 				LastUpgradeCheck = 1400;
 				TargetAttributes = {
+					528AD86A2A9E5D0600B7F44D = {
+						CreatedOnToolsVersion = 14.3;
+					};
 					CE9166A329F0419100612933 = {
 						CreatedOnToolsVersion = 14.0;
 					};
@@ -774,24 +1009,37 @@
 				CE8DBC492A0F7F83005D3A79 /* XCRemoteSwiftPackageReference "qrcode" */,
 				525B64192A26338700B3E56E /* XCRemoteSwiftPackageReference "CodeScanner" */,
 				529F3FE32A4098E300CC65E5 /* XCRemoteSwiftPackageReference "realtime-swift" */,
+				528AD8602A9E5B0400B7F44D /* XCRemoteSwiftPackageReference "OneSignal-XCFramework" */,
 			);
 			productRefGroup = CE9166A529F0419100612933 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				CE9166A329F0419100612933 /* MakeSure */,
+				528AD86A2A9E5D0600B7F44D /* OneSignalNotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		528AD8692A9E5D0600B7F44D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CE9166A229F0419100612933 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				CE47D09929F3DADB00AEC9DA /* Poppins-ExtraLight.ttf in Resources */,
+				528AD8942A9F876800B7F44D /* Montserrat-ExtraLight.ttf in Resources */,
 				CE47D09C29F3DADB00AEC9DA /* Poppins-MediumItalic.ttf in Resources */,
 				CE47D09A29F3DADB00AEC9DA /* Poppins-SemiBoldItalic.ttf in Resources */,
+				528AD8912A9F876800B7F44D /* Montserrat-Italic.ttf in Resources */,
+				528AD8962A9F876800B7F44D /* Montserrat-BoldItalic.ttf in Resources */,
+				528AD8992A9F876800B7F44D /* Montserrat-Thin.ttf in Resources */,
 				CE47D07929F3D95E00AEC9DA /* Inter-ExtraBold.ttf in Resources */,
 				CE47D05B29F3D3F100AEC9DA /* Rubik-LightItalic.ttf in Resources */,
 				CE47D06029F3D3F100AEC9DA /* Rubik-Regular.ttf in Resources */,
@@ -802,13 +1050,24 @@
 				CE47D07B29F3D95E00AEC9DA /* Inter-Light.ttf in Resources */,
 				CE9166AF29F0419300612933 /* Preview Assets.xcassets in Resources */,
 				CE47D05D29F3D3F100AEC9DA /* Rubik-Light.ttf in Resources */,
+				528AD8902A9F876800B7F44D /* Montserrat-ExtraBoldItalic.ttf in Resources */,
+				528AD8922A9F876800B7F44D /* Montserrat-ThinItalic.ttf in Resources */,
+				528AD89A2A9F876800B7F44D /* Montserrat-MediumItalic.ttf in Resources */,
+				528AD8952A9F876800B7F44D /* Montserrat-Black.ttf in Resources */,
+				528AD88F2A9F876800B7F44D /* Montserrat-ExtraBold.ttf in Resources */,
 				CE47D05E29F3D3F100AEC9DA /* Rubik-Medium.ttf in Resources */,
 				CE47D07C29F3D95E00AEC9DA /* Inter-SemiBold.ttf in Resources */,
+				528AD89B2A9F876800B7F44D /* Montserrat-Regular.ttf in Resources */,
 				CE47D09829F3DADB00AEC9DA /* Poppins-Bold.ttf in Resources */,
 				CE47D06129F3D3F100AEC9DA /* Rubik-Italic.ttf in Resources */,
+				528AD88E2A9F876800B7F44D /* Montserrat-ExtraLightItalic.ttf in Resources */,
 				CE8DBC582A0FA6FE005D3A79 /* Localizable.strings in Resources */,
 				CE47D09E29F3DADB00AEC9DA /* Poppins-LightItalic.ttf in Resources */,
+				528AD8972A9F876800B7F44D /* Montserrat-BlackItalic.ttf in Resources */,
 				CE47D07D29F3D95E00AEC9DA /* Inter-ExtraLight.ttf in Resources */,
+				528AD88C2A9F876800B7F44D /* Montserrat-LightItalic.ttf in Resources */,
+				528AD88B2A9F876800B7F44D /* Montserrat-Bold.ttf in Resources */,
+				528AD8982A9F876800B7F44D /* Montserrat-Medium.ttf in Resources */,
 				CE47D0A129F3DADB00AEC9DA /* Poppins-Thin.ttf in Resources */,
 				CE47D09529F3DADB00AEC9DA /* Poppins-ExtraBold.ttf in Resources */,
 				CE47D09F29F3DADB00AEC9DA /* Poppins-Light.ttf in Resources */,
@@ -818,9 +1077,12 @@
 				CE47D07A29F3D95E00AEC9DA /* Inter-Regular.ttf in Resources */,
 				CE47D07729F3D95E00AEC9DA /* Inter-Medium.ttf in Resources */,
 				CE47D05F29F3D3F100AEC9DA /* Rubik-MediumItalic.ttf in Resources */,
+				528AD89C2A9F876800B7F44D /* Montserrat-SemiBoldItalic.ttf in Resources */,
 				CE99BFFB2A0FBAAE002ABE09 /* Localizable.strings in Resources */,
 				CE47D09229F3DADB00AEC9DA /* Poppins-ExtraLightItalic.ttf in Resources */,
 				CE47D09429F3DADB00AEC9DA /* Poppins-Italic.ttf in Resources */,
+				528AD88D2A9F876800B7F44D /* Montserrat-SemiBold.ttf in Resources */,
+				528AD8932A9F876800B7F44D /* Montserrat-Light.ttf in Resources */,
 				CE47D0A229F3DADB00AEC9DA /* Poppins-SemiBold.ttf in Resources */,
 				CE47D05C29F3D3F100AEC9DA /* Rubik-Black.ttf in Resources */,
 				CE47D07629F3D95E00AEC9DA /* Inter-Bold.ttf in Resources */,
@@ -836,10 +1098,19 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		528AD8672A9E5D0600B7F44D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				528AD86E2A9E5D0600B7F44D /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CE9166A029F0419100612933 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				520972B32A4F0DE700B69128 /* TestResult.swift in Sources */,
 				CE9166DA29F1051500612933 /* String+Ext.swift in Sources */,
 				CE27C8DE29F7F7C0006ACFED /* SettingsViewModel.swift in Sources */,
 				CEA0DFB129FD4961006CFFE6 /* CalendarView.swift in Sources */,
@@ -854,17 +1125,24 @@
 				CED1D7E829F6C76500693DC2 /* AppleSignInButton.swift in Sources */,
 				CE99573F29F298870079B39A /* LoginViewModel.swift in Sources */,
 				CE9166D429F0F63100612933 /* TermsOfUseSignUpView.swift in Sources */,
+				529755E42B148CA800C0CBFC /* AlertTextFieldMenu.swift in Sources */,
+				5252E0012AFB80E600198302 /* SelectContactItemView.swift in Sources */,
+				52225D4C2AB88C6B00173A87 /* PositiveTestContactsSelectionView.swift in Sources */,
 				CE47D04D29F3BD9000AEC9DA /* CaseIterable+Ext.swift in Sources */,
 				CE9166CA29F0F37C00612933 /* VerifyEmailSignUpView.swift in Sources */,
 				CE9166BF29F04AE900612933 /* RegistrationViewModel.swift in Sources */,
 				5246AF732A4079130084D5CF /* NotificationsView.swift in Sources */,
+				529755D92B121A2F00C0CBFC /* OrderBoxReceiverView.swift in Sources */,
 				CE2268652A08DB52004D1138 /* RefreshableScrollView.swift in Sources */,
 				CE9166AA29F0419100612933 /* ContentView.swift in Sources */,
 				CE99573D29F296200079B39A /* AuthService.swift in Sources */,
 				CEB10ACD2A02CA4900B7B5DF /* LoadingView.swift in Sources */,
+				520972B72A4F42A700B69128 /* Data+Ext.swift in Sources */,
 				CE99574E29F2B58B0079B39A /* LoginWrapperView.swift in Sources */,
 				CE9166CE29F0F44700612933 /* BirthdaySignUpView.swift in Sources */,
 				CE27C8F929F92C80006ACFED /* CodeSettingsView.swift in Sources */,
+				52225D502AB88CF400173A87 /* PositiveTestVisitDoctorView.swift in Sources */,
+				5252E0032AFB816500198302 /* ContactItemView.swift in Sources */,
 				CE9166D029F0F4C700612933 /* GenderSignUpView.swift in Sources */,
 				5222FD732A3A07D4000C86DB /* AppleSignIn.swift in Sources */,
 				CE1BD32F2A0522FF0018B7E2 /* Tips.swift in Sources */,
@@ -886,52 +1164,75 @@
 				CE30F22C2A0147D2009EE06A /* TestsViewModel.swift in Sources */,
 				52DF81D22A430137008DA5E6 /* DeeplinkHandler.swift in Sources */,
 				CED1D7F729F6DB3D00693DC2 /* HomeViewModel.swift in Sources */,
+				5231605C2A97EDFB0038C024 /* LinkAppleSignUpView.swift in Sources */,
 				CE9166A829F0419100612933 /* MakeSureApp.swift in Sources */,
+				529755DB2B121A4300C0CBFC /* OrderBoxPaymentView.swift in Sources */,
 				CE9166BB29F0485800612933 /* MainTabView.swift in Sources */,
 				CED1D7EE29F6D25B00693DC2 /* HomeView.swift in Sources */,
 				CE9ADC6729F7DA4900C5861A /* ViewModelFactory.swift in Sources */,
 				CE9166D229F0F4E300612933 /* AddPhotoSignUpView.swift in Sources */,
+				529755D52B1219D700C0CBFC /* OrderBoxAddressView.swift in Sources */,
 				CE27C8FD29F92D43006ACFED /* CongratulationsEmailSettingsView.swift in Sources */,
 				CE27C90529F9589B006ACFED /* Card.swift in Sources */,
 				CE9166C429F0F1B700612933 /* NumberSignUpView.swift in Sources */,
 				CE47D04F29F3C44400AEC9DA /* CountryCodes.swift in Sources */,
 				CED1D7DB29F6688C00693DC2 /* RoundedGradientButtonView.swift in Sources */,
+				529755D32B11E52800C0CBFC /* OrderBoxView.swift in Sources */,
 				CECCA89D29F1581800D6FC30 /* RegistrationWrapperView.swift in Sources */,
 				CE47D0AA29F3DEFB00AEC9DA /* Font+Ext.swift in Sources */,
 				CED1D7F229F6D29800693DC2 /* ScannerView.swift in Sources */,
 				CED1D7DF29F6704800693DC2 /* CustomUnderlinedView.swift in Sources */,
 				CE9ADC6C29F7EF7C00C5861A /* PrivacySafetyView.swift in Sources */,
 				CE27C90329F9383B006ACFED /* VerifyEmailSettingsView.swift in Sources */,
+				529755E02B13611A00C0CBFC /* OrderBoxViewModel.swift in Sources */,
 				CE27C8FF29F9314B006ACFED /* NumberSettingsWrapperView.swift in Sources */,
 				CE9166BD29F04A0200612933 /* InitialSelectionView.swift in Sources */,
 				CEB46D7F29FC0968003F6345 /* Test.swift in Sources */,
+				520972B52A4F1D0F00B69128 /* CameraPreview.swift in Sources */,
+				520972B12A4F0AFD00B69128 /* ServerService.swift in Sources */,
 				CE27C8F329F91A53006ACFED /* ContactsViewModel.swift in Sources */,
 				CE99574C29F2B1F60079B39A /* CodeSignInView.swift in Sources */,
 				52DF81D02A42F1F5008DA5E6 /* URL+Ext.swift in Sources */,
 				CE9166CC29F0F40500612933 /* NameSignUpView.swift in Sources */,
 				CE2C839C29FA620D0029F451 /* User.swift in Sources */,
 				CE27C8E629F8111C006ACFED /* OverlaySettingsView.swift in Sources */,
+				529755E22B147A4500C0CBFC /* AlertMenu.swift in Sources */,
 				CECBA2F429FA7B3500A81F45 /* Date+Ext.swift in Sources */,
 				CED1D7F029F6D26800693DC2 /* TestsView.swift in Sources */,
 				CE27C8F029F907D2006ACFED /* LanguageSelectionView.swift in Sources */,
 				CE27C8EC29F81EC3006ACFED /* NavigationViewHeight.swift in Sources */,
 				CE71A51F29FF87CD00608B03 /* SelectContactForDateView.swift in Sources */,
+				520972B92A4F503B00B69128 /* View+Ext.swift in Sources */,
 				CE9166C629F0F26C00612933 /* CodeSignUpView.swift in Sources */,
-				CEB10ACB2A02B9D900B7B5DF /* SupabaseManager.swift in Sources */,
+				CEB10ACB2A02B9D900B7B5DF /* NetworkManager.swift in Sources */,
+				529755D72B121A1100C0CBFC /* OrderBoxAddressAndDeliveryView.swift in Sources */,
 				CECBA2F629FA950400A81F45 /* BlurView.swift in Sources */,
+				52225D4A2AB88C2D00173A87 /* PositiveTestTipsView.swift in Sources */,
 				CE71A52129FFB8F700608B03 /* ViewingImageView.swift in Sources */,
 				5246AF752A407BC30084D5CF /* NotificationsViewModel.swift in Sources */,
 				CE27C8E829F81D95006ACFED /* NumberSettingsView.swift in Sources */,
 				CE9ADC6529F7D77D00C5861A /* AppEnvironment.swift in Sources */,
+				52225D4E2AB88CC800173A87 /* PositiveTestSendNotificationsView.swift in Sources */,
 				CE8DBC542A0F9868005D3A79 /* LocalizationManager.swift in Sources */,
 				CE27C8E029F80D07006ACFED /* LegalPoliciesView.swift in Sources */,
 				CE99574429F2A6AD0079B39A /* MainViewModel.swift in Sources */,
+				529755DD2B12230400C0CBFC /* Calendar+Ext.swift in Sources */,
+				52225D482AB88C1200173A87 /* PositiveTestWarningView.swift in Sources */,
+				52225D452AB88AE700173A87 /* PositiveTestNotificationsWrapperView.swift in Sources */,
 				5246AF772A407CD40084D5CF /* NotificationModel.swift in Sources */,
 				CE27C8EE29F8F23E006ACFED /* HelpView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		528AD8712A9E5D0600B7F44D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 528AD86A2A9E5D0600B7F44D /* OneSignalNotificationServiceExtension */;
+			targetProxy = 528AD8702A9E5D0600B7F44D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		CE8DBC5A2A0FA6FE005D3A79 /* Localizable.strings */ = {
@@ -953,6 +1254,60 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		528AD8742A9E5D0600B7F44D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = OneSignalNotificationServiceExtension/OneSignalNotificationServiceExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2R5RR73H3E;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OneSignalNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.turbopro.MakeSure.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		528AD8752A9E5D0600B7F44D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = OneSignalNotificationServiceExtension/OneSignalNotificationServiceExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2R5RR73H3E;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = OneSignalNotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = OneSignalNotificationServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ru.turbopro.MakeSure.OneSignalNotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		CE9166B029F0419300612933 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1072,6 +1427,7 @@
 		CE9166B329F0419300612933 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ANALYZER_LOCALIZABILITY_EMPTY_CONTEXT = NO;
@@ -1106,6 +1462,7 @@
 		CE9166B429F0419300612933 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ANALYZER_LOCALIZABILITY_EMPTY_CONTEXT = NO;
@@ -1140,6 +1497,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		528AD8732A9E5D0600B7F44D /* Build configuration list for PBXNativeTarget "OneSignalNotificationServiceExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				528AD8742A9E5D0600B7F44D /* Debug */,
+				528AD8752A9E5D0600B7F44D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		CE91669F29F0419100612933 /* Build configuration list for PBXProject "MakeSure" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1167,6 +1533,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.0.0;
+			};
+		};
+		528AD8602A9E5B0400B7F44D /* XCRemoteSwiftPackageReference "OneSignal-XCFramework" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/OneSignal/OneSignal-XCFramework";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.0.1;
 			};
 		};
 		529F3FE32A4098E300CC65E5 /* XCRemoteSwiftPackageReference "realtime-swift" */ = {
@@ -1216,6 +1590,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 525B64192A26338700B3E56E /* XCRemoteSwiftPackageReference "CodeScanner" */;
 			productName = CodeScanner;
+		};
+		528AD8612A9E5B0400B7F44D /* OneSignalExtension */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 528AD8602A9E5B0400B7F44D /* XCRemoteSwiftPackageReference "OneSignal-XCFramework" */;
+			productName = OneSignalExtension;
+		};
+		528AD8632A9E5B0400B7F44D /* OneSignalFramework */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 528AD8602A9E5B0400B7F44D /* XCRemoteSwiftPackageReference "OneSignal-XCFramework" */;
+			productName = OneSignalFramework;
+		};
+		528AD8652A9E5B0400B7F44D /* OneSignalInAppMessages */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 528AD8602A9E5B0400B7F44D /* XCRemoteSwiftPackageReference "OneSignal-XCFramework" */;
+			productName = OneSignalInAppMessages;
 		};
 		529F3FE42A4098E300CC65E5 /* Realtime */ = {
 			isa = XCSwiftPackageProductDependency;

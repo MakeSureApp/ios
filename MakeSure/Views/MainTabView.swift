@@ -15,14 +15,16 @@ struct MainTabView: View {
     @ObservedObject private var testsViewModel: TestsViewModel
     @ObservedObject private var scannerViewModel: ScannerViewModel
     @ObservedObject private var notificationsViewModel: NotificationsViewModel
+    @ObservedObject private var orderBoxViewModel: OrderBoxViewModel
     @ObservedObject private var deeplinkHandler: DeeplinkHandler
     @State private var showSettings = false
     
     @State private var activeSheet: ActiveSheet?
+    @State private var shouldPresentSendNotificationsToContactsView: Bool = false
     @State private var shouldPresentSearchedUserSheet: Bool = false
     
     enum ActiveSheet: Identifiable {
-        case privacySafety, help, addEmail, changePhoneNumber, legalPolicies, blacklist
+        case addEmail, changePhoneNumber, blacklist
         
         var id: Int {
             hashValue
@@ -38,6 +40,7 @@ struct MainTabView: View {
         _testsViewModel = ObservedObject(wrappedValue: viewmodels.getTestsViewModel())
         _scannerViewModel = ObservedObject(wrappedValue: viewmodels.getScannerViewModel())
         _notificationsViewModel = ObservedObject(wrappedValue: viewmodels.getNotificationsViewModel())
+        _orderBoxViewModel = ObservedObject(wrappedValue: viewmodels.getOrderBoxViewModel())
         _deeplinkHandler = ObservedObject(wrappedValue: appEnvironment.deeplinkHandler)
     }
     
@@ -52,6 +55,7 @@ struct MainTabView: View {
         .onTapGesture {
             contactsViewModel.showCalendar = false
             homeViewModel.showPhotoMenu = false
+            homeViewModel.showPickPhotoMenu = false
         }
         .overlay {
             if contactsViewModel.showCalendar {
@@ -94,7 +98,15 @@ struct MainTabView: View {
                     .environmentObject(notificationsViewModel)
                     .environmentObject(homeViewModel)
             }
-            
+            if scannerViewModel.showSendNotificationsToContactsView {
+                PositiveTestNotificationsWrapperView()
+                    .environmentObject(scannerViewModel)
+                    .environmentObject(contactsViewModel)
+            }
+            if viewModel.showOrderBoxView {
+                OrderBoxView()
+                    .environmentObject(orderBoxViewModel)
+            }
         }
         .onChange(of: deeplinkHandler.deeplinkNavigation) { navigation in
             if let navigation {
@@ -126,18 +138,18 @@ struct MainTabView: View {
         }
         .sheet(item: $activeSheet) { item in
             switch item {
-            case .privacySafety:
-                PrivacySafetyView()
-            case .help:
-                HelpView()
+//            case .privacySafety:
+//                PrivacySafetyView()
+//            case .help:
+//                HelpView()
             case .addEmail:
                 EmailSettingsWrapperView()
                     .environmentObject(settingsViewModel)
             case .changePhoneNumber:
                 NumberSettingsWrapperView()
                     .environmentObject(settingsViewModel)
-            case .legalPolicies:
-                LegalPoliciesView()
+//            case .legalPolicies:
+//                LegalPoliciesView()
             case .blacklist:
                 BlacklistView()
                     .environmentObject(appEnvironment.viewModelFactory.getContactsViewModel())
@@ -159,15 +171,15 @@ private extension MainTabView {
                     Image("menuNavBarIcon")
                         .resizable()
                         .renderingMode(.template)
-                        .frame(width: 25, height: 17)
+                        .frame(width: 24, height: 16)
                         .foregroundColor(viewModel.currentTab == .tests ||
-                                         viewModel.currentTab == .scanner ? .white : .black)
-                        .padding(.leading, 6)
+                                         viewModel.currentTab == .scanner ? .white : CustomColors.darkBlue)
+                        .padding(.leading, 12)
                 }
                 Spacer()
                 if contactsViewModel.isShowLinkIsCopied {
                     Text("link_copied_message".localized)
-                        .font(.poppinsRegularFont(size: 17))
+                        .font(.montserratRegularFont(size: 17))
                         .foregroundColor(.white)
                         .padding(.horizontal)
                         .background(
@@ -175,23 +187,26 @@ private extension MainTabView {
                                 .fill(CustomColors.fourthGradient)
                         )
                 } else {
-                    Text("MAKE SURE")
-                        .font(.custom("BebasNeue", size: 28))
-                        .overlay {
-                            if viewModel.currentTab == .tests || viewModel.currentTab == .scanner {
-                                CustomColors.whiteGradient
-                                    .mask(
-                                        Text("MAKE SURE")
-                                            .font(.custom("BebasNeue", size: 28))
-                                    )
-                            } else {
-                                CustomColors.secondGradient
-                                    .mask(
-                                        Text("MAKE SURE")
-                                            .font(.custom("BebasNeue", size: 28))
-                                    )
-                            }
-                        }
+//                    Text("MAKE SURE")
+//                        .font(.custom("BebasNeue", size: 28))
+//                        .overlay {
+//                            if viewModel.currentTab == .tests || viewModel.currentTab == .scanner {
+//                                CustomColors.whiteGradient
+//                                    .mask(
+//                                        Text("MAKE SURE")
+//                                            .font(.custom("BebasNeue", size: 28))
+//                                    )
+//                            } else {
+//                                CustomColors.secondGradient
+//                                    .mask(
+//                                        Text("MAKE SURE")
+//                                            .font(.custom("BebasNeue", size: 28))
+//                                    )
+//                            }
+//                        }
+                    Image("logoIcon")
+                        .resizable()
+                        .frame(width: 26, height: 26)
                 }
                 Spacer()
                 HStack {
@@ -204,18 +219,18 @@ private extension MainTabView {
                             Image("calendarNavBarIcon")
                                 .resizable()
                                 .renderingMode(.template)
-                                .frame(width: 23, height: 23)
-                                .foregroundColor(viewModel.currentTab == .tests ? .white : .black)
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(viewModel.currentTab == .tests ? .white : CustomColors.darkBlue)
                         }
                     } else {
                         Button(action: {
                             homeViewModel.showMyQRCode.toggle()
                         }) {
-                            Image("scannerNavBarIcon")
+                            Image("qrcodeIcon")
                                 .resizable()
                                 .renderingMode(.template)
-                                .frame(width: 18, height: 18)
-                                .foregroundColor(viewModel.currentTab == .scanner ? .white : .black)
+                                .frame(width: 24, height: 24)
+                                .foregroundColor(viewModel.currentTab == .scanner ? .white : CustomColors.darkBlue)
                         }
                     }
                     Button(action: {
@@ -223,15 +238,13 @@ private extension MainTabView {
                             homeViewModel.showNotificationsView.toggle()
                         }
                     }) {
-                        Image("notificationNavBarIcon")
+                        Image("bellIcon")
                             .resizable()
                             .renderingMode(.template)
-                            .frame(width: 15, height: 19)
-                            .foregroundColor(viewModel.currentTab == .tests || viewModel.currentTab == .scanner ? .white : .black)
+                            .frame(width: 24, height: 24)
+                            .foregroundColor(viewModel.currentTab == .tests || viewModel.currentTab == .scanner ? .white : CustomColors.darkBlue)
                     }
-                    .padding(.leading, 8)
                 }
-                .padding(.trailing, 8)
             }
             .padding(.horizontal, 12)
             .background(viewModel.currentTab == .tests || viewModel.currentTab == .scanner ? Color.gradientPurple2 : .white)
@@ -304,11 +317,6 @@ struct CustomTabItem: View {
                 Image(item.imageName)
                     .resizable()
                     .frame(width: item.imageSize.width, height: item.imageSize.height)
-                    .foregroundColor(CustomColors.purpleColor)
-                    .padding(.top, item == .tests ? -5 : 0)
-                Text(item.name)
-                    .font(.poppinsMediumFont(size: 12))
-                    .foregroundColor(CustomColors.purpleColor)
             }
         })
         .frame(height: 50)

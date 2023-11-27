@@ -9,24 +9,26 @@ import SwiftUI
 
 struct OrderBoxAddressAndDeliveryView: View {
     
-    @State private var text: String = ""
+    @EnvironmentObject var viewModel: OrderBoxViewModel
+    
     @FocusState private var isInputActive: Bool
     @State private var isPickerPresented = false
-    @State private var selectedNumber = 1
     
     var body: some View {
         VStack {
             HStack {
                 Button {
-                    
+                    withAnimation {
+                        viewModel.isOpenAddressAndDelivery = false
+                    }
                 } label: {
                     Image("arrowIcon")
                         .resizable()
                         .rotationEffect(.degrees(180))
-                        .frame(width: 8, height: 14)
+                        .frame(width: 12, height: 18)
                 }
                 Spacer()
-                Text("адрес и доставка")
+                Text("address_and_delivery".localized)
                     .font(.montserratBoldFont(size: 18))
                     .foregroundStyle(.black)
                 Spacer()
@@ -35,7 +37,7 @@ struct OrderBoxAddressAndDeliveryView: View {
                 VStack(spacing: 20) {
                     VStack(spacing: 10) {
                         HStack {
-                            Text("населенный пункт")
+                            Text("city".localized)
                                 .font(.montserratBoldFont(size: 22))
                                 .foregroundStyle(.black)
                             Spacer()
@@ -48,9 +50,10 @@ struct OrderBoxAddressAndDeliveryView: View {
                             Spacer()
                         }
                     }
+                    
                     VStack(spacing: 10) {
                         HStack {
-                            Text("адрес")
+                            Text("address".localized)
                                 .font(.montserratBoldFont(size: 22))
                                 .foregroundStyle(.black)
                             Spacer()
@@ -59,39 +62,48 @@ struct OrderBoxAddressAndDeliveryView: View {
                                 .frame(width: 8, height: 14)
                         }
                         HStack {
-                            Text("ул. Костякова, д. 8/6, кв. 146")
+                            Text(viewModel.deliveryDetailsWithoutCity)
                                 .font(.montserratRegularFont(size: 12))
                                 .foregroundStyle(.black)
                                 .multilineTextAlignment(.leading)
                             Spacer()
                         }
                     }
+                    .contentShape(Rectangle())
+                    .onTapGesture {
+                        withAnimation {
+                            viewModel.isOpenAddress = true
+                        }
+                    }
+                    
                     VStack(spacing: 10) {
                         HStack {
-                            Text("комментарий")
+                            Text("comment".localized)
                                 .font(.montserratBoldFont(size: 22))
                                 .foregroundStyle(.black)
                             Spacer()
                         }
                         CustomUnderlinedView(color: CustomColors.darkGray, height: 0.2) {
-                            TextField("информация для курьера", text: $text)
+                            TextField("courier_information".localized, text: $viewModel.comment)
                                 .padding(4)
                                 .focused($isInputActive)
                                 .font(.montserratRegularFont(size: 12))
                         }
                     }
+                    
                     VStack(spacing: 12) {
                         HStack {
-                            Text("дата и время доставки")
+                            Text("delivery_date_and_time".localized)
                                 .font(.montserratBoldFont(size: 22))
                                 .foregroundStyle(.black)
                             Spacer()
                         }
-                        WeekView()
-                        TimeSlotView()
+                        WeekView(selectedDay: $viewModel.selectedDay)
+                        TimeSlotView(selectedSlot: $viewModel.selectedTimeSlot)
                     }
+                    
                     HStack {
-                        Text("количество")
+                        Text("quantity".localized)
                             .font(.montserratBoldFont(size: 22))
                             .foregroundStyle(.black)
                         Button(action: {
@@ -100,7 +112,7 @@ struct OrderBoxAddressAndDeliveryView: View {
                             }
                         }) {
                             HStack {
-                                Text("\(selectedNumber)")
+                                Text("\(viewModel.selectedCount)")
                                     .font(.montserratRegularFont(size: 16))
                                     .foregroundStyle(.black)
                                     .padding(.horizontal)
@@ -114,20 +126,32 @@ struct OrderBoxAddressAndDeliveryView: View {
                         .padding()
                         Spacer()
                     }
-                    OrderBoxSummarySectionView()
-                    RoundedGradientButton(text: "continue_button".localized.uppercased(), isEnabled: true) {
+                    
+                    OrderBoxSummarySectionView(price: viewModel.price, deliveryPrice: viewModel.deliveryPrice)
+                    
+                    RoundedGradientButton(text: "continue_button".localized.uppercased(), isEnabled: viewModel.isDeliveryFieldsValid()) {
                         isInputActive = false
+                        withAnimation {
+                            viewModel.isOpenAddressAndDelivery = false
+                        }
                     }
                 }
                 .padding(.vertical, 20)
             }
         }
-        .padding(.horizontal, 20)
+        .padding(.horizontal, 24)
+        .background(.white)
         .overlay(
-            BottomSheetView(isPresented: $isPickerPresented, selectedNumber: $selectedNumber)
+            BottomSheetView(isPresented: $isPickerPresented, selectedNumber: $viewModel.selectedCount)
         )
         .onTapGesture {
             isPickerPresented = false
+        }
+        .overlay {
+            if viewModel.isOpenAddress {
+                OrderBoxAddressView()
+                    .environmentObject(viewModel)
+            }
         }
     }
     
@@ -139,7 +163,7 @@ struct OrderBoxAddressAndDeliveryView: View {
 }
 
 struct WeekView: View {
-    @State private var selectedDay: Date?
+    @Binding var selectedDay: Date?
     private let calendar = Calendar.current
     private var days: [String] {
         [
@@ -189,16 +213,19 @@ struct WeekView: View {
                                 .font(.montserratBoldFont(size: 10))
                                 .foregroundStyle(.gray)
                             Text("\(calendar.component(.day, from: day))")
+                                .frame(minWidth: 10, minHeight: 10)
                                 .font(.montserratBoldFont(size: 12))
                                 .foregroundStyle(day == selectedDay ? .white : .black)
                                 .padding(8)
                                 .background(day == selectedDay ? Color.purple : Color.clear)
                                 .clipShape(Circle())
-                                .padding(3)
                                 .foregroundColor(day == selectedDay ? .white : .black)
-                                .onTapGesture {
-                                    selectedDay = day
-                                }
+                               
+                                
+                        }
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            selectedDay = day
                         }
                         .frame(maxWidth: .infinity)
                     }
@@ -223,12 +250,16 @@ struct WeekView: View {
     private func monthYearString(for date: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM yyyy"
+        let currentLanguage = appEnvironment.localizationManager.getLanguage() == .RU ? "ru" : "en"
+        dateFormatter.locale = Locale(identifier: currentLanguage)
         return dateFormatter.string(from: date)
     }
     
     private func monthName(for startDate: Date, endDate: Date) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMMM"
+        let currentLanguage = appEnvironment.localizationManager.getLanguage() == .RU ? "ru" : "en"
+        dateFormatter.locale = Locale(identifier: currentLanguage)
         
         let startMonthName = dateFormatter.string(from: startDate)
         let endMonthName = dateFormatter.string(from: endDate)
@@ -255,7 +286,7 @@ struct WeekView: View {
 
 struct TimeSlotView: View {
     let timeSlots = ["10:00 – 13:00", "13:00 – 16:00", "16:00 – 19:00", "19:00 – 22:00"]
-    @State private var selectedSlot: String?
+    @Binding var selectedSlot: String?
 
     var body: some View {
         HStack {
@@ -289,7 +320,7 @@ struct BottomSheetView: View {
         VStack {
             Spacer()
             VStack {
-                Button("ГОТОВО") {
+                Button("ready".localized) {
                     withAnimation {
                         isPresented = false
                     }
@@ -321,4 +352,5 @@ struct BottomSheetView: View {
 
 #Preview {
     OrderBoxAddressAndDeliveryView()
+        .environmentObject(OrderBoxViewModel(mainViewModel: MainViewModel()))
 }

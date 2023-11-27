@@ -77,6 +77,10 @@ class ContactsViewModel: MainViewModel {
     }
     
     func fetchContacts() async {
+        guard let userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.contacts.removeAll()
             self.isLoadingContacts = true
@@ -141,6 +145,10 @@ class ContactsViewModel: MainViewModel {
     }
     
     func fetchMeetings() async {
+        guard let userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.isLoadingMeetings = true
         }
@@ -175,56 +183,6 @@ class ContactsViewModel: MainViewModel {
             } else {
                 myDates[partnerId]?.append(meetingDate)
             }
-        }
-    }
-    
-    func getMetDateString(_ metDate: Date?) -> String? {
-        guard let metDate else { return nil }
-        let now = Date()
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.day, .month, .year], from: metDate, to: now)
-        let daysSinceMet = components.day ?? 0
-        let monthsSinceMet = components.month ?? 0
-        let yearsSinceMet = components.year ?? 0
-        
-        switch (daysSinceMet, monthsSinceMet, yearsSinceMet) {
-        case (0, 0, 0):
-            return "met_today".localized
-        case (1, 0, 0):
-            return "met_yesterday".localized
-        case (2...6, 0, 0):
-            return String(format: "met_x_days_ago".localized, daysSinceMet, daysSinceMet.localizedDayLabel)
-        case (7...13, 0, 0):
-            return "met_a_week_ago".localized
-        case (14...20, 0, 0):
-            return "met_two_weeks_ago".localized
-        case (21...27, 0, 0):
-            return "met_three_weeks_ago".localized
-        case (_, 1, 0):
-            return "met_a_month_ago".localized
-        case (_, 2..<12, 0):
-            return String(format: "met_months_ago".localized, monthsSinceMet, monthsSinceMet.localizedMonthLabel)
-        case (_, _, 1):
-            return "met_a_year_ago".localized
-        case (_, _, _):
-            return String(format: "met_years_ago".localized, yearsSinceMet, yearsSinceMet.localizedYearLabel)
-        }
-    }
-    
-    func metDateColor(date: Date) -> Color {
-        let now = Date()
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.day], from: date, to: now)
-        let daysSinceMet = components.day ?? 0
-
-        if daysSinceMet <= 2 {
-            return Color(red: 1, green: 64.0 / 255.0, blue: 156.0 / 255.0, opacity: 0.84)
-        } else if daysSinceMet <= 7 {
-            return Color(red: 247.0 / 255.0, green: 213.0 / 255.0, blue: 1)
-        } else if daysSinceMet <= 30 {
-            return Color(red: 204.0 / 255.0, green: 199.0 / 255.0, blue: 1)
-        } else {
-            return Color(red: 181.0 / 255.0, green: 228.0 / 255.0, blue: 1)
         }
     }
     
@@ -309,6 +267,10 @@ class ContactsViewModel: MainViewModel {
     }
     
     func addDate(_ date: Date, with contactId: UUID) async {
+        guard let userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.isAddingDate = true
         }
@@ -341,11 +303,14 @@ class ContactsViewModel: MainViewModel {
     }
     
     func addUserToBlacklist(id: UUID) async {
+        guard let userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.isAddingUserToBlacklist = true
             self.hasAddedUserToContacts = false
         }
-
         do {
             var contactsCopy: [UUID] = contacts.map { $0.id }
             var blacklistUsersIds: [UUID] = blockedUsers.map { $0.id }
@@ -381,6 +346,10 @@ class ContactsViewModel: MainViewModel {
     }
     
     func addUserToContacts(user: UserModel) async {
+        guard let userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.isAddingUserToContacts = true
         }
@@ -403,10 +372,13 @@ class ContactsViewModel: MainViewModel {
     }
 
     func unlockUser(_ id: UUID) async {
+        guard let userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.isUnlocingContact = true
         }
-
         do {
             if !blockedUsers.isEmpty {
                 var contactsCopy: [UUID] = contacts.map { $0.id }
@@ -448,10 +420,13 @@ class ContactsViewModel: MainViewModel {
     }
     
     func deleteContact(id: UUID) async {
+        guard let userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.isDeletingContact = true
         }
-        
         do {
             var contactsIds = contacts.map { $0.id }
             if !contactsIds.isEmpty {
@@ -477,6 +452,10 @@ class ContactsViewModel: MainViewModel {
     }
 
     func fetchBlacklist() async {
+        guard let userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.blockedUsers.removeAll()
             self.isLoadingBlacklist = true
@@ -570,6 +549,10 @@ class ContactsViewModel: MainViewModel {
         } else {
             return false
         }
+    }
+    
+    func sendComplaintReport(text: String) async {
+        print("complaint sent: \(text)")
     }
     
 }

@@ -11,6 +11,7 @@ struct NumberSignInView: View {
     
     @ObservedObject var viewModel: LoginViewModel
     @State private var showCountryPicker = false
+    @State private var isAnimating: Bool = false
     
     enum FocusField: Hashable {
         case field
@@ -58,22 +59,44 @@ struct NumberSignInView: View {
                             .keyboardType(.numberPad)
                             .foregroundColor(.black)
                             .padding(8)
-                            .onChange(of: viewModel.partOfPhoneNumber) { _ in
-                                viewModel.validatePhoneNumber()
+                            .onChange(of: viewModel.partOfPhoneNumber) { newValue in
+                                viewModel.handlePhoneNumberChange(to: newValue)
                             }
+
                     }
                     .padding(.leading, 4)
                 }
                 .padding(.horizontal)
                 
-                Text("send_verification_code".localized)
-                    .font(.interLightFont(size: 14))
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .foregroundColor(CustomColors.darkGray)
-                    .padding()
-                    .padding(.top, 20)
+                if let error = viewModel.errorMessage {
+                    Text(error)
+                        .font(.interLightFont(size: 14))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(Color.red)
+                        .padding()
+                        .padding(.top, 20)
+                } else {
+                    Text("send_verification_code".localized)
+                        .font(.interLightFont(size: 14))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(CustomColors.darkGray)
+                        .padding()
+                        .padding(.top, 20)
+                }
                 
                 Spacer()
+                
+                if viewModel.isLoading {
+                    RotatingShapesLoader(animate: $isAnimating, color: .black)
+                        .frame(maxWidth: 60)
+                        .onAppear {
+                            isAnimating = true
+                        }
+                        .onDisappear {
+                            isAnimating = false
+                        }
+                    Spacer()
+                }
             }
             .contentShape(Rectangle())
             .onTapGesture {

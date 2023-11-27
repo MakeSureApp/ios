@@ -36,6 +36,7 @@ struct LoginWrapperView: View {
             RoundedGradientButton(text: "continue_button".localized.uppercased(), isEnabled: viewModel.canProceedToNextStep) {
                 viewModel.moveToNextStep()
             }
+            .padding(.horizontal)
         }
     }
     

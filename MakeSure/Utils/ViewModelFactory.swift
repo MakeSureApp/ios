@@ -15,9 +15,10 @@ class ViewModelFactory {
     private lazy var registrationViewModel = RegistrationViewModel(authService: authService)
     private lazy var settingsViewModel = SettingsViewModel(mainViewModel: mainViewModel)
     private lazy var contactsViewModel = ContactsViewModel()
-    private lazy var testsViewModel = TestsViewModel()
+    private lazy var testsViewModel = TestsViewModel(mainViewModel: mainViewModel)
     private lazy var scannerViewModel = ScannerViewModel()
     private lazy var notificationsViewModel = NotificationsViewModel(mainViewModel: mainViewModel)
+    private lazy var orderBoxViewModel = OrderBoxViewModel(mainViewModel: mainViewModel)
     
     init(authService: AuthService) {
         self.authService = authService
@@ -57,6 +58,10 @@ class ViewModelFactory {
     
     func getNotificationsViewModel() -> NotificationsViewModel {
         return notificationsViewModel
+    }
+    
+    func getOrderBoxViewModel() -> OrderBoxViewModel {
+        return orderBoxViewModel
     }
     
 }

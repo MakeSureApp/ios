@@ -92,10 +92,10 @@ struct InitialSelectionView: View {
             }
             if let error = loginViewModel.loginError {
                 withAnimation {
-                    Text(error == .isNotRegistered ? "You haven't registered yet" : "An error occurred")
+                    Text(error == .isNotRegistered ? "have_not_registered".localized : "error_occurred".localized)
                         .padding(20)
                         .foregroundColor(.red)
-                        .font(.poppinsMediumFont(size: 20))
+                        .font(.montserratMediumFont(size: 20))
                         .background(.black.opacity(0.9))
                         .cornerRadius(16)
                 }
@@ -186,6 +186,7 @@ struct InitialSelectionView: View {
                     RoundedRectangle(cornerRadius: 30)
                         .stroke(Color.white, lineWidth: 1)
                 )
+                .padding(.horizontal, 10)
             }
 
             

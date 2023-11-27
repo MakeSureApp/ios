@@ -39,9 +39,9 @@ struct NotificationsView: View {
                 
                 ScrollView {
                     VStack {
-                        ForEach(viewModel.groupedNotifications, id: \.key) { (date, notifications) in
+                        ForEach(viewModel.groupedNotifications, id: \.key) { (formattedDate, notifications) in
                             Section(header:
-                                        Text(getDate(date))
+                                        Text(formattedDate)
                                             .padding(.top, 12)
                             ) {
                                 ForEach(notifications) { notification in
@@ -56,17 +56,13 @@ struct NotificationsView: View {
             }
         }
         .background(.white)
-    }
-    
-    func getDate(_ date: Date) -> String {
-        if Calendar.current.isDateInToday(date) {
-            return "Today"
-        } else {
-            let formatter = DateFormatter()
-            formatter.dateFormat = "EEEE - dd.MM"
-            return formatter.string(from: date)
+        .onAppear {
+            Task {
+                await viewModel.fetchNotifications()
+            }
         }
     }
+
 }
 
  struct NotificationItemView: View {

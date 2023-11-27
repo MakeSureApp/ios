@@ -16,6 +16,7 @@ struct ContactView: View {
     @State private var showSharingTestView = false
     @State private var isAnimating: Bool = false
     @Environment(\.presentationMode) var presentationMode
+    @State private var isShowingBlockContactMenu = false
     
     var body: some View {
         ZStack {
@@ -32,6 +33,18 @@ struct ContactView: View {
                             .foregroundColor(.white)
                     }
                     Spacer()
+                    if !viewModel.isAddingUserToBlacklist, !viewModel.blockedUsers.contains(contact) {
+                        Button {
+                            withAnimation {
+                                isShowingBlockContactMenu.toggle()
+                            }
+                        } label: {
+                            Image("banIcon")
+                                .resizable()
+                                .frame(width: 48, height: 48)
+                                .foregroundColor(.white)
+                        }
+                    }
                 }
                 .padding([.top, .leading], 16)
                 .padding(.bottom, -12)
@@ -47,20 +60,20 @@ struct ContactView: View {
                         }
                         
                         let date = viewModel.getLastDateWith(contact: contact)
-                        if let metDateString = viewModel.getMetDateString(date), let date {
+                        if let metDateString = date.getMetDateString, let date {
                             Text(metDateString)
-                                .font(.poppinsRegularFont(size: 9))
-                                .foregroundColor(.black)
+                                .font(.montserratRegularFont(size: 9))
+                                .foregroundColor(date.getMetDateTextColor)
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
-                                .background(viewModel.metDateColor(date: date))
+                                .background(date.getMetDateBackgroundColor)
                                 .cornerRadius(8)
                                 .padding(.bottom, 130)
                                 .padding(.trailing, -40)
                         }
                     }
                     Text(contact.name)
-                        .font(.poppinsBoldFont(size: 16))
+                        .font(.montserratBoldFont(size: 16))
                         .foregroundColor(.white)
                         .padding()
                     
@@ -80,7 +93,7 @@ struct ContactView: View {
                                 HStack {
                                     Spacer()
                                     Text(date.toString)
-                                        .font(.poppinsMediumFont(size: 20))
+                                        .font(.montserratMediumFont(size: 20))
                                         .foregroundColor(.white)
                                         .padding(4)
                                     Spacer()
@@ -97,7 +110,7 @@ struct ContactView: View {
                                     testsViewModel.learnMoreBtnClicked()
                                 } label: {
                                     Text("learn_more_button".localized)
-                                        .font(.poppinsLightFont(size: 14))
+                                        .font(.montserratLightFont(size: 14))
                                         .foregroundColor(.gray)
                                         .underline()
                                 }
@@ -105,7 +118,7 @@ struct ContactView: View {
                         } else {
                             Spacer()
                             Text("no_tests_for_contact".localized)
-                                .font(.poppinsBoldFont(size: 16))
+                                .font(.montserratBoldFont(size: 16))
                                 .foregroundColor(.white)
                             Spacer()
                         }
@@ -153,22 +166,6 @@ struct ContactView: View {
                         }
                         Spacer()
                     }
-                    HStack {
-                        Button {
-                            Task {
-                                await viewModel.addUserToBlacklist(id: contact.id)
-                            }
-                            if viewModel.hasAddedUserToBlacklist {
-                                presentationMode.wrappedValue.dismiss()
-                            }
-                        } label: {
-                            Text("block_user_button".localized)
-                                .font(.poppinsRegularFont(size: 15))
-                                .foregroundColor(.gray)
-                                .underline()
-                        }
-                        Spacer()
-                    }
                 }
                 .padding(.horizontal, 24)
                 .contentShape(Rectangle())
@@ -176,6 +173,15 @@ struct ContactView: View {
                     viewModel.showContactCalendar = false
                 }
             }
+            .overlay(
+                isShowingBlockContactMenu ? Color.black.opacity(0.5)
+                    .edgesIgnoringSafeArea(.all)
+                    .cornerRadius(20)
+                    .onTapGesture {
+                        withAnimation {
+                            isShowingBlockContactMenu = false
+                        }
+                    } : nil)
             if showSharingTestView, let date = testsViewModel.lastTests.first?.date {
                 VStack {
                     Spacer()
@@ -190,6 +196,22 @@ struct ContactView: View {
                         .padding(.bottom, 30)
                 }
             }
+            if isShowingBlockContactMenu {
+                AlertMenu(alertText: getBlockAlertText(), actionBtnText: "block_button".localized.uppercased(),
+                          onCancel: {
+                    withAnimation {
+                        isShowingBlockContactMenu.toggle()
+                    }
+                }, onAction: {
+                    Task {
+                        await viewModel.addUserToBlacklist(id: contact.id)
+                    }
+                    withAnimation {
+                        isShowingBlockContactMenu.toggle()
+                        presentationMode.wrappedValue.dismiss()
+                    }
+                })
+            }
         }
         .task {
             await testsViewModel.fetchContactsTests(id: contact.id)
@@ -197,6 +219,10 @@ struct ContactView: View {
         .onDisappear {
             testsViewModel.removeContactData()
         }
+    }
+    
+    func getBlockAlertText() -> String {
+        return String(format: "you_sure_to_block_contact".localized, contact.name)
     }
 }
 
@@ -274,16 +300,18 @@ struct ShareLastTestView: View {
     }
 }
 
-//struct ContactView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        let tests: [Test] = [
-//            Test(id: UUID(), name: "HIV"),
-//            Test(id: UUID(), name: "Syphilis"),
-//            Test(id: UUID(), name: "Chlamydia"),
-//            Test(id: UUID(), name: "Gonorrhea"),
-//            Test(id: UUID(), name: "Hepatite B"),
-//            Test(id: UUID(), name: "HPV")]
-//
-//        ContactView(contact: UserModel(id: UUID(), name: "Joyce", birthdate: Date(), sex: "female", phone: "+79001234567"), viewModel: ContactsViewModel())
-//    }
-//}
+struct ContactView_Previews: PreviewProvider {
+    static var previews: some View {
+        let tests: [Test] = [
+            Test(id: UUID(), name: "HIV"),
+            Test(id: UUID(), name: "Syphilis"),
+            Test(id: UUID(), name: "Chlamydia"),
+            Test(id: UUID(), name: "Gonorrhea"),
+            Test(id: UUID(), name: "Hepatite B"),
+            Test(id: UUID(), name: "HPV")]
+
+        ContactView(contact: UserModel(id: UUID(), name: "Joyce", birthdate: Date(), sex: "female", phone: "+79001234567"))
+            .environmentObject(ContactsViewModel())
+            .environmentObject(TestsViewModel(mainViewModel: MainViewModel()))
+    }
+}

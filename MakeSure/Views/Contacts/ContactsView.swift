@@ -16,80 +16,83 @@ struct ContactsView: View {
     @State private var showContact = false
     @State private var selectedContact: UserModel?
     @State private var menuYOffset: CGFloat = 0
-    @State private var showSharingTestView = false
     @State private var isAnimating: Bool = false
     @State private var isAnimatingMeetings: Bool = false
     @State private var topPadding: CGFloat = 0.0
+    @State private var isShowingSharingTestView = false
+    @State private var isShowingBlockContactMenu = false
+    @State private var isShowingDeletingContactMenu = false
+    @State private var isShowingReportContactMenu = false
     
     var body: some View {
         GeometryReader { geometry in
-        ZStack {
-            VStack {
-                ContactsCalendarScrollView()
-                    .environmentObject(viewModel)
-                    .environmentObject(testsViewModel)
-                
-                HStack {
-                    Text("my_contacts_section".localized)
-                        .font(.poppinsBoldFont(size: 23))
-                        .padding()
-                    Button {
-                        viewModel.copyLinkBtnClicked()
-                    } label: {
-                        Image("copyProfileLinkIcon")
-                            .resizable()
-                            .frame(width: 21, height: 21)
-                    }
-                    Spacer()
-                }
-                
-                HStack {
-                    Text("sort_by_label".localized)
-                        .font(.poppinsRegularFont(size: 14))
-                    Picker("sort_by_label".localized, selection: $viewModel.sortBy) {
-                        Text("date_followed_option".localized)
-                            .foregroundColor(.black)
-                            .font(.poppinsBoldFont(size: 14))
-                            .tag(ContactsViewModel.SortBy.dateFollowed)
-                        Text("recent_dates_option".localized)
-                            .foregroundColor(.black)
-                            .font(.poppinsBoldFont(size: 10))
-                            .tag(ContactsViewModel.SortBy.dateRecentMeetings)
-                    }
-                    .pickerStyle(MenuPickerStyle())
-                    .accentColor(.black)
-                    .font(.poppinsBoldFont(size: 10))
-                    .foregroundColor(.black)
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .padding(.bottom, -14)
-                
-                if viewModel.isLoadingContacts && viewModel.contacts.isEmpty {
-                    RotatingShapesLoader(animate: $isAnimating, color: .black)
-                        .frame(maxWidth: 100)
-                        .padding(.top, 50)
-                        .onAppear {
-                            isAnimating = true
+            ZStack {
+                VStack {
+                    ContactsCalendarScrollView()
+                        .environmentObject(viewModel)
+                        .environmentObject(testsViewModel)
+                    
+                    HStack {
+                        Text("my_contacts_section".localized)
+                            .font(.montserratBoldFont(size: 23))
+                            .padding()
+                        Button {
+                            viewModel.copyLinkBtnClicked()
+                        } label: {
+                            Image("copyProfileLinkIcon")
+                                .resizable()
+                                .frame(width: 21, height: 21)
                         }
-                        .onDisappear {
-                            isAnimating = false
+                        Spacer()
+                    }
+                    
+                    HStack {
+                        Text("sort_by_label".localized)
+                            .font(.montserratRegularFont(size: 14))
+                        Picker("sort_by_label".localized, selection: $viewModel.sortBy) {
+                            Text("date_followed_option".localized)
+                                .foregroundColor(.black)
+                                .font(.montserratBoldFont(size: 14))
+                                .tag(ContactsViewModel.SortBy.dateFollowed)
+                            Text("recent_dates_option".localized)
+                                .foregroundColor(.black)
+                                .font(.montserratBoldFont(size: 10))
+                                .tag(ContactsViewModel.SortBy.dateRecentMeetings)
                         }
-                    Spacer()
-                } else if viewModel.hasLoadedContacts || !viewModel.contacts.isEmpty {
-                    ScrollView {
-                        LazyVStack {
-                            ForEach(viewModel.contacts) { contact in
-                                GeometryReader { geometry in
-                                    ContactItemView(
-                                        viewModel: viewModel,
-                                        contact: contact,
-                                        isEnabled: !viewModel.checkIfContactBlockedMe(user: contact),
-                                        showMenu: $showMenu,
-                                        showContact: $showContact,
-                                        selectedContact: $selectedContact,
-                                        isAnimatingMeetings: $isAnimatingMeetings
-                                    )
+                        .pickerStyle(MenuPickerStyle())
+                        .accentColor(.black)
+                        .font(.montserratBoldFont(size: 10))
+                        .foregroundColor(.black)
+                        Spacer()
+                    }
+                    .padding(.horizontal)
+                    .padding(.bottom, -14)
+                    
+                    if viewModel.isLoadingContacts && viewModel.contacts.isEmpty {
+                        RotatingShapesLoader(animate: $isAnimating, color: .black)
+                            .frame(maxWidth: 100)
+                            .padding(.top, 50)
+                            .onAppear {
+                                isAnimating = true
+                            }
+                            .onDisappear {
+                                isAnimating = false
+                            }
+                        Spacer()
+                    } else if viewModel.hasLoadedContacts || !viewModel.contacts.isEmpty {
+                        ScrollView {
+                            LazyVStack {
+                                ForEach(viewModel.contacts) { contact in
+                                    GeometryReader { geometry in
+                                        ContactItemWithMenuView(
+                                            viewModel: viewModel,
+                                            contact: contact,
+                                            isEnabled: !viewModel.checkIfContactBlockedMe(user: contact),
+                                            showMenu: $showMenu,
+                                            showContact: $showContact,
+                                            selectedContact: $selectedContact,
+                                            isAnimatingMeetings: $isAnimatingMeetings
+                                        )
                                         .onTapGesture {
                                             if showMenu {
                                                 showMenu.toggle()
@@ -110,97 +113,168 @@ struct ContactsView: View {
                                                 }
                                             }
                                         }
-                                }
-                                .frame(height: 70)
-                                .task {
-                                    await viewModel.loadImage(user: contact, for: .contact)
+                                    }
+                                    .frame(height: 70)
+                                    .task {
+                                        await viewModel.loadImage(user: contact, for: .contact)
+                                    }
                                 }
                             }
                         }
+                        .onTapGesture {
+                            viewModel.showCalendar = false
+                            viewModel.showContactCalendar = false
+                            showMenu = false
+                            selectedContact = nil
+                        }
+                    } else {
+                        Spacer()
+                        Text("no_contacts".localized)
+                            .font(.montserratBoldFont(size: 16))
+                            .foregroundColor(.black)
+                        Spacer()
+                        Spacer()
                     }
-                    .onTapGesture {
-                        viewModel.showCalendar = false
-                        viewModel.showContactCalendar = false
-                        showMenu = false
-                        selectedContact = nil
+                }
+                .sheet(isPresented: $showContact) {
+                    if let contact = selectedContact {
+                        ContactView(contact: contact)
+                            .environmentObject(viewModel)
+                            .environmentObject(testsViewModel)
                     }
+                }
+                Button(action: {
+                    showMenu = false
+                    showContact = false
+                    selectedContact = nil
+                    viewModel.showCalendar = false
+                    viewModel.showContactCalendar = false
+                    isShowingBlockContactMenu = false
+                    isShowingDeletingContactMenu = false
+                    isShowingReportContactMenu = false
+                }) {
+                    Rectangle()
+                        .fill(Color.clear)
+                        .ignoresSafeArea()
+                        .allowsHitTesting(!showContact)
+                }
+                .zIndex(-1)
+//                .overlay(
+//                    (isShowingBlockContactMenu || isShowingDeletingContactMenu || isShowingReportContactMenu) ? Color.black.opacity(0.5)
+//                        .edgesIgnoringSafeArea(.all)
+//                        .cornerRadius(20)
+//                        .onTapGesture {
+//                            withAnimation {
+//                                showMenu = false
+//                                isShowingBlockContactMenu = false
+//                                isShowingDeletingContactMenu = false
+//                                isShowingReportContactMenu = false
+//                            }
+//                        } : nil)
+                if showMenu, let contact = selectedContact {
+                    let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
+                    ContactMenu(
+                        contact: contact,
+                        isEnabled: isEnabled,
+                        showMenu: $showMenu,
+                        showBlockMenu: $isShowingBlockContactMenu,
+                        showDeleteMenu: $isShowingDeletingContactMenu,
+                        showSharingTest: $isShowingSharingTestView,
+                        showReportMenu: $isShowingReportContactMenu,
+                        showContactCalendar: $viewModel.showContactCalendar
+                    )
+                    .environmentObject(viewModel)
+                    .offset(y: menuYOffset)
+                }
+                if isShowingSharingTestView, let date = testsViewModel.lastTests.first?.date, let contact = selectedContact {
+                    VStack {
+                        Spacer()
+                        ShareLastTestView(isShowView: $isShowingSharingTestView, contact: contact, date: date)
+                            .environmentObject(viewModel)
+                    }
+                }
+                if viewModel.showContactCalendar, let contact = selectedContact {
+                    VStack {
+                        Spacer()
+                        GraphicalDatePicker(viewModel: viewModel, testsViewModel: testsViewModel, currentMonth: Date(), isFromContactView: true, contactId: contact.id)
+                            .padding(.bottom, 30)
+                    }
+                }
+                if isShowingBlockContactMenu, let contact = selectedContact {
+                    AlertMenu(alertText: getBlockAlertText(contact.name), actionBtnText: "block_button".localized.uppercased(),
+                              onCancel: {
+                        withAnimation {
+                            isShowingBlockContactMenu.toggle()
+                        }
+                    }, onAction: {
+                        Task {
+                            await viewModel.addUserToBlacklist(id: contact.id)
+                        }
+                        withAnimation {
+                            isShowingBlockContactMenu.toggle()
+                        }
+                    })
+                }
+                if isShowingDeletingContactMenu, let contact = selectedContact {
+                    AlertMenu(alertText: getDeleteAlertText(contact.name), actionBtnText: "delete_button".localized.uppercased(),
+                              onCancel: {
+                        withAnimation {
+                            isShowingDeletingContactMenu.toggle()
+                        }
+                    }, onAction: {
+                        Task {
+                            await viewModel.deleteContact(id: contact.id)
+                        }
+                        withAnimation {
+                            isShowingDeletingContactMenu.toggle()
+                        }
+                    })
+                }
+                if isShowingReportContactMenu {
+                    AlertTextFieldMenu(alertText: "reason_for_complaint".localized, actionBtnText: "report_button".localized, placeholderText: "explain_situation".localized, onCancel: {
+                        withAnimation {
+                            isShowingReportContactMenu = false
+                        }
+                    }) { text in
+                        Task {
+                            await viewModel.sendComplaintReport(text: text)
+                        }
+                        withAnimation {
+                            isShowingReportContactMenu = false
+                        }
+                    }
+                }
+            }
+            .onAppear {
+                if geometry.safeAreaInsets.top > 0 {
+                    topPadding = 80
                 } else {
-                    Spacer()
-                    Text("no_contacts".localized)
-                        .font(.poppinsBoldFont(size: 16))
-                        .foregroundColor(.black)
-                    Spacer()
-                    Spacer()
+                    topPadding = 0
                 }
             }
-            .sheet(isPresented: $showContact) {
-                if let contact = selectedContact {
-                    ContactView(contact: contact)
-                        .environmentObject(viewModel)
-                        .environmentObject(testsViewModel)
+            .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
+                if geometry.safeAreaInsets.top > 0 {
+                    topPadding = 80
+                } else {
+                    topPadding = 0
                 }
             }
-            Button(action: {
-                showMenu = false
-                showContact = false
-                selectedContact = nil
-                viewModel.showCalendar = false
-                viewModel.showContactCalendar = false
-            }) {
-                Rectangle()
-                    .fill(Color.clear)
-                    .ignoresSafeArea()
-                    .allowsHitTesting(!showContact)
+            .padding(.top, topPadding)
+            .ignoresSafeArea(.all)
+            
+            .task {
+                await viewModel.fetchContacts()
+                await viewModel.fetchMeetings()
             }
-            .zIndex(-1)
-            if showMenu, let contact = selectedContact {
-                let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
-                ContactMenu(
-                    contact: contact,
-                    isEnabled: isEnabled,
-                    showMenu: $showMenu,
-                    showSharingTest: $showSharingTestView
-                )
-                .environmentObject(viewModel)
-                .offset(y: menuYOffset)
-            }
-            if showSharingTestView, let date = testsViewModel.lastTests.first?.date, let contact = selectedContact {
-                VStack {
-                    Spacer()
-                    ShareLastTestView(isShowView: $showSharingTestView, contact: contact, date: date)
-                        .environmentObject(viewModel)
-                }
-            }
-            if viewModel.showContactCalendar, let contact = selectedContact {
-                VStack {
-                    Spacer()
-                    GraphicalDatePicker(viewModel: viewModel, testsViewModel: testsViewModel, currentMonth: Date(), isFromContactView: true, contactId: contact.id)
-                        .padding(.bottom, 30)
-                }
-            }
-        }
-        .onAppear {
-            if geometry.safeAreaInsets.top > 0 {
-                topPadding = 80
-            } else {
-                topPadding = 0
-            }
-        }
-        .onReceive(NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)) { _ in
-            if geometry.safeAreaInsets.top > 0 {
-                topPadding = 80
-            } else {
-                topPadding = 0
-            }
-        }
-        .padding(.top, topPadding)
-        .ignoresSafeArea(.all)
-       
-        .task {
-            await viewModel.fetchContacts()
-            await viewModel.fetchMeetings()
         }
     }
+    
+    func getBlockAlertText(_ name: String) -> String {
+        return String(format: "you_sure_to_block_contact".localized, name)
+    }
+    
+    func getDeleteAlertText(_ name: String) -> String {
+        return String(format: "you_sure_to_delete_contact".localized, name)
     }
 }
 
@@ -212,7 +286,7 @@ extension VerticalAlignment {
     }
 }
 
-struct ContactItemView: View {
+struct ContactItemWithMenuView: View {
     @ObservedObject var viewModel: ContactsViewModel
     let contact: UserModel
     let isEnabled: Bool
@@ -256,7 +330,7 @@ struct ContactItemView: View {
             
             VStack(alignment: .leading, spacing: 2) {
                 Text(contact.name)
-                    .font(.poppinsBoldFont(size: 14))
+                    .font(.montserratBoldFont(size: 14))
                     .foregroundColor(isEnabled ? .black : .gray)
                 
                 if viewModel.isLoadingMeetings && viewModel.contacts.isEmpty  {
@@ -277,13 +351,13 @@ struct ContactItemView: View {
                 } else if viewModel.hasLoadedMeetings || !viewModel.contacts.isEmpty  {
                     let date = viewModel.getLastDateWith(contact: contact)
                     
-                    if let metDateString = viewModel.getMetDateString(date), let date {
+                    if let metDateString = date.getMetDateString, let date {
                         Text(metDateString)
-                            .font(.poppinsRegularFont(size: 9))
-                            .foregroundColor(.black)
+                            .font(.montserratRegularFont(size: 9))
+                            .foregroundColor(date.getMetDateTextColor)
                             .padding(.horizontal, 8)
                             .padding(.vertical, 4)
-                            .background(viewModel.metDateColor(date: date))
+                            .background(date.getMetDateBackgroundColor)
                             .cornerRadius(8)
                     }
                 }
@@ -321,6 +395,7 @@ struct ContactItemView: View {
                     .font(.headline)
                     .foregroundColor(.black)
             }
+            .padding(.trailing, 8)
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 4)
@@ -349,7 +424,7 @@ struct DayView: View {
     var body: some View {
         VStack {
             Text(day)
-                .font(.poppinsRegularFont(size: 12))
+                .font(.montserratRegularFont(size: 12))
                 .padding(2)
             if !metContacts.isEmpty {
                 ZStack {
@@ -384,11 +459,11 @@ struct DayView: View {
                                 }
                                 
                                 Text(dateString)
-                                    .font(.poppinsBoldFont(size: 15))
+                                    .font(.montserratBoldFont(size: 15))
                                     .foregroundColor(.black)
                                     .overlay {
                                         Text(dateString)
-                                            .font(.poppinsBoldFont(size: 12))
+                                            .font(.montserratBoldFont(size: 12))
                                             .foregroundColor(.white)
                                             .shadow(color: .black, radius: 2)
                                     }
@@ -405,14 +480,14 @@ struct DayView: View {
                         .foregroundColor(isNegativeTest ? .lightGreen : .orange)
                         .zIndex(0)
                     Text(dateString)
-                        .font(.poppinsRegularFont(size: 12))
+                        .font(.montserratRegularFont(size: 12))
                         .foregroundColor(.black)
                         .padding(.horizontal, 8)
                         .padding(.horizontal, 8)
                 }
             } else {
                 Text(dateString)
-                    .font(.poppinsRegularFont(size: 12))
+                    .font(.montserratRegularFont(size: 12))
                     .foregroundColor(.black)
                     .padding(.horizontal, 8)
             }
@@ -478,11 +553,14 @@ struct ContactsCalendarScrollView: View {
 }
 
 struct ContactMenu: View {
-    @EnvironmentObject var viewModel: ContactsViewModel
     let contact: UserModel
     let isEnabled: Bool
     @Binding var showMenu: Bool
+    @Binding var showBlockMenu: Bool
+    @Binding var showDeleteMenu: Bool
     @Binding var showSharingTest: Bool
+    @Binding var showReportMenu: Bool
+    @Binding var showContactCalendar: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -490,8 +568,8 @@ struct ContactMenu: View {
                 VStack {
                     Button(action: shareMyTest) {
                         Text("share_my_test_button".localized)
-                            .font(.poppinsRegularFont(size: 16))
-                            .foregroundColor(.black)
+                            .font(.montserratRegularFont(size: 16))
+                            .foregroundColor(CustomColors.darkBlue)
                             .padding(.horizontal)
                             .padding(.vertical, 3)
                     }
@@ -499,29 +577,29 @@ struct ContactMenu: View {
                         .frame(width: 140)
                     Button(action: addDate) {
                         Text("add_date_button".localized)
-                            .font(.poppinsRegularFont(size: 16))
-                            .foregroundColor(.black)
+                            .font(.montserratRegularFont(size: 16))
+                            .foregroundColor(CustomColors.darkBlue)
                             .padding(.horizontal)
                             .padding(.vertical, 3)
                     }
                     Divider()
                         .frame(width: 140)
-                    Button(action: rename) {
-                        Text("rename_button".localized)
-                            .font(.poppinsRegularFont(size: 16))
-                            .foregroundColor(.black)
-                            .padding(.horizontal)
-                            .padding(.vertical, 3)
-                    }
-                    Divider()
-                        .frame(width: 140)
+//                    Button(action: rename) {
+//                        Text("rename_button".localized)
+//                            .font(.montserratRegularFont(size: 16))
+//                            .foregroundColor(.black)
+//                            .padding(.horizontal)
+//                            .padding(.vertical, 3)
+//                    }
+//                    Divider()
+//                        .frame(width: 140)
                 }
             }
             VStack {
                 Button(action: delete) {
                     Text("delete_button".localized)
-                        .font(.poppinsRegularFont(size: 16))
-                        .foregroundColor(.black)
+                        .font(.montserratRegularFont(size: 16))
+                        .foregroundColor(Color(red: 1, green: 50.0/255.0, blue: 38.0/255.0))
                         .padding(.horizontal)
                         .padding(.vertical, 3)
                 }
@@ -529,8 +607,8 @@ struct ContactMenu: View {
                     .frame(width: 140)
                 Button(action: block) {
                     Text("block_button".localized)
-                        .font(.poppinsRegularFont(size: 16))
-                        .foregroundColor(.black)
+                        .font(.montserratRegularFont(size: 16))
+                        .foregroundColor(Color(red: 1, green: 50.0/255.0, blue: 38.0/255.0))
                         .padding(.horizontal)
                         .padding(.vertical, 3)
                 }
@@ -538,8 +616,8 @@ struct ContactMenu: View {
                     .frame(width: 140)
                 Button(action: report) {
                     Text("report_button".localized)
-                        .font(.poppinsRegularFont(size: 16))
-                        .foregroundColor(.black)
+                        .font(.montserratRegularFont(size: 16))
+                        .foregroundColor(Color(red: 1, green: 50.0/255.0, blue: 38.0/255.0))
                         .padding(.horizontal)
                         .padding(.vertical, 3)
                 }
@@ -565,7 +643,7 @@ struct ContactMenu: View {
     private func addDate() {
         withAnimation {
             showMenu = false
-            viewModel.showContactCalendar = true
+            showContactCalendar = true
         }
     }
 
@@ -576,18 +654,14 @@ struct ContactMenu: View {
     private func delete() {
         withAnimation {
             showMenu = false
-        }
-        Task {
-            await viewModel.deleteContact(id: contact.id)
+            showDeleteMenu.toggle()
         }
     }
 
     private func block() {
         withAnimation {
             showMenu = false
-        }
-        Task {
-            await viewModel.addUserToBlacklist(id: contact.id)
+            showBlockMenu.toggle()
         }
     }
 
@@ -595,6 +669,7 @@ struct ContactMenu: View {
         // Implement report functionality
         withAnimation {
             showMenu = false
+            showReportMenu.toggle()
         }
     }
 }
@@ -603,6 +678,6 @@ struct ContactsView_Previews: PreviewProvider {
     static var previews: some View {
         ContactsView()
             .environmentObject(ContactsViewModel())
-            .environmentObject(TestsViewModel())
+            .environmentObject(TestsViewModel(mainViewModel: MainViewModel()))
     }
 }

@@ -29,8 +29,13 @@ enum Category: String, CaseIterable {
 
 struct TipsCategory: Hashable {
     let id: UUID
-    let name: String
     let color: Color
+    let name: String
+    let nameRu: String
+    
+    var displayName: String {
+        return appEnvironment.localizationManager.getLanguage() == .RU ? nameRu : name
+    }
 }
 
 class HomeViewModel: NSObject, ObservableObject {
@@ -46,12 +51,8 @@ class HomeViewModel: NSObject, ObservableObject {
     @Published var cards: [TipsModel] = []
     @Published var tipImages: [UUID: UIImage] = [:]
     @Published var qrCodeText: String?
-//     [
-//        Card(title: "Safe tips for Speed Dating", description: "How to talk to a partner about tests?", image: "mockTipsImage", category: .dates, url: "https://example.com/1"),
-//        Card(title: "Keep safe & keep romantic", description: nil, image: "mockTipsImage2", category: .selfDevelopment, url: ""),
-//        Card(title: "Sex education: what you need to know", description: nil, image: "mockTipsImage", category: .health, url: "https://example.com/3")
-//    ]
     @Published var showPhotoMenu = false
+    @Published var showPickPhotoMenu = false
     @Published var showImagePhoto = false
     @Published var showMyQRCode = false
     @Published var showNotificationsView = false
@@ -76,18 +77,35 @@ class HomeViewModel: NSObject, ObservableObject {
         self.mainViewModel = mainViewModel
     }
     
+    func getUserData() async {
+        guard let user = await mainViewModel.user else {
+            print("User not available!")
+            return
+        }
+        DispatchQueue.main.async {
+            self.name = user.name
+            self.birthdate = user.birthdate
+            self.isLoadingUser = false
+            self.hasLoadedUser = true
+        }
+    }
+    
     func fetchUserData() async {
+        guard let user = await mainViewModel.user else {
+            print("User not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.isLoadingUser = true
         }
         do {
-            if let user = try await userService.fetchUserById(id: mainViewModel.userId) {
+            if let user = try await userService.fetchUserById(id: mainViewModel.userId!) {
                 DispatchQueue.main.async {
-                    self.mainViewModel.user = user
                     self.name = user.name
                     self.birthdate = user.birthdate
                     self.isLoadingUser = false
                     self.hasLoadedUser = true
+                    self.mainViewModel.authService.authState = .isLoggedIn(user) // is not tested yet
                 }
             } else {
                 print("No user found with the specified ID")
@@ -104,11 +122,15 @@ class HomeViewModel: NSObject, ObservableObject {
     }
     
     func fetchTestsCount() async {
+        guard let userId = await mainViewModel.userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.isLoadingTests = true
         }
         do {
-            let fetchedTests = try await testService.fetchById(columnName: "user_id", id: mainViewModel.userId)
+            let fetchedTests = try await testService.fetchById(columnName: "user_id", id: userId)
            
             DispatchQueue.main.async {
                 self.testsDone = fetchedTests.filter { $0.date != nil }.count
@@ -129,7 +151,7 @@ class HomeViewModel: NSObject, ObservableObject {
         }
         do {
             let fetchedTips = try await tipsService.fetchAll()
-            let uniqueCategories = Set(fetchedTips.map { $0.category })
+            let uniqueCategories = Set(fetchedTips.map { BilingualCategory(english: $0.category, russian: $0.categoryRu) })
         
             let predefinedColors = [
                 Color(red: 0, green: 23/255, blue: 119/255),
@@ -137,7 +159,7 @@ class HomeViewModel: NSObject, ObservableObject {
                 Color(red: 112/255, green: 39/255, blue: 110/255)
             ]
 
-            let categories = uniqueCategories.enumerated().map { index, categoryName -> TipsCategory in
+            let categories = uniqueCategories.enumerated().map { index, bilingualCategory -> TipsCategory in
                 let color: Color
                 if index < predefinedColors.count {
                     color = predefinedColors[index]
@@ -146,7 +168,7 @@ class HomeViewModel: NSObject, ObservableObject {
                                   green: Double.random(in: 0...1),
                                   blue: Double.random(in: 0...1))
                 }
-                return TipsCategory(id: UUID(), name: categoryName, color: color)
+                return TipsCategory(id: UUID(), color: color, name: bilingualCategory.english, nameRu: bilingualCategory.russian)
             }
             
             DispatchQueue.main.async {
@@ -156,7 +178,7 @@ class HomeViewModel: NSObject, ObservableObject {
                 self.hasLoadedTips = true
             }
         } catch {
-            print("An error occurred with fetching tips!")
+            print("An error occurred with fetching tips: \(error.localizedDescription)")
             DispatchQueue.main.async {
                 self.isLoadingTips = false
             }
@@ -174,6 +196,11 @@ class HomeViewModel: NSObject, ObservableObject {
                     self.image = UIImage(data: data)
                     self.isLoadingImage = false
                     self.hasLoadedImage = true
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self.isLoadingImage = false
+                    self.hasLoadedImage = false
                 }
             }
         } catch {
@@ -225,15 +252,19 @@ class HomeViewModel: NSObject, ObservableObject {
     }
     
     func createFriendLink() async {
+        guard let userId = await mainViewModel.userId else {
+            print("User ID not available!")
+            return
+        }
         DispatchQueue.main.async {
             self.isGeneratingQRCode = true
         }
         do {
-            let fetchedLinks = try await friendsLinksService.fetchLinksByUserId(userId: mainViewModel.userId)
+            let fetchedLinks = try await friendsLinksService.fetchLinksByUserId(userId: userId)
             var id = UUID()
             if fetchedLinks.isEmpty {
                 let createdAt = Date()
-                let model = await FriendLinkModel(id: id, createdAt: createdAt, userId: mainViewModel.userId)
+                let model = FriendLinkModel(id: id, createdAt: createdAt, userId: userId)
                 try await friendsLinksService.create(item: model)
             } else {
                 if let linkId = fetchedLinks.first?.id {
@@ -253,10 +284,6 @@ class HomeViewModel: NSObject, ObservableObject {
             }
             print("Error generating qrcode: \(error.localizedDescription)")
         }
-    }
-    
-    func orderNewBoxClicked() {
-        print("Order new box")
     }
     
     func openTipsDetails(_ urlStr: String) {
@@ -291,9 +318,9 @@ extension HomeViewModel: UIImagePickerControllerDelegate, UINavigationController
     }
     
     func showPermissionDeniedAlert() {
-        let alert = UIAlertController(title: "Access Denied", message: "Please allow access to your photo library in your device's settings to pick a photo.", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Settings", style: .default) { _ in
+        let alert = UIAlertController(title: "access_denied".localized, message: "allow_photo_access".localized, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "cancel_button".localized, style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "settings".localized, style: .default) { _ in
             if let settingsUrl = URL(string: UIApplication.openSettingsURLString) {
                 UIApplication.shared.open(settingsUrl)
             }
@@ -305,14 +332,14 @@ extension HomeViewModel: UIImagePickerControllerDelegate, UINavigationController
     }
     
     func pickPhoto() {
-        let actionSheet = UIAlertController(title: "Select Photo", message: "Choose a photo from your library or take a new one", preferredStyle: .actionSheet)
-        actionSheet.addAction(UIAlertAction(title: "Choose from Library", style: .default, handler: { _ in
+        let actionSheet = UIAlertController(title: "select_photo".localized, message: "choose_photo_description".localized, preferredStyle: .actionSheet)
+        actionSheet.addAction(UIAlertAction(title: "choose_from_library".localized, style: .default, handler: { _ in
             self.showPHPicker()
         }))
-        actionSheet.addAction(UIAlertAction(title: "Take a Photo", style: .default, handler: { _ in
+        actionSheet.addAction(UIAlertAction(title: "take_a_photo".localized, style: .default, handler: { _ in
             self.showImagePicker()
         }))
-        actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        actionSheet.addAction(UIAlertAction(title: "cancel_button".localized, style: .cancel, handler: nil))
         UIApplication.shared.windows.last?.rootViewController?.present(actionSheet, animated: true, completion: nil)
     }
     

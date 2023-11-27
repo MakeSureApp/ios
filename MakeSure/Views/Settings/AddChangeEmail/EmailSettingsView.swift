@@ -9,6 +9,7 @@ import SwiftUI
 
 struct EmailSettingsView: View {
     @EnvironmentObject var viewModel: SettingsViewModel
+    @State private var isAnimating: Bool = false
     
     enum FocusField: Hashable {
         case field
@@ -21,12 +22,22 @@ struct EmailSettingsView: View {
             VStack(alignment: .leading, spacing: 8) {
                 Text("whats_your_email".localized)
                     .font(.rubicBoldFont(size: 44))
+                    .minimumScaleFactor(0.5)
                     .fontWeight(.bold)
                     .foregroundColor(.black)
                 
-                Text("verify_email".localized)
-                    .font(.interLightFont(size: 14))
-                    .foregroundColor(CustomColors.darkGray)
+                if let error = viewModel.errorMessage {
+                    Text(error)
+                        .font(.interLightFont(size: 14))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .foregroundColor(Color.red)
+                        .padding()
+                        .padding(.top, 20)
+                } else {
+                    Text("verify_email".localized)
+                        .font(.interLightFont(size: 14))
+                        .foregroundColor(CustomColors.darkGray)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
@@ -48,12 +59,36 @@ struct EmailSettingsView: View {
                         self.focusedField = .field
                     }
                     .onChange(of: viewModel.changingEmail) { newValue in
-                        viewModel.validateEmail(newValue)
+                        viewModel.handleEmailChange(to: newValue)
                     }
             }
             .padding(.horizontal, 30)
             
+            if viewModel.isCheckingEmail {
+                RotatingShapesLoader(animate: $isAnimating, color: .black)
+                    .frame(maxWidth: 60)
+                    .onAppear {
+                        isAnimating = true
+                    }
+                    .onDisappear {
+                        isAnimating = false
+                    }
+                Spacer()
+            }
+            
             Spacer()
+        }
+        .overlay {
+            if viewModel.isLoading {
+                RotatingShapesLoader(animate: $isAnimating, color: .black)
+                    .frame(maxWidth: 80)
+                    .onAppear {
+                        isAnimating = true
+                    }
+                    .onDisappear {
+                        isAnimating = false
+                    }
+            }
         }
     }
 }

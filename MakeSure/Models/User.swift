@@ -75,3 +75,7 @@ struct OTPResponse: Codable {
     let expiryTime: String?
     let retryAfter: String?
 }
+
+enum ImageError: Error {
+    case jpegConversionFailed
+}

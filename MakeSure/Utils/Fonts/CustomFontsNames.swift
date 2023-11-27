@@ -23,5 +23,9 @@ class CustomFontsNames {
     static let interMedium = "Inter-Medium"
     static let interSemiBold = "Inter-SemiBold"
     static let bebasNeueBold = "BebasNeue-Bold"
-    
+    static let montserratLight = "Montserrat-Light"
+    static let montserratRegular = "Montserrat-Regular"
+    static let montserratMedium = "Montserrat-Medium"
+    static let montserratSdmiBold = "Montserrat-SemiBold"
+    static let montserratBold = "Montserrat-Bold"
 }

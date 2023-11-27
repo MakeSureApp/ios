@@ -8,6 +8,8 @@
 import Foundation
 import Supabase
 import Realtime
+import SupabaseStorage
+import UIKit
 
 class SupabaseService<T: Codable> {
     
@@ -19,13 +21,14 @@ class SupabaseService<T: Codable> {
     init(tableName: String) {
         self.tableName = tableName
         
-        supabase = appEnvironment.supabaseManager.supabase
+        supabase = appEnvironment.networkManager.supabase
         
-        supabaseRealtime = appEnvironment.supabaseManager.supabaseRealtime
-        supabaseRealtime.connect()
-        supabaseRealtime.onOpen { print("Socket opened.") }
-        supabaseRealtime.onError { error in print("Socket error: ", error.localizedDescription) }
-        supabaseRealtime.onClose { print("Socket closed") }
+        supabaseRealtime = appEnvironment.networkManager.supabaseRealtime
+        
+//        supabaseRealtime.connect()
+//        supabaseRealtime.onOpen { print("Socket opened.") }
+//        supabaseRealtime.onError { error in print("Socket error: ", error.localizedDescription) }
+//        supabaseRealtime.onClose { print("Socket closed") }
     }
     
     func fetchAll() async throws -> [T] {
@@ -90,6 +93,44 @@ class UserSupabaseService: SupabaseService<UserModel> {
     func fetchUserById(id: UUID) async throws -> UserModel? {
         let response: [UserModel] = try await supabase.database.from(tableName).select().eq(column: "id", value: id).execute().value
         return response.first
+    }
+    
+    func fetchUserByPhone(phone: String) async throws -> UserModel? {
+        let response: [UserModel] = try await fetchAll()
+        if let user = response.first(where: { $0.phone == phone }) {
+            return user
+        }
+        return nil
+    }
+    
+    func fetchUserByEmail(email: String) async throws -> UserModel? {
+        let response: [UserModel] = try await fetchAll()
+        if let user = response.first(where: { $0.email == email }) {
+            return user
+        }
+        return nil
+    }
+    
+    func uploadUserImage(_ image: UIImage, userId: UUID) async throws -> String? {
+        guard let data = image.pngData() else {
+            throw ImageError.jpegConversionFailed
+        }
+        
+        let fileName = "test.png"
+        let filePath = "profile_photo/\(fileName)"
+        let file = File(name: fileName, data: data, fileName: fileName, contentType: "image/png")
+        let storageClient = await appEnvironment.networkManager.storageClient()
+        let result = try await storageClient?.upload(path: fileName, file: file, fileOptions: FileOptions(cacheControl: "3600"))
+        print("uploaded file = \(result ?? "empty")")
+        
+        let photoURL = fullImageURL(for: filePath)
+        
+        return photoURL
+    }
+    
+    func fullImageURL(for relativePath: String) -> String {
+        let baseURL = "https://profile_photo.supabase.co/storage/v1/object/public/"
+        return baseURL + relativePath
     }
 }
 
@@ -157,7 +198,7 @@ class AuthSupabaseService {
     private let supabase: SupabaseClient
     
     init() {
-        self.supabase = appEnvironment.supabaseManager.supabase
+        self.supabase = appEnvironment.networkManager.supabase
     }
     
     func authWithPhoneNumber(phoneNumber: String, otp: String, type: AuthType) async throws -> UUID? {

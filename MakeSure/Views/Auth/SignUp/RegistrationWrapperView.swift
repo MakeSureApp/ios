@@ -11,35 +11,38 @@ import SwiftUI
 struct RegistrationWrapperView: View {
     @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @ObservedObject var viewModel: RegistrationViewModel
+    @State private var isAnimating: Bool = false
     
     var body: some View {
         VStack {
-            // ProgressBar
-            if viewModel.isProgresBarShow {
-                RegistrationProgressBarView(progress: viewModel.currentProgressBarStep.rawValue, countParts: RegistrationProgressBarSteps.allCases.count)
-            } else {
-                Spacer()
-                    .frame(height: 8)
-            }
-            
-            HStack {
-                BackButtonView(color: .black) {
-                    viewModel.moveToPreviousStep()
+            if viewModel.currentStep != .final {
+                // ProgressBar
+                if viewModel.isProgresBarShow {
+                    RegistrationProgressBarView(progress: viewModel.currentProgressBarStep.rawValue, countParts: RegistrationProgressBarSteps.allCases.count)
+                } else {
+                    Spacer()
+                        .frame(height: 8)
                 }
-                Spacer()
-                if viewModel.isSkipButtonShow {
-                    Button {
-                        viewModel.skipPage()
-                    } label: {
-                        Text("skip_button".localized)
-                            .font(.rubicRegularFont(size: 24))
-                            .foregroundColor(.gray)
+                
+                HStack {
+                    BackButtonView(color: .black) {
+                        viewModel.moveToPreviousStep()
                     }
-
+                    Spacer()
+                    if viewModel.isSkipButtonShow {
+                        Button {
+                            viewModel.skipPage()
+                        } label: {
+                            Text("skip_button".localized)
+                                .font(.rubicRegularFont(size: 24))
+                                .foregroundColor(.gray)
+                        }
+                        
+                    }
                 }
+                .padding()
+                .padding(.horizontal, 8)
             }
-            .padding()
-            .padding(.horizontal, 8)
             
             switch viewModel.currentStep {
             case .initial:
@@ -50,27 +53,47 @@ struct RegistrationWrapperView: View {
                 CodeSignUpView(viewModel: viewModel)
             case .email:
                 EmailSignUpView(viewModel: viewModel)
-           // case .verifyEmail:
+                // case .verifyEmail:
                 //VerifyEmailSignUpView(viewModel: viewModel)
             case .firstName:
                 NameSignUpView(viewModel: viewModel)
             case .birthday:
                 BirthdaySignUpView(viewModel: viewModel)
-            case .gender:
-                GenderSignUpView(viewModel: viewModel)
-            case .profilePhoto:
-                AddPhotoSignUpView(viewModel: viewModel)
+                //            case .gender:
+                //                GenderSignUpView(viewModel: viewModel)
+                //            case .profilePhoto:
+                //                AddPhotoSignUpView(viewModel: viewModel)
+            case .linkApple:
+                LinkAppleSignUpView(viewModel: viewModel)
             case .agreement:
                 TermsOfUseSignUpView(viewModel: viewModel)
             case .congratulations:
                 CongratulationSignUpView(viewModel: viewModel)
             case .final:
-                let _ = self.registrationCompleted()
+                VStack {
+                    Spacer()
+                    if viewModel.isLoading {
+                        RotatingShapesLoader(animate: $isAnimating, color: .black)
+                            .frame(maxWidth: 120)
+                            .onAppear {
+                                isAnimating = true
+                            }
+                            .onDisappear {
+                                isAnimating = false
+                            }
+                    }
+                    Spacer()
+                }.task {
+                    await viewModel.completeRegistration()
+                }
             }
             
-            // Continue button
-            RoundedGradientButton(text: viewModel.currentStep == .agreement ? "agree_button".localized.uppercased() : "continue_button".localized.uppercased(), isEnabled: viewModel.canProceedToNextStep) {
-                viewModel.moveToNextStep()
+            if viewModel.currentStep != .final {
+                // Continue button
+                RoundedGradientButton(text: viewModel.currentStep == .agreement ? "agree_button".localized.uppercased() : "continue_button".localized.uppercased(), isEnabled: viewModel.canProceedToNextStep) {
+                    viewModel.moveToNextStep()
+                }
+                .padding(.horizontal)
             }
         }
     }
@@ -80,9 +103,5 @@ struct RegistrationWrapperView: View {
         DispatchQueue.main.async {
             viewModel.resetAllData()
         }
-    }
-    
-    func registrationCompleted() {
-        viewModel.completeRegistration()
     }
 }

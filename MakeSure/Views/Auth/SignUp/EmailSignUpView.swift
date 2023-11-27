@@ -46,7 +46,7 @@ struct EmailSignUpView: View {
                         self.focusedField = .field
                     }
                     .onChange(of: viewModel.email) { newValue in
-                        viewModel.validateEmail(newValue)
+                        viewModel.validateEmail()
                     }
             }
             .padding(.horizontal, 30)

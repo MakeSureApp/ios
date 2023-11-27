@@ -14,13 +14,15 @@ struct EmailSettingsWrapperView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                BackButtonView(color: .black) {
-                    viewModel.emailMoveToPreviousStep()
+            if viewModel.emailCurrentStep != .congratulations {
+                HStack {
+                    BackButtonView(color: .black) {
+                        viewModel.emailMoveToPreviousStep()
+                    }
+                    Spacer()
                 }
-                Spacer()
+                .padding()
             }
-            .padding()
             
             switch viewModel.emailCurrentStep {
             case .initial:
@@ -28,14 +30,14 @@ struct EmailSettingsWrapperView: View {
             case .email:
                 EmailSettingsView()
                     .environmentObject(viewModel)
-            case .verifyEmail:
-                VerifyEmailSettingsView()
-                    .environmentObject(viewModel)
+//            case .verifyEmail:
+//                VerifyEmailSettingsView()
+//                    .environmentObject(viewModel)
             case .congratulations:
                 CongratulationsEmailSettingsView()
                     .environmentObject(viewModel)
             case .final:
-                let _ = self.authorizationCompleted()
+                let _ = self.updatingCompleted()
             }
             
             RoundedGradientButton(text: "continue_button".localized.uppercased(), isEnabled: viewModel.emailCanProceedToNextStep) {
@@ -50,8 +52,8 @@ struct EmailSettingsWrapperView: View {
         viewModel.emailResetAllData()
     }
     
-    func authorizationCompleted() {
+    func updatingCompleted() {
         presentationMode.wrappedValue.dismiss()
-        viewModel.completeChangingEmail()
+        viewModel.emailResetAllData()
     }
 }

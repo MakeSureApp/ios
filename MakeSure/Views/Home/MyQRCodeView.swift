@@ -82,7 +82,7 @@ struct MyQRCodeView: View {
                 } else {
                     Spacer()
                     Text("check_internet_connection".localized)
-                        .font(.poppinsBoldFont(size: 16))
+                        .font(.montserratBoldFont(size: 16))
                         .foregroundColor(.white)
                         .padding()
                     Spacer()

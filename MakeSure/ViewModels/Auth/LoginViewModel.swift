@@ -41,10 +41,15 @@ class LoginViewModel: NSObject, ObservableObject {
     @Published var codeSent = false
     @Published var codeValidated = false
     @Published var canSendCode = false
+    @Published var isLoading: Bool = false
+    @Published var errorMessage: String?
+    
+    private var validationCancellable: AnyCancellable?
     
     private let signInApple = AppleSignIn()
     private let authSupabaseService = AuthSupabaseService()
     private let userServiceSupabase = UserSupabaseService()
+    private var user: UserModel?
     
     @Published var isLoggingInWithApple: Bool = false
     @Published var loginError: LoginError? {
@@ -85,12 +90,38 @@ class LoginViewModel: NSObject, ObservableObject {
         currentStep = currentStep.previous()
     }
     
-    func validatePhoneNumber() {
-        if phoneNumber.isPhoneNumber {
-            canSendCode = true
-        } else {
-            canSendCode = false
+    func handlePhoneNumberChange(to newValue: String) {
+        validationCancellable?.cancel()
+        
+        validationCancellable = Just(newValue)
+            .delay(for: .seconds(0.5), scheduler: RunLoop.main)
+            .sink { _ in
+                Task {
+                    await self.validatePhoneNumber()
+                }
+            }
+    }
+    
+    func validatePhoneNumber() async {
+        self.canSendCode = false
+        guard phoneNumber.isPhoneNumber else {
+            self.errorMessage = nil
+            return
         }
+        self.isLoading = true
+        do {
+            if let fetchedUser = try await userServiceSupabase.fetchUserByPhone(phone: phoneNumber) {
+                self.user = fetchedUser
+                self.canSendCode = true
+                self.errorMessage = nil
+            } else {
+                self.errorMessage = "user_not_found".localized
+            }
+        } catch {
+            print("An error occurred while searching user: \(error)")
+            self.errorMessage = "check_internet_connection".localized
+        }
+        self.isLoading = false
     }
     
     func validateCode(_ code: Array<String>) {
@@ -112,8 +143,8 @@ class LoginViewModel: NSObject, ObservableObject {
         
     }
     
-    
     func resetAllData() {
+        errorMessage = ""
         currentStep = .phoneNumber
         partOfPhoneNumber = ""
         countryCode = .RU
@@ -126,8 +157,10 @@ class LoginViewModel: NSObject, ObservableObject {
     func completeAuthorization() {
         // todo: fetch userdata
         DispatchQueue.main.async {
-            //self.authService.authState = .isLoggedIn
-            self.resetAllData()
+            if let user = self.user {
+                self.authService.authState = .isLoggedIn(user)
+                self.resetAllData()
+            }
         }
     }
     
@@ -190,6 +223,7 @@ class LoginViewModel: NSObject, ObservableObject {
             do {
                 if let user = try await userServiceSupabase.fetchUserById(id: id) {
                     DispatchQueue.main.async {
+                        self.isLoadingUser = false
                         self.authService.authState = .isLoggedIn(user)
                     }
                 } else {

@@ -7,6 +7,8 @@
 
 import Foundation
 import SwiftUI
+import Combine
+import OneSignalFramework
 
 enum MainNavigation: CaseIterable {
     case home
@@ -65,24 +67,50 @@ enum MainNavigation: CaseIterable {
     var imageSize: (width: CGFloat, height: CGFloat) {
         switch self {
         case .home:
-            return (22, 24)
+            return (26, 26)
         case .tests:
-            return (31, 32)
+            return (26, 26)
         case .scanner:
-            return (27, 27)
+            return (26, 26)
         case .contacts:
-            return (33, 27)
+            return (26, 26)
         }
     }
 }
 
-class MainViewModel: ObservableObject {
+class MainViewModel: NSObject, ObservableObject {
     
     @ObservedObject var authService: AuthService = appEnvironment.authService
+    
     @Published var user: UserModel?
+    @Published var userId: UUID?
+    
     //@Published var userId: UUID = UUID(uuidString: "4239D90A-E8F0-11ED-A05B-0242AC120003")! // Yennefer
-    @Published var userId: UUID = UUID(uuidString: "79295454-E8F0-11ED-A05B-0242AC120003")! // Geralt
+    //@Published var userId: UUID = UUID(uuidString: "79295454-E8F0-11ED-A05B-0242AC120003")! // Geralt
     //@Published var userId: UUID = UUID(uuidString: "70cbf4a2-e8ef-11ed-a05b-0242ac120003")! // Joyce
     
     @Published var currentTab: MainNavigation = .home
+    @Published var showOrderBoxView: Bool = false
+    private var cancellables = Set<AnyCancellable>()
+    
+    override init() {
+        super.init()
+        setupObservers()
+//        userId = UUID(uuidString: "79295454-E8F0-11ED-A05B-0242AC120003")!
+    }
+    
+    private func setupObservers() {
+        authService.$authState.sink { [weak self] state in
+            switch state {
+            case .isLoggedIn(let loggedInUser):
+                self?.user = loggedInUser
+                self?.userId = loggedInUser.id
+                OneSignal.login(loggedInUser.id.uuidString)
+            case .isLoggedOut:
+                self?.user = nil
+                self?.userId = nil
+                OneSignal.logout();
+            }
+        }.store(in: &cancellables)
+    }
 }

@@ -9,7 +9,14 @@ import SwiftUI
 
 struct PositiveTestVisitDoctorView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            Spacer()
+            Text("visit_doctor_message".localized)
+                .font(.rubicBoldFont(size: 32))
+            Spacer()
+            Spacer()
+        }
+        .padding(.horizontal, 12)
     }
 }
 

@@ -9,7 +9,10 @@ import SwiftUI
 
 struct PositiveTestWarningView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("positive_result_message".localized)
+            .font(.rubicBoldFont(size: 34))
+            .multilineTextAlignment(.center)
+            .padding(.horizontal, 20)
     }
 }
 

@@ -32,7 +32,7 @@ struct HelpView: View {
                 VStack(spacing: 30) {
                     HStack {
                         Text("help_section".localized)
-                            .font(.poppinsLightFont(size: 56))
+                            .font(.montserratLightFont(size: 56))
                             .foregroundColor(.white)
                         Spacer()
                         Image(systemName: "questionmark.circle.fill")
@@ -45,32 +45,32 @@ struct HelpView: View {
                     HStack {
                         Spacer()
                         Text("FAQ")
-                            .font(.poppinsBoldFont(size: 33))
+                            .font(.montserratBoldFont(size: 33))
                             .foregroundColor(.white)
                         Spacer()
                     }
                     VStack(alignment: .leading, spacing: 8) {
                         Text("what_is_make_sure_question".localized)
-                            .font(.poppinsMediumFont(size: 17))
+                            .font(.montserratMediumFont(size: 17))
                             .foregroundColor(.white)
                         Text("make_sure_description".localized)
-                            .font(.poppinsLightFont(size: 16))
+                            .font(.montserratLightFont(size: 16))
                             .foregroundColor(.white)
                     }
                     VStack(alignment: .leading, spacing: 8) {
                         Text("what_is_make_sure_question".localized)
-                            .font(.poppinsMediumFont(size: 17))
+                            .font(.montserratMediumFont(size: 17))
                             .foregroundColor(.white)
                         Text("make_sure_description".localized)
-                            .font(.poppinsLightFont(size: 16))
+                            .font(.montserratLightFont(size: 16))
                             .foregroundColor(.white)
                     }
                     VStack(alignment: .leading, spacing: 8) {
                         Text("what_is_make_sure_question".localized)
-                            .font(.poppinsMediumFont(size: 17))
+                            .font(.montserratMediumFont(size: 17))
                             .foregroundColor(.white)
                         Text("make_sure_description".localized)
-                            .font(.poppinsLightFont(size: 16))
+                            .font(.montserratLightFont(size: 16))
                             .foregroundColor(.white)
                     }
                     Spacer()

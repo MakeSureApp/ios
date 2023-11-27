@@ -43,7 +43,7 @@ struct NameSignUpView: View {
                         self.focusedField = .field
                     }
                     .onChange(of: viewModel.firstName) { newValue in
-                        viewModel.validateName(newValue)
+                        viewModel.validateName()
                     }
             }
             .padding(.horizontal, 22)

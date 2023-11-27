@@ -66,4 +66,24 @@ extension Font {
         return Font.custom(CustomFontsNames.bebasNeueBold, size: size)
     }
     
+    static func montserratLightFont(size: CGFloat) -> Font {
+        return Font.custom(CustomFontsNames.montserratLight, size: size)
+    }
+    
+    static func montserratRegularFont(size: CGFloat) -> Font {
+        return Font.custom(CustomFontsNames.montserratRegular, size: size)
+    }
+    
+    static func montserratMediumFont(size: CGFloat) -> Font {
+        return Font.custom(CustomFontsNames.montserratMedium, size: size)
+    }
+    
+    static func montserratSemiBoldFont(size: CGFloat) -> Font {
+        return Font.custom(CustomFontsNames.montserratSdmiBold, size: size)
+    }
+    
+    static func montserratBoldFont(size: CGFloat) -> Font {
+        return Font.custom(CustomFontsNames.montserratBold, size: size)
+    }
+    
 }

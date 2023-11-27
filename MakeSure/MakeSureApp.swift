@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import OneSignalFramework
 
 private struct DeeplinkNavigationKey: EnvironmentKey {
     static let defaultValue: DeeplinkNavigation? = nil
@@ -20,6 +21,8 @@ extension EnvironmentValues {
 
 @main
 struct MakeSureApp: App {
+    
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     @State private var deeplinkNavigation: DeeplinkNavigation? = nil
     @ObservedObject private var deeplinkHandler = appEnvironment.deeplinkHandler
@@ -36,3 +39,35 @@ struct MakeSureApp: App {
     }
     
 }
+
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
+       // Remove this method to stop OneSignal Debugging
+       OneSignal.Debug.setLogLevel(.LL_VERBOSE)
+        
+       // OneSignal initialization
+        OneSignal.initialize(appEnvironment.onesignal_app_id, withLaunchOptions: launchOptions)
+
+       // requestPermission will show the native iOS notification permission prompt.
+       // We recommend removing the following code and instead using an In-App Message to prompt for notification permission
+       OneSignal.Notifications.requestPermission({ accepted in
+         print("User accepted notifications: \(accepted)")
+       }, fallbackToSettings: true)
+        
+        UNUserNotificationCenter.current().delegate = self
+            
+       return true
+    }
+    
+    func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                   didReceive response: UNNotificationResponse,
+                                withCompletionHandler completionHandler: @escaping () -> Void) {
+        
+
+        let homeViewModel = appEnvironment.viewModelFactory.getHomeViewModel()
+        homeViewModel.showNotificationsView = true
+        completionHandler()
+    }
+
+}
+

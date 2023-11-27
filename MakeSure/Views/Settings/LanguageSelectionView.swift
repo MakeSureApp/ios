@@ -32,7 +32,7 @@ struct LanguageSelectionView: View {
                                     .frame(width: 15)
                             }
                             Text(language.text)
-                                .font(.poppinsBoldFont(size: 18))
+                                .font(.montserratBoldFont(size: 18))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.8)
                                 .foregroundColor(selectedLanguage == language ? .purple : .black)

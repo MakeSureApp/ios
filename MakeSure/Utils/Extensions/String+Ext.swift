@@ -26,7 +26,6 @@ extension String {
             }
         } catch {
             return false
-            
         }
     }
     
@@ -38,7 +37,7 @@ extension String {
     }
     
     var isValidFirstName: Bool {
-        guard self.count > 4, self.count < 18 else { return false }
+        guard self.count > 2, self.count < 18 else { return false }
 
         let predicateTest = NSPredicate(format: "SELF MATCHES %@", "^(([^ ]?)(^[a-zA-Zа-яА-Я].*[a-zA-Zа-яА-Я]$)([^ ]?))$")
         return predicateTest.evaluate(with: self)
@@ -48,10 +47,10 @@ extension String {
         if self.count == 8 {
             let dateString = self.dateStringFromDateInput
             
-            if dateString.dateFromString != nil {
-                return true
-            } else {
-                return false
+            if let userBirthday = dateString.dateFromString {
+                let hundredYearsAgo = Calendar.current.date(byAdding: .year, value: -100, to: Date())!
+                let sixteenYearsAgo = Calendar.current.date(byAdding: .year, value: -16, to: Date())!
+                return userBirthday > hundredYearsAgo && userBirthday <= sixteenYearsAgo
             }
         }
         return false
@@ -75,7 +74,14 @@ extension String {
         self.insert(contentsOf: string, at:self.index(self.startIndex, offsetBy: ind) )
     }
     
+    mutating func removePlusPrefix() {
+        if self.hasPrefix("+") {
+            self = String(self.dropFirst())
+        }
+    }
+    
     var localized: String {
         return appEnvironment.localizationManager.localizedString(forKey: self)
     }
+    
 }

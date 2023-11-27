@@ -14,11 +14,11 @@ struct LegalPoliciesView: View {
                 .ignoresSafeArea(.all)
             VStack(spacing: 30) {
                 Text("legal_policies_section".localized)
-                    .font(.poppinsBoldFont(size: 30))
+                    .font(.montserratBoldFont(size: 30))
                     .foregroundColor(.white)
                     .padding()
                 Text("coming_soon".localized)
-                    .font(.poppinsMediumFont(size: 17))
+                    .font(.montserratMediumFont(size: 17))
                     .foregroundColor(.white)
             }
         }

@@ -19,7 +19,7 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 6) {
                 topCardView
                     .task {
-                        await viewModel.fetchUserData()
+                        await viewModel.getUserData()
                         await withTaskGroup(of: Void.self) { group in
                             group.addTask(priority: .userInitiated) {
                                 await viewModel.fetchTestsCount()
@@ -38,6 +38,9 @@ struct HomeView: View {
                 if viewModel.hasLoadedTips {
                     cardList
                 }
+            }
+            .task {
+                await viewModel.fetchUserData()
             }
             .padding(.horizontal)
             .padding(.bottom, 30)
@@ -89,7 +92,9 @@ private extension HomeView {
                                 }
                             }
                             .onTapGesture {
-                                if viewModel.hasLoadedImage {  viewModel.showPhotoMenu.toggle()
+                                if viewModel.image != nil {  viewModel.showPhotoMenu.toggle()
+                                } else if !viewModel.isLoadingImage {
+                                    viewModel.showPickPhotoMenu.toggle()
                                 }
                             }
                             // User info section
@@ -120,7 +125,7 @@ private extension HomeView {
                                 Spacer()
                                 
                                     Text(viewModel.name)
-                                        .font(.poppinsBoldFont(size: 18))
+                                        .font(.montserratBoldFont(size: 18))
                                         .foregroundColor(.white)
                                         .frame(maxWidth: .infinity)
                                 
@@ -196,6 +201,29 @@ private extension HomeView {
                         }
                         .padding(.trailing, 8)
                         .padding(.bottom, 50)
+                    } else if viewModel.showPickPhotoMenu {
+                        HStack {
+                            Spacer()
+                            HStack(alignment: .center) {
+                                Image(systemName: "arrowtriangle.left.fill")
+                                    .resizable()
+                                    .frame(width: 22, height: 34)
+                                    .foregroundColor(.white)
+                                Button {
+                                    viewModel.requestPhoto()
+                                    viewModel.showPickPhotoMenu.toggle()
+                                } label: {
+                                    Text("add_photo".localized)
+                                        .font(.interRegularFont(size: 16))
+                                        .foregroundColor(.black)
+                                }
+                                .padding(8)
+                                .background(.white)
+                                .cornerRadius(12)
+                            }
+                            .padding(.bottom, 45)
+                            .padding(.trailing, 4)
+                        }
                     }
                 }
             }
@@ -212,12 +240,12 @@ private extension HomeView {
             HStack {
                 VStack(alignment: .leading) {
                     Text("order_new_box".localized)
-                        .font(.poppinsMediumFont(size: 18))
+                        .font(.montserratMediumFont(size: 18))
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
                         .foregroundColor(.white)
                     Text("1 490 руб.")
-                        .font(.poppinsBoldFont(size: 11))
+                        .font(.montserratBoldFont(size: 11))
                         .foregroundColor(.white)
                 }
                 .padding(.leading, 30)
@@ -230,7 +258,9 @@ private extension HomeView {
             }
         }
         .onTapGesture {
-            viewModel.orderNewBoxClicked()
+            withAnimation {
+                viewModel.mainViewModel.showOrderBoxView = true
+            }
         }
     }
 }
@@ -239,33 +269,34 @@ private extension HomeView {
     var tipsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("tips_heading".localized)
-                .font(.poppinsBoldFont(size: 25))
+                .font(.montserratBoldFont(size: 25))
                 .foregroundColor(Color.gradientPurple2)
-            HStack {
-                ForEach(viewModel.tipCategories, id: \.self) { category in
-                    Button(action: {
-                        if let index = viewModel.selectedCategories.firstIndex(of: category) {
-                            viewModel.selectedCategories.remove(at: index)
-                        } else {
-                            viewModel.selectedCategories.append(category)
-                        }
-                    }) {
-                        Text(category.name)
-                            .font(.poppinsBoldFont(size: 10))
-                            .frame(height: 20)
-                            .padding(.horizontal, 10)
-                            .background(viewModel.selectedCategories.contains(category) ? category.color : .white)
-                            .foregroundColor(viewModel.selectedCategories.contains(category) ? .white : category.color)
-                            .cornerRadius(20)
-                            .overlay {
-                                RoundedRectangle(cornerRadius: 20)
-                                    .stroke(category.color, lineWidth: 1.88)
-                            }
-                    }
-                    .padding(.trailing, 4)
-                }
-                .padding(.bottom)
-            }
+//            HStack {
+//                ForEach(viewModel.tipCategories, id: \.self) { category in
+//                    Button(action: {
+//                        if let index = viewModel.selectedCategories.firstIndex(of: category) {
+//                            viewModel.selectedCategories.remove(at: index)
+//                        } else {
+//                            viewModel.selectedCategories.append(category)
+//                        }
+//                    }) {
+//                        Text(category.displayName)
+//                            .font(.montserratBoldFont(size: 10))
+//                            .fixedSize(horizontal: true, vertical: false)
+//                            .frame(height: 20)
+//                            .padding(.horizontal, 10)
+//                            .background(viewModel.selectedCategories.contains(category) ? category.color : .white)
+//                            .foregroundColor(viewModel.selectedCategories.contains(category) ? .white : category.color)
+//                            .cornerRadius(20)
+//                            .overlay {
+//                                RoundedRectangle(cornerRadius: 20)
+//                                    .stroke(category.color, lineWidth: 1.88)
+//                            }
+//                    }
+//                    .padding(.trailing, 4)
+//                }
+//                .padding(.bottom)
+//            }
         }
     }
 }
@@ -282,13 +313,13 @@ private extension HomeView {
                                 .fontWeight(.bold)
                                 .padding(.top, 12)
                             Spacer()
-                            if let description = card.description {
+                            if let description = card.displayDescription {
                                 Text(description)
-                                    .font(.poppinsRegularFont(size: 13))
+                                    .font(.montserratRegularFont(size: 13))
                                     .foregroundColor(.white)
                             }
-                            Text(card.title)
-                                .font(.poppinsMediumFont(size: 32))
+                            Text(card.displayTitle)
+                                .font(.montserratMediumFont(size: 32))
                                 .foregroundColor(.white)
                                 .padding(.bottom, 10)
                         }
@@ -300,7 +331,7 @@ private extension HomeView {
                             .fill(Color.gray.opacity(0.1))
                     )
                     .onTapGesture {
-                        viewModel.openTipsDetails(card.url)
+                        viewModel.openTipsDetails(card.displayUrl)
                     }
                     .contentShape(Rectangle())
                     .onAppear {

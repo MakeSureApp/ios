@@ -49,13 +49,13 @@ struct BlacklistView: View {
                         VStack(spacing: 30) {
                             HStack {
                                 Text("blacklist_section".localized)
-                                    .font(.poppinsLightFont(size: 35))
+                                    .font(.montserratLightFont(size: 35))
                                     .foregroundColor(.white)
                                     .padding()
                                 Spacer()
                             }
                             Text("blacklist_description".localized)
-                                .font(.poppinsLightFont(size: 16))
+                                .font(.montserratLightFont(size: 16))
                                 .foregroundColor(.white)
                             
                             ForEach(viewModel.blockedUsers, id: \.self) { user in
@@ -90,7 +90,7 @@ struct BlacklistView: View {
                                             )
                                     }
                                     Text(user.name)
-                                        .font(.poppinsBoldFont(size: 16))
+                                        .font(.montserratBoldFont(size: 16))
                                         .foregroundColor(.white)
                                     Spacer()
                                     Button(action: {
@@ -99,7 +99,7 @@ struct BlacklistView: View {
                                         }
                                     }) {
                                         Text("unlock_button".localized)
-                                            .font(.poppinsRegularFont(size: 14))
+                                            .font(.montserratRegularFont(size: 14))
                                             .foregroundColor(.black)
                                             .padding(.horizontal, 10)
                                             .padding(.vertical, 5)
@@ -119,7 +119,7 @@ struct BlacklistView: View {
                     }
                 } else {
                     Text("blacklist_empty".localized)
-                        .font(.poppinsBoldFont(size: 18))
+                        .font(.montserratBoldFont(size: 18))
                         .foregroundColor(.white)
                     Spacer()
                 }

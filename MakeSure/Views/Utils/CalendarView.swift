@@ -126,17 +126,17 @@ struct CustomCalendarView: View {
                         }
                         if !contactsMetOnTheDay.isEmpty {
                             Text("\(dateStr)")
-                                .font(.poppinsRegularFont(size: 20))
+                                .font(.montserratRegularFont(size: 20))
                                 .foregroundColor(isSelectedDate ? .white : .black)
                                 .overlay {
                                     Text("\(dateStr)")
-                                        .font(.poppinsRegularFont(size: 19))
+                                        .font(.montserratRegularFont(size: 19))
                                         .foregroundColor(isSelectedDate ? .black : .white)
                                         .shadow(color: isSelectedDate ? .white : .black, radius: 2)
                                 }
                         } else {
                             Text("\(dateStr)")
-                                .font(.poppinsRegularFont(size: 20))
+                                .font(.montserratRegularFont(size: 20))
                                 .foregroundColor(isSelectedDate ? .white : .black)
                         }
                     }
@@ -191,7 +191,7 @@ struct CustomCalendarView: View {
         VStack {
             HStack {
                 Text("\(calendar.monthSymbols[calendar.component(.month, from: currentMonth) - 1]) \(calendar.component(.year, from: currentMonth))")
-                    .font(.poppinsBoldFont(size: 17))
+                    .font(.montserratBoldFont(size: 17))
                 
                 Spacer()
                 
@@ -214,7 +214,7 @@ struct CustomCalendarView: View {
                 ForEach(days, id: \.self) { day in
                     Text(day)
                         .frame(maxWidth: .infinity)
-                        .font(.poppinsRegularFont(size: 13))
+                        .font(.montserratRegularFont(size: 13))
                         .foregroundColor(.gray)
                 }
             }
@@ -236,11 +236,11 @@ struct CustomCalendarView: View {
             
             if isAddBtnClicked, selectedDate == nil {
                 Text("select_date".localized)
-                    .font(.poppinsRegularFont(size: 14))
+                    .font(.montserratRegularFont(size: 14))
                     .foregroundColor(.red)
             } else if let selectedDate, selectedDate > Date().addingTimeInterval(100) {
                 Text("select_past_date".localized)
-                    .font(.poppinsRegularFont(size: 14))
+                    .font(.montserratRegularFont(size: 14))
                     .foregroundColor(.red)
             } else {
                 Spacer()

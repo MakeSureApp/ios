@@ -19,20 +19,22 @@ struct ViewingImageView: View {
                     }
                 } label: {
                     Text("cancel_button".localized)
-                        .font(.poppinsRegularFont(size: 18))
+                        .font(.montserratRegularFont(size: 18))
                         .foregroundColor(.black)
                         .padding()
                 }
             }
-            Spacer()
             if let image = viewModel.image {
                 ZoomableScrollView {
                     Image(uiImage: image)
+                        .resizable()
+                        .scaledToFill()
                 }
             }
-            Spacer()
         }
         .background(.white)
+        .padding(.top, 30)
+        .ignoresSafeArea(.all)
     }
 }
 

@@ -14,13 +14,15 @@ struct NumberSettingsWrapperView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                BackButtonView(color: .black) {
-                    viewModel.phoneMoveToPreviousStep()
+            if viewModel.phoneCurrentStep != .congratulations {
+                HStack {
+                    BackButtonView(color: .black) {
+                        viewModel.phoneMoveToPreviousStep()
+                    }
+                    Spacer()
                 }
-                Spacer()
+                .padding()
             }
-            .padding()
             
             switch viewModel.phoneCurrentStep {
             case .initial:
@@ -35,7 +37,7 @@ struct NumberSettingsWrapperView: View {
                 CongratulationsNumberSettingsView()
                     .environmentObject(viewModel)
             case .final:
-                let _ = self.authorizationCompleted()
+                let _ = self.updatingCompleted()
             }
             
             RoundedGradientButton(text: "continue_button".localized.uppercased(), isEnabled: viewModel.phoneCanProceedToNextStep) {
@@ -50,9 +52,9 @@ struct NumberSettingsWrapperView: View {
         viewModel.phoneResetAllData()
     }
     
-    func authorizationCompleted() {
+    func updatingCompleted() {
         presentationMode.wrappedValue.dismiss()
-        viewModel.completeChangingPhoneNumber()
+        viewModel.phoneResetAllData()
     }
     
 }

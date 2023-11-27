@@ -21,7 +21,7 @@ struct TestsView: View {
                     orderNewBoxView
                     HStack {
                         Text("my_tests_section".localized)
-                            .font(.poppinsBoldFont(size: 25))
+                            .font(.montserratBoldFont(size: 25))
                             .foregroundColor(.white)
                             .padding(.bottom)
                         Spacer()
@@ -41,7 +41,7 @@ struct TestsView: View {
                         testsBoxes
                     } else {
                         Text("no_tests_found".localized)
-                            .font(.poppinsBoldFont(size: 20))
+                            .font(.montserratBoldFont(size: 20))
                             .foregroundColor(.white)
                             .padding()
                     }
@@ -68,10 +68,10 @@ private extension TestsView {
             HStack {
                 VStack(alignment: .leading) {
                     Text("order_new_box".localized)
-                        .font(.poppinsMediumFont(size: 18))
+                        .font(.montserratMediumFont(size: 18))
                         .foregroundColor(.white)
                     Text("1 490 руб.")
-                        .font(.poppinsBoldFont(size: 11))
+                        .font(.montserratBoldFont(size: 11))
                         .foregroundColor(.white)
                 }
                 .padding(.leading, 30)
@@ -84,7 +84,9 @@ private extension TestsView {
             }
         }
         .onTapGesture {
-            viewModel.orderNewBoxClicked()
+            withAnimation {
+                viewModel.mainViewModel.showOrderBoxView = true
+            }
         }
     }
 }
@@ -99,7 +101,7 @@ struct TestDayView: View {
     var body: some View {
         VStack {
             Text(day)
-                .font(.poppinsRegularFont(size: 12))
+                .font(.montserratRegularFont(size: 12))
                 .foregroundColor(.white)
                 .padding(2)
             if isToday {
@@ -110,7 +112,7 @@ struct TestDayView: View {
                             .foregroundColor(.white)
                         
                         Text(date)
-                            .font(.poppinsRegularFont(size: 12))
+                            .font(.montserratRegularFont(size: 12))
                             .padding(.horizontal, 8)
                             .foregroundColor(.black)
                         
@@ -120,7 +122,7 @@ struct TestDayView: View {
             }
             if !isTest, !isToday {
                 Text(date)
-                    .font(.poppinsRegularFont(size: 12))
+                    .font(.montserratRegularFont(size: 12))
                     .foregroundColor(.white)
                     .padding(.horizontal, 8)
             } else if let isNegative {
@@ -135,7 +137,7 @@ struct TestDayView: View {
                             }
                         
                         Text(date)
-                            .font(.poppinsRegularFont(size: 12))
+                            .font(.montserratRegularFont(size: 12))
                             .padding(.horizontal, 8)
                             .foregroundColor(.black)
                         
@@ -208,7 +210,7 @@ private extension TestsView {
                     HStack {
                         Spacer()
                         Text(date.toString)
-                            .font(.poppinsMediumFont(size: 20))
+                            .font(.montserratMediumFont(size: 20))
                             .foregroundColor(.white)
                             .padding(4)
                         Spacer()
@@ -225,7 +227,7 @@ private extension TestsView {
                         viewModel.learnMoreBtnClicked()
                     } label: {
                         Text("learn_more_button".localized)
-                            .font(.poppinsLightFont(size: 14))
+                            .font(.montserratLightFont(size: 14))
                             .foregroundColor(.gray)
                             .underline()
                     }
@@ -234,7 +236,7 @@ private extension TestsView {
             ForEach(viewModel.uniqueDateRanges(), id: \.self) { rangeString in
                 VStack(alignment: .leading) {
                     Text(rangeString)
-                        .font(.poppinsLightFont(size: 16))
+                        .font(.montserratLightFont(size: 16))
                         .foregroundColor(.white)
                     ForEach(Array(viewModel.groupedTests.keys.sorted().reversed()), id: \.self) { date in
                         if viewModel.dateGroupString(date: date) == rangeString,
@@ -258,12 +260,12 @@ struct TestView: View {
                     .frame(width: 18, height: 18)
                     .foregroundColor(test.result == "negative" ? .lightGreen : .orange)
                 Text(test.name)
-                    .font(.poppinsLightFont(size: 15))
+                    .font(.montserratLightFont(size: 15))
                     .foregroundColor(.white)
                     .padding(.leading, 4)
                 Spacer()
                 Text(test.result == "negative" ? "negative_result".localized : "failure_result".localized)
-                    .font(.poppinsLightFont(size: 15))
+                    .font(.montserratLightFont(size: 15))
                     .foregroundColor(.white)
             }
         }
@@ -310,7 +312,7 @@ struct TestGroupView: View {
                     HStack {
                         Spacer()
                         Text(date.toString)
-                            .font(.poppinsMediumFont(size: 20))
+                            .font(.montserratMediumFont(size: 20))
                             .foregroundColor(.white)
                             .padding(4)
                         Spacer()
@@ -332,7 +334,7 @@ struct TestGroupView: View {
 struct TestsView_Previews: PreviewProvider {
     static var previews: some View {
         TestsView()
-            .environmentObject(TestsViewModel())
+            .environmentObject(TestsViewModel(mainViewModel: MainViewModel()))
             .environmentObject(ContactsViewModel())
     }
 }
