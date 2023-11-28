@@ -56,7 +56,7 @@ struct BlacklistView: View {
                             }
                             Text("blacklist_description".localized)
                                 .font(.montserratLightFont(size: 16))
-                                .foregroundColor(.white)
+                                .foregroundColor(.white.opacity(0.6))
                             
                             ForEach(viewModel.blockedUsers, id: \.self) { user in
                                 HStack {

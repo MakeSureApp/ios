@@ -79,3 +79,9 @@ struct OTPResponse: Codable {
 enum ImageError: Error {
     case jpegConversionFailed
 }
+
+struct InfectionRiskUser: Identifiable {
+    var id: String = "\(UUID())"
+    var user: UserModel
+    var isHighRisk: Bool
+}

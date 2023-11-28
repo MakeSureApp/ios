@@ -38,7 +38,7 @@ struct InitialSelectionView: View {
             
             VStack(alignment: .trailing) {
                 Text("confidence_message".localized)
-                    .font(.interRegularFont(size: 23))
+                    .font(.poppinsRegularFont(size: 23))
                     .multilineTextAlignment(.trailing)
                     .foregroundColor(.white)
 //                Text("pleasure")
@@ -48,15 +48,17 @@ struct InitialSelectionView: View {
             .padding(.horizontal, 20)
             .padding(.leading, 40)
             
-            VStack(alignment: .leading, spacing: -60) {
-                Text("MAKE")
-                    .font(.custom("BebasNeue", size: 169))
+            VStack(alignment: .leading, spacing: -40) {
+                Text("make")
+                    .font(.montserratSemiBoldFont(size: 92))
                     .foregroundColor(.white)
-                Text("SURE")
-                    .font(.custom("BebasNeue", size: 169))
+                Text("sure")
+                    .font(.montserratSemiBoldFont(size: 92))
                     .foregroundColor(.white)
+                Spacer()
+                    .frame(height: showSignInSelectionView ? 170 : 190)
             }
-            .padding(.trailing)
+            .padding(.trailing, 40)
             
             Spacer()
                 .frame(height: 4)
@@ -212,7 +214,9 @@ struct InitialSelectionView: View {
             }
             
             Button {
-                
+                if let url = Constants.helpUrl {
+                    UIApplication.shared.open(url)
+                }
             } label: {
                 Text("trouble_signing_in".localized)
                     .font(.rubicRegularFont(size: 17))

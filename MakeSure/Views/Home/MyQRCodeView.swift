@@ -73,7 +73,7 @@ struct MyQRCodeView: View {
                                     .frame(width: 200, height: 200)
                                 }
                             }
-                            Text(viewModel.name.uppercased() ?? "")
+                            Text(viewModel.name.uppercased())
                                 .font(.rubicBoldFont(size: 22))
                                 .foregroundColor(Color(red: 114/255, green: 146/255, blue: 174/255))
                         }

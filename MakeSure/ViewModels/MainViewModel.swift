@@ -96,7 +96,6 @@ class MainViewModel: NSObject, ObservableObject {
     override init() {
         super.init()
         setupObservers()
-//        userId = UUID(uuidString: "79295454-E8F0-11ED-A05B-0242AC120003")!
     }
     
     private func setupObservers() {

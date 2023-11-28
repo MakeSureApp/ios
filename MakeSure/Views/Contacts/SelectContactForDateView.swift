@@ -54,7 +54,7 @@ struct SelectContactForDateView: View {
                         let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
                         if isEnabled {
                             SelectContactItemView(
-                                image: viewModel.contactsImages[contact.id], date: viewModel.getLastDateWith(contact: contact), contact: contact, selectedContactIds: .constant([selectedContactIdForDate].compactMap { $0 })
+                                image: viewModel.contactsImages[contact.id], date: viewModel.getLastDateWith(contact: contact), contact: contact, isEnabled: true, selectedContactIds: .constant([selectedContactIdForDate].compactMap { $0 })
                             )
                         }
                     }

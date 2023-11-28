@@ -74,7 +74,7 @@ private extension HomeView {
                                                     isAnimatingImage = false
                                                 }
                                         )
-                                } else if let image = viewModel.image {
+                                } else if let image = viewModel.image, !viewModel.showPhoto {
                                     // Photo
                                     Image(uiImage: image)
                                         .resizable()
@@ -82,21 +82,31 @@ private extension HomeView {
                                         .frame(width: 81, height: 81)
                                         .clipShape(Circle())
                                         .shadow(radius: 10)
-                                        
+                                    
                                 } else {
                                     // Default placeholder
-                                    Image(systemName: "person.circle.fill")
-                                        .resizable()
-                                        .frame(width: 81, height: 81)
-                                        .foregroundColor(.white)
+                                    if viewModel.showPhoto {
+                                       Spacer()
+                                            .frame(width: 81, height: 81)
+                                    } else {
+                                        Image(systemName: "person.circle.fill")
+                                            .resizable()
+                                            .frame(width: 81, height: 81)
+                                            .foregroundColor(.white)
+                                    }
                                 }
                             }
                             .onTapGesture {
-                                if viewModel.image != nil {  viewModel.showPhotoMenu.toggle()
-                                } else if !viewModel.isLoadingImage {
-                                    viewModel.showPickPhotoMenu.toggle()
+                                viewModel.requestPhoto()
+                            }
+                            .onLongPressGesture {
+                                if viewModel.image != nil, !viewModel.isLoadingImage {
+                                    withAnimation {
+                                        viewModel.showPhoto.toggle()
+                                    }
                                 }
                             }
+                            
                             // User info section
                             HStack {
                                 VStack {
@@ -124,20 +134,20 @@ private extension HomeView {
                                 
                                 Spacer()
                                 
-                                    Text(viewModel.name)
-                                        .font(.montserratBoldFont(size: 18))
-                                        .foregroundColor(.white)
-                                        .frame(maxWidth: .infinity)
+                                Text(viewModel.name)
+                                    .font(.montserratBoldFont(size: 18))
+                                    .foregroundColor(.white)
+                                    .frame(maxWidth: .infinity)
                                 
                                 Spacer()
                                 
                                 VStack {
-                                        Text("\(viewModel.birthdate.getAge)")
-                                            .font(.interRegularFont(size: 20))
-                                            .foregroundColor(.white)
-                                        Text("years_old".localized)
-                                            .font(.interRegularFont(size: 12))
-                                            .foregroundColor(.white)
+                                    Text("\(viewModel.birthdate.getAge)")
+                                        .font(.interRegularFont(size: 20))
+                                        .foregroundColor(.white)
+                                    Text("years_old".localized)
+                                        .font(.interRegularFont(size: 12))
+                                        .foregroundColor(.white)
                                 }
                                 .frame(width: 80)
                             }
@@ -161,70 +171,6 @@ private extension HomeView {
                     .padding()
                     .padding(.horizontal, 12)
                     .foregroundColor(.white)
-                    
-                    if viewModel.showPhotoMenu {
-                        HStack {
-                            Spacer()
-                            HStack {
-                                Image(systemName: "arrowtriangle.left.fill")
-                                    .resizable()
-                                    .frame(width: 30, height: 40)
-                                    .foregroundColor(.white)
-                                VStack {
-                                    Button {
-                                        viewModel.requestPhoto()
-                                        viewModel.showPhotoMenu.toggle()
-                                    } label: {
-                                        Text("change".localized)
-                                            .font(.interRegularFont(size: 16))
-                                            .foregroundColor(.black)
-                                    }
-                                    .padding(.top, 6)
-                                    
-                                    Divider()
-                                        .frame(maxWidth: 110)
-                                    
-                                    Button {
-                                        viewModel.showImagePhoto = true
-                                        viewModel.showPhotoMenu.toggle()
-                                    } label: {
-                                        Text("show".localized)
-                                            .font(.interRegularFont(size: 16))
-                                            .foregroundColor(.black)
-                                    }
-                                    .padding(.bottom, 6)
-                                }
-                                .padding(.vertical, 2)
-                                .background(.white)
-                                .cornerRadius(12)
-                            }
-                        }
-                        .padding(.trailing, 8)
-                        .padding(.bottom, 50)
-                    } else if viewModel.showPickPhotoMenu {
-                        HStack {
-                            Spacer()
-                            HStack(alignment: .center) {
-                                Image(systemName: "arrowtriangle.left.fill")
-                                    .resizable()
-                                    .frame(width: 22, height: 34)
-                                    .foregroundColor(.white)
-                                Button {
-                                    viewModel.requestPhoto()
-                                    viewModel.showPickPhotoMenu.toggle()
-                                } label: {
-                                    Text("add_photo".localized)
-                                        .font(.interRegularFont(size: 16))
-                                        .foregroundColor(.black)
-                                }
-                                .padding(8)
-                                .background(.white)
-                                .cornerRadius(12)
-                            }
-                            .padding(.bottom, 45)
-                            .padding(.trailing, 4)
-                        }
-                    }
                 }
             }
     }

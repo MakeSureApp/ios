@@ -20,7 +20,8 @@ enum ScannerSentNonitificationsSteps: Int, CaseIterable {
 
 class ScannerViewModel: MainViewModel {
     
-    @Published var isPresentingScanner = true
+    @Published var mainViewModel: MainViewModel
+    @Published var isPresentingScanner = false
     @Published var scannedCode: String?
     @Published var isLoading: Bool = false
     @Published private(set) var hasLoaded: Bool = false
@@ -29,6 +30,7 @@ class ScannerViewModel: MainViewModel {
     @Published var isShowUser = false
     @Published var errorMessage: String?
     @Published var testResponse: String?
+    @Published var positiveTestName: String?
     
     private let friendsLinksService = FriendsLinksSupabaseService()
     private let userService = UserSupabaseService()
@@ -46,16 +48,18 @@ class ScannerViewModel: MainViewModel {
     
     @Published var showSendNotificationsToContactsView = false
     @Published var notificationsCurrentStep: ScannerSentNonitificationsSteps = .warning
-    @Published var highRiskOfInfectionContacts: [UserModel] = []
-    @Published var possibleRiskOfInfectionContacts: [UserModel] = []
+    @Published var highRiskOfInfectionContacts: [InfectionRiskUser] = []
+    @Published var possibleRiskOfInfectionContacts: [InfectionRiskUser] = []
+    @Published var riskOfInfectionUsers: [InfectionRiskUser] = []
     @Published var selectedForNotificationContactsIds: [UUID]? = []
     @Published var isLoadingHighRiskUsers: Bool = false
     @Published var isLoadingPossibleRiskUsers: Bool = false
     @Published var isSendingNotifications: Bool = false
+    @Published var showPositiveTestView: Bool = false
+    @Published var showNegativeTestView: Bool = false
     @Published private(set) var hasLoadedHighRiskUsers: Bool = false
     @Published private(set) var hasLoadedPossibleRiskUsers: Bool = false
-    @Published var highRiskUsersImages: [UUID: UIImage] = [:]
-    @Published var possibleRiskUsersImages: [UUID: UIImage] = [:]
+    @Published var riskOfInfectionUsersImages: [UUID: UIImage] = [:]
     var notificationBtnText: String {
         switch notificationsCurrentStep {
         case .selection:
@@ -74,12 +78,11 @@ class ScannerViewModel: MainViewModel {
     }
     
     enum LoadImageFor {
-        case highRiskUser
-        case possibleRiskUser
+        case riskOfInfectionUser
     }
     
-    override init() {
-        super.init()
+    init(mainViewModel: MainViewModel) {
+        self.mainViewModel = mainViewModel
         self.session = captureSession
     }
     
@@ -170,13 +173,14 @@ class ScannerViewModel: MainViewModel {
             
             for await user in group {
                 if let user {
-                    print("user \(user.name) == \(user.id)")
+                    let infectionRiskUser = InfectionRiskUser(user: user, isHighRisk: isHighRisk)
                     DispatchQueue.main.async {
                         if isHighRisk {
-                            self.highRiskOfInfectionContacts.append(user)
+                            self.highRiskOfInfectionContacts.append(infectionRiskUser)
                         } else {
-                            self.possibleRiskOfInfectionContacts.append(user)
+                            self.possibleRiskOfInfectionContacts.append(infectionRiskUser)
                         }
+                        self.riskOfInfectionUsers.append(infectionRiskUser)
                     }
                 }
             }
@@ -199,7 +203,7 @@ class ScannerViewModel: MainViewModel {
         }
         var userIds: [UUID] = []
         if forHighRiskUsers {
-            userIds = self.highRiskOfInfectionContacts.map { $0.id }
+            userIds = self.highRiskOfInfectionContacts.map { $0.user.id }
         } else {
             userIds = self.selectedForNotificationContactsIds ?? []
         }
@@ -209,12 +213,12 @@ class ScannerViewModel: MainViewModel {
         for id in userIds {
             var description = ""
             if forHighRiskUsers {
-                description = "Недавно вы имели контакт и вам срочно необходимо сходить к врачу, для проверки на заболевание!"
+                description = "У кого-то из твоих недавних партнеров положительный тест на \(positiveTestName ?? "Скрытое название"). \n\nНе стоит поддаваться панике. Помни, диагноз ставит только врач и только после ряда обследований. \n\nРекомендуем как можно скорее обратиться к специалисту. "
             } else {
-                description = "Вам желательно сходить к врачу, для проверки на заболевание!"
+                description = "\(mainViewModel.user?.name ?? "Пользователь") предоставил(-а) тебе результаты своих последних тестов. "
             }
             
-            let model = NotificationModel(id: UUID(), userId: id, title: "Внимание! ", description: description, createdAt: Date(), isNotified: false)
+            let model = NotificationModel(id: UUID(), userId: id, title: forHighRiskUsers ? "Внимание! " : "Сообщение", description: description, createdAt: Date(), isNotified: false)
             do {
                 try await self.notificationService.create(item: model)
             } catch {
@@ -265,10 +269,8 @@ class ScannerViewModel: MainViewModel {
             if let image = UIImage(data: data) {
                 DispatchQueue.main.async {
                     switch type {
-                    case .highRiskUser:
-                        self.highRiskUsersImages[user.id] = image
-                    case .possibleRiskUser:
-                        self.possibleRiskUsersImages[user.id] = image
+                    case .riskOfInfectionUser:
+                        self.riskOfInfectionUsersImages[user.id] = image
                     }
                 }
             }
@@ -283,8 +285,7 @@ class ScannerViewModel: MainViewModel {
         highRiskOfInfectionContacts = []
         possibleRiskOfInfectionContacts = []
         notificationsCurrentStep = .warning
-        possibleRiskUsersImages = [:]
-        highRiskUsersImages = [:]
+        riskOfInfectionUsersImages = [:]
         isLoadingHighRiskUsers = false
         isLoadingPossibleRiskUsers = false
         hasLoadedHighRiskUsers = false
@@ -352,11 +353,11 @@ class ScannerViewModel: MainViewModel {
                                 self.testResponse = "test_type_not_recognized".localized
                                 
                                 // testing 👇
-                                Task {
-                                    await self.fetchAndDistributeContacts(testType: "Gonorrhea")
-                                    await self.sendNotificationsAboutRiskOfInfection(forHighRiskUsers: true)
-                                }
-                                self.showSendNotificationsToContactsView = true
+//                                Task {
+//                                    await self.fetchAndDistributeContacts(testType: "Gonorrhea")
+//                                    await self.sendNotificationsAboutRiskOfInfection(forHighRiskUsers: true)
+//                                }
+//                                self.showSendNotificationsToContactsView = true
                             case "2":
                                 self.testResponse = "no_result_available".localized
                             default:
@@ -370,11 +371,13 @@ class ScannerViewModel: MainViewModel {
                                 self.testResponse = "result_positive_see_doctor".localized
                                 
                                 if let testType = response.test_type {
+                                    self.positiveTestName = testType
+                                    self.showPositiveTestView = true
                                     Task {
                                         await self.fetchAndDistributeContacts(testType: testType)
                                         await self.sendNotificationsAboutRiskOfInfection(forHighRiskUsers: true)
                                     }
-                                    self.showSendNotificationsToContactsView = true
+//                                    self.showSendNotificationsToContactsView = true
                                 }
                             case "Failure":
                                 self.testResponse = "error_occurred_try_again".localized
@@ -515,6 +518,7 @@ class ScannerViewModel: MainViewModel {
     func resetData(showScanner: Bool = true) {
         capturedImage = nil
         testResponse = nil
+        positiveTestName = nil
         scannedCode = nil
         searchedUser = nil
         userImage = nil
@@ -522,6 +526,9 @@ class ScannerViewModel: MainViewModel {
         hasLoaded = false
         isShowUser = false
         isPresentingScanner = showScanner
+        showNegativeTestView = false
+        showPositiveTestView = false
+        showSendNotificationsToContactsView = false
     }
 }
 

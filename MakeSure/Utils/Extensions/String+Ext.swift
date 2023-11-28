@@ -84,4 +84,7 @@ extension String {
         return appEnvironment.localizationManager.localizedString(forKey: self)
     }
     
+    func capitalizedFirstLetter() -> String {
+        return prefix(1).capitalized + dropFirst()
+    }
 }

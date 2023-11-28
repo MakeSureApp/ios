@@ -11,12 +11,13 @@ import SwiftUI
 struct RoundedGradientButton: View {
     let text: String
     var isEnabled: Bool
+    var textSize: CGFloat = 21
     let action: () -> Void
     
     var body: some View {
         Button(action: action) {
             Text(text)
-                .font(.rubicBoldFont(size: 21))
+                .font(.rubicBoldFont(size: textSize))
                 .frame(minWidth: 0, maxWidth: .infinity)
                 .padding()
                 .padding(.vertical, 2)

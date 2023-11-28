@@ -52,11 +52,6 @@ struct MainTabView: View {
         }
         .contentShape(Rectangle())
         .background(.white)
-        .onTapGesture {
-            contactsViewModel.showCalendar = false
-            homeViewModel.showPhotoMenu = false
-            homeViewModel.showPickPhotoMenu = false
-        }
         .overlay {
             if contactsViewModel.showCalendar {
                 VStack {
@@ -99,13 +94,37 @@ struct MainTabView: View {
                     .environmentObject(homeViewModel)
             }
             if scannerViewModel.showSendNotificationsToContactsView {
-                PositiveTestNotificationsWrapperView()
+                PositiveTestContactsSelectionView()
                     .environmentObject(scannerViewModel)
                     .environmentObject(contactsViewModel)
             }
             if viewModel.showOrderBoxView {
                 OrderBoxView()
                     .environmentObject(orderBoxViewModel)
+            }
+            if homeViewModel.showPhoto, let image = homeViewModel.image {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Image(uiImage: image)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 200, height: 200)
+                            .clipShape(Circle())
+                            .shadow(color: .white, radius: 10)
+                        Spacer()
+                    }
+                    Spacer()
+                }
+                .ignoresSafeArea(.all)
+                .background(Color.black.opacity(0.5))
+            }
+        }
+        .onTapGesture {
+            withAnimation {
+                contactsViewModel.showCalendar = false
+                homeViewModel.showPhoto = false
             }
         }
         .onChange(of: deeplinkHandler.deeplinkNavigation) { navigation in
@@ -256,7 +275,7 @@ private extension MainTabView {
 
 private extension MainTabView {
     var tabView: some View {
-        Group {
+        VStack {
             switch viewModel.currentTab {
             case .home:
                 viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
@@ -268,7 +287,7 @@ private extension MainTabView {
                 viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
             }
         }
-        .padding(.vertical, 32)
+        .padding(.vertical, viewModel.currentTab == .tests || viewModel.currentTab == .scanner ? 24 : 32)
         .zIndex(0)
     }
 }
@@ -284,7 +303,7 @@ private extension MainTabView {
                         viewModel.currentTab == tab
                     }, set: { isSelected in
                         viewModel.currentTab = tab
-                        if tab == .scanner, !scannerViewModel.isShowUser {
+                        if tab == .scanner, !scannerViewModel.isShowUser, !scannerViewModel.showNegativeTestView, !scannerViewModel.showPositiveTestView {
                             withAnimation {
                                 scannerViewModel.isPresentingScanner = true
                             }

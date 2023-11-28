@@ -24,8 +24,8 @@ struct ScannerView: View {
             VStack {
                 if let code = viewModel.scannedCode {
                     SearchedUserView(isShowView: $isShowUserView, userId: code, onDismiss: {})
-                    .environmentObject(viewModel)
-                    .environmentObject(contactsViewModel)
+                        .environmentObject(viewModel)
+                        .environmentObject(contactsViewModel)
                 } else if viewModel.isLoading || contactsViewModel.isAddingUserToContacts {
                     RotatingShapesLoader(animate: $isAnimating)
                         .frame(maxWidth: 100)
@@ -75,6 +75,89 @@ struct ScannerView: View {
                             .onDisappear {
                                 isAnimating = false
                             }
+                    }
+                } else if viewModel.showPositiveTestView, let testName = viewModel.positiveTestName {
+                    VStack {
+                        VStack {
+                            VStack(spacing: 12) {
+                                HStack {
+                                    Text("do_not_panic".localized)
+                                        .font(.montserratBoldFont(size: 20))
+                                        .foregroundStyle(CustomColors.darkBlue)
+                                    Spacer()
+                                    Image("logoIcon")
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                }
+                                .padding(.top)
+                                Text(String(format: "positive_test_description".localized, testName))
+                                    .font(.montserratRegularFont(size: 16))
+                                    .foregroundStyle(CustomColors.darkBlue)
+                                    .padding(.bottom)
+                                HStack {
+                                    Spacer()
+                                        .frame(alignment: .leading)
+                                    RoundedGradientButton(text: "notify".localized, isEnabled: true, textSize: 16) {
+                                        viewModel.showSendNotificationsToContactsView = true
+                                    }
+                                }
+                            }
+                            .padding()
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.white)
+                        )
+                        .padding()
+                        
+                        Spacer()
+                    }
+                } else if viewModel.showNegativeTestView {
+                    VStack {
+                        VStack {
+                            VStack(spacing: 12) {
+                                HStack {
+                                    Text("great".localized)
+                                        .font(.montserratBoldFont(size: 20))
+                                        .foregroundStyle(CustomColors.darkBlue)
+                                    Spacer()
+                                    Image("logoIcon")
+                                        .resizable()
+                                        .frame(width: 24, height: 24)
+                                }
+                                .padding(.top)
+                                HStack {
+                                    Text("negative_tests_uploaded".localized)
+                                        .font(.montserratRegularFont(size: 16))
+                                        .foregroundStyle(CustomColors.darkBlue)
+                                        .padding(.bottom)
+                                    Spacer()
+                                }
+                                Image("congratsNegativeTest")
+                                    .resizable()
+                                    .frame(width: .infinity)
+                                    .scaledToFit()
+                                    .padding(.bottom)
+                                   
+                                HStack {
+                                    Spacer()
+                                        .frame(alignment: .leading)
+                                    RoundedGradientButton(text: "OK", isEnabled: true) {
+                                        withAnimation {
+                                            viewModel.resetData(showScanner: false)
+                                        }
+                                    }
+                                }
+                            }
+                            .padding()
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: 20)
+                                .fill(.white)
+                        )
+                        .padding()
+                        
+                        Spacer()
                     }
                 } else if let error = viewModel.errorMessage {
                     Text(error)
@@ -258,44 +341,44 @@ struct CaptureButton: View {
     }
 }
 
-struct CaptureButtonView_Previews: PreviewProvider {
-    static var previews: some View {
-        HStack {
-            Button {
-               // onRetry
-            } label: {
-                Image(systemName: "arrow.triangle.2.circlepath.camera.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundColor(.white)
-                    .frame(width: 50, height: 50)
-            }
-
-            Button {
-                //onSend
-            } label: {
-                HStack {
-                    Text("send".localized.uppercased())
-                        .font(.montserratBoldFont(size: 25))
-                        .foregroundColor(.white)
-                    Image(systemName: "paperplane.fill")
-                        .resizable()
-                        .scaledToFit()
-                        .rotationEffect(Angle(degrees: 45))
-                        .foregroundColor(.white)
-                        .frame(width: 30, height: 30)
-                }
-                .padding()
-                .background(CustomColors.thirdGradient)
-                .cornerRadius(20)
-                .shadow(color: .white, radius: 12)
-            }
-
-        }
-        .padding()
-        .background(.black)
-    }
-}
+//struct CaptureButtonView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        HStack {
+//            Button {
+//               // onRetry
+//            } label: {
+//                Image(systemName: "arrow.triangle.2.circlepath.camera.fill")
+//                    .resizable()
+//                    .scaledToFit()
+//                    .foregroundColor(.white)
+//                    .frame(width: 50, height: 50)
+//            }
+//
+//            Button {
+//                //onSend
+//            } label: {
+//                HStack {
+//                    Text("send".localized.uppercased())
+//                        .font(.montserratBoldFont(size: 25))
+//                        .foregroundColor(.white)
+//                    Image(systemName: "paperplane.fill")
+//                        .resizable()
+//                        .scaledToFit()
+//                        .rotationEffect(Angle(degrees: 45))
+//                        .foregroundColor(.white)
+//                        .frame(width: 30, height: 30)
+//                }
+//                .padding()
+//                .background(CustomColors.thirdGradient)
+//                .cornerRadius(20)
+//                .shadow(color: .white, radius: 12)
+//            }
+//
+//        }
+//        .padding()
+//        .background(.black)
+//    }
+//}
 
 //struct ScannerView_Previews: PreviewProvider {
 //    static var previews: some View {
@@ -305,3 +388,54 @@ struct CaptureButtonView_Previews: PreviewProvider {
 //            .environmentObject(MainViewModel())
 //    }
 //}
+
+#Preview(body: {
+    ZStack {
+        CustomColors.thirdGradient
+            .ignoresSafeArea(.all)
+        VStack {
+            VStack {
+                VStack(spacing: 12) {
+                    HStack {
+                        Text("great".localized)
+                            .font(.montserratBoldFont(size: 20))
+                            .foregroundStyle(CustomColors.darkBlue)
+                        Spacer()
+                        Image("logoIcon")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                    }
+                    .padding(.top)
+                    HStack {
+                        Text("negative_tests_uploaded".localized)
+                            .font(.montserratRegularFont(size: 16))
+                            .foregroundStyle(CustomColors.darkBlue)
+                            .padding(.bottom)
+                        Spacer()
+                    }
+                    Image("congratsNegativeTest")
+                        .resizable()
+                        .frame(width: .infinity)
+                        .scaledToFit()
+                        .padding(.bottom)
+                       
+                    HStack {
+                        Spacer()
+                            .frame(alignment: .leading)
+                        RoundedGradientButton(text: "OK", isEnabled: true) {
+                            
+                        }
+                    }
+                }
+                .padding()
+            }
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .fill(.white)
+            )
+            .padding(.horizontal)
+            
+            Spacer()
+        }
+    }
+})

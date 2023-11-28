@@ -40,10 +40,16 @@ struct TestsView: View {
                     } else if viewModel.hasLoaded {
                         testsBoxes
                     } else {
-                        Text("no_tests_found".localized)
-                            .font(.montserratBoldFont(size: 20))
-                            .foregroundColor(.white)
-                            .padding()
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("no_tests_found".localized)
+                                .font(.montserratRegularFont(size: 16))
+                                .foregroundColor(.white.opacity(0.6))
+                            Text("order_test_message".localized)
+                                .font(.montserratRegularFont(size: 16))
+                                .foregroundColor(.white.opacity(0.6))
+                            Spacer()
+                        }
+                        .padding(.vertical)
                     }
                     Spacer()
                         .frame(height: 40)
@@ -219,17 +225,6 @@ private extension TestsView {
                 VStack(alignment: .leading, spacing: 8) {
                     ForEach(viewModel.lastTests) { test in
                         TestView(test: test)
-                    }
-                }
-                HStack {
-                    Spacer()
-                    Button {
-                        viewModel.learnMoreBtnClicked()
-                    } label: {
-                        Text("learn_more_button".localized)
-                            .font(.montserratLightFont(size: 14))
-                            .foregroundColor(.gray)
-                            .underline()
                     }
                 }
             }

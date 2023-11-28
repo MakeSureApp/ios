@@ -44,6 +44,21 @@ struct ContactView: View {
                                 .frame(width: 48, height: 48)
                                 .foregroundColor(.white)
                         }
+                        .alert(isPresented: $isShowingBlockContactMenu) {
+                            Alert(
+                                title: Text(getBlockAlertText()),
+                                message: Text("user_will_disappear_from_contacts".localized),
+                                primaryButton: .destructive(Text("OK")) {
+                                    Task {
+                                        await viewModel.addUserToBlacklist(id: contact.id)
+                                    }
+                                    withAnimation {
+                                        presentationMode.wrappedValue.dismiss()
+                                    }
+                                },
+                                secondaryButton: .cancel()
+                            )
+                        }
                     }
                 }
                 .padding([.top, .leading], 16)
@@ -197,20 +212,20 @@ struct ContactView: View {
                 }
             }
             if isShowingBlockContactMenu {
-                AlertMenu(alertText: getBlockAlertText(), actionBtnText: "block_button".localized.uppercased(),
-                          onCancel: {
-                    withAnimation {
-                        isShowingBlockContactMenu.toggle()
-                    }
-                }, onAction: {
-                    Task {
-                        await viewModel.addUserToBlacklist(id: contact.id)
-                    }
-                    withAnimation {
-                        isShowingBlockContactMenu.toggle()
-                        presentationMode.wrappedValue.dismiss()
-                    }
-                })
+//                AlertMenu(alertText: getBlockAlertText(), actionBtnText: "block_button".localized.uppercased(),
+//                          onCancel: {
+//                    withAnimation {
+//                        isShowingBlockContactMenu.toggle()
+//                    }
+//                }, onAction: {
+//                    Task {
+//                        await viewModel.addUserToBlacklist(id: contact.id)
+//                    }
+//                    withAnimation {
+//                        isShowingBlockContactMenu.toggle()
+//                        presentationMode.wrappedValue.dismiss()
+//                    }
+//                })
             }
         }
         .task {
@@ -302,7 +317,7 @@ struct ShareLastTestView: View {
 
 struct ContactView_Previews: PreviewProvider {
     static var previews: some View {
-        let tests: [Test] = [
+        let _: [Test] = [
             Test(id: UUID(), name: "HIV"),
             Test(id: UUID(), name: "Syphilis"),
             Test(id: UUID(), name: "Chlamydia"),

@@ -165,11 +165,15 @@ class LoginViewModel: NSObject, ObservableObject {
     }
     
     func openTermsOfUse() {
-        print("terms of use")
+        if let url = Constants.agreementUrl {
+            UIApplication.shared.open(url)
+        }
     }
     
     func openPrivacyPolicy() {
-        print("privacy policy")
+        if let url = Constants.privacyUrl {
+            UIApplication.shared.open(url)
+        }
     }
     
     // MARK: Apple Sign In

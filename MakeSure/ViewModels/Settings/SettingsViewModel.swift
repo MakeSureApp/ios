@@ -99,10 +99,6 @@ class SettingsViewModel: ObservableObject {
     
     private let userSupabaseService = UserSupabaseService()
     
-    let privacyUrl = URL(string: "https://makesure.app/confidentiality")
-    let helpUrl = URL(string: "https://makesure.app/faq")
-    let agreementUrl = URL(string: "https://makesure.app/license_agreement")
-    
     var phoneNumber: String {
         return countryCode.rawValue + partOfPhoneNumber
     }
@@ -354,6 +350,15 @@ class SettingsViewModel: ObservableObject {
             self.isEmailUpdated = false
             self.isLoading = false
             self.errorMessage = nil
+        }
+    }
+    
+    func toggleNotifications() {
+        if !notificationsEnabled {
+            UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+            UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        } else {
+            
         }
     }
     

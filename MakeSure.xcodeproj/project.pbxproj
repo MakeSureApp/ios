@@ -19,6 +19,7 @@
 		52225D4E2AB88CC800173A87 /* PositiveTestSendNotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D4D2AB88CC800173A87 /* PositiveTestSendNotificationsView.swift */; };
 		52225D502AB88CF400173A87 /* PositiveTestVisitDoctorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D4F2AB88CF400173A87 /* PositiveTestVisitDoctorView.swift */; };
 		5222FD732A3A07D4000C86DB /* AppleSignIn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5222FD722A3A07D4000C86DB /* AppleSignIn.swift */; };
+		522E4FF52B15FABF001DFFA1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 522E4FF42B15FABF001DFFA1 /* Constants.swift */; };
 		5231605C2A97EDFB0038C024 /* LinkAppleSignUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5231605B2A97EDFB0038C024 /* LinkAppleSignUpView.swift */; };
 		5246AF732A4079130084D5CF /* NotificationsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5246AF722A4079130084D5CF /* NotificationsView.swift */; };
 		5246AF752A407BC30084D5CF /* NotificationsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5246AF742A407BC30084D5CF /* NotificationsViewModel.swift */; };
@@ -227,6 +228,7 @@
 		52225D4D2AB88CC800173A87 /* PositiveTestSendNotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestSendNotificationsView.swift; sourceTree = "<group>"; };
 		52225D4F2AB88CF400173A87 /* PositiveTestVisitDoctorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestVisitDoctorView.swift; sourceTree = "<group>"; };
 		5222FD722A3A07D4000C86DB /* AppleSignIn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppleSignIn.swift; sourceTree = "<group>"; };
+		522E4FF42B15FABF001DFFA1 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		5231605B2A97EDFB0038C024 /* LinkAppleSignUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkAppleSignUpView.swift; sourceTree = "<group>"; };
 		5246AF722A4079130084D5CF /* NotificationsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsView.swift; sourceTree = "<group>"; };
 		5246AF742A407BC30084D5CF /* NotificationsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewModel.swift; sourceTree = "<group>"; };
@@ -831,6 +833,7 @@
 				CE47D0A829F3DEE400AEC9DA /* Colors */,
 				CE9ADC6429F7D77D00C5861A /* AppEnvironment.swift */,
 				CE9ADC6629F7DA4900C5861A /* ViewModelFactory.swift */,
+				522E4FF42B15FABF001DFFA1 /* Constants.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1149,6 +1152,7 @@
 				CE27C8E229F80D1B006ACFED /* BlacklistView.swift in Sources */,
 				CE27C8EA29F81DAE006ACFED /* EmailSettingsView.swift in Sources */,
 				CEB10AC32A02B56800B7B5DF /* Meeting.swift in Sources */,
+				522E4FF52B15FABF001DFFA1 /* Constants.swift in Sources */,
 				CE8DBC3B2A0F74E1005D3A79 /* Image+Ext.swift in Sources */,
 				CEB10ABE2A02674600B7B5DF /* SupabaseService.swift in Sources */,
 				CE9166C829F0F2D300612933 /* EmailSignUpView.swift in Sources */,

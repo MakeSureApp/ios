@@ -51,8 +51,7 @@ class HomeViewModel: NSObject, ObservableObject {
     @Published var cards: [TipsModel] = []
     @Published var tipImages: [UUID: UIImage] = [:]
     @Published var qrCodeText: String?
-    @Published var showPhotoMenu = false
-    @Published var showPickPhotoMenu = false
+    @Published var showPhoto = false
     @Published var showImagePhoto = false
     @Published var showMyQRCode = false
     @Published var showNotificationsView = false
@@ -91,7 +90,7 @@ class HomeViewModel: NSObject, ObservableObject {
     }
     
     func fetchUserData() async {
-        guard let user = await mainViewModel.user else {
+        guard let _ = await mainViewModel.user else {
             print("User not available!")
             return
         }
@@ -333,11 +332,11 @@ extension HomeViewModel: UIImagePickerControllerDelegate, UINavigationController
     
     func pickPhoto() {
         let actionSheet = UIAlertController(title: "select_photo".localized, message: "choose_photo_description".localized, preferredStyle: .actionSheet)
-        actionSheet.addAction(UIAlertAction(title: "choose_from_library".localized, style: .default, handler: { _ in
-            self.showPHPicker()
-        }))
         actionSheet.addAction(UIAlertAction(title: "take_a_photo".localized, style: .default, handler: { _ in
             self.showImagePicker()
+        }))
+        actionSheet.addAction(UIAlertAction(title: "choose_from_library".localized, style: .default, handler: { _ in
+            self.showPHPicker()
         }))
         actionSheet.addAction(UIAlertAction(title: "cancel_button".localized, style: .cancel, handler: nil))
         UIApplication.shared.windows.last?.rootViewController?.present(actionSheet, animated: true, completion: nil)

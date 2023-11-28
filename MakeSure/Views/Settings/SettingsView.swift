@@ -14,6 +14,7 @@ struct SettingsView: View {
     @Binding var activeSheet: MainTabView.ActiveSheet?
     @State private var isShowingLanguageSelection = false
     @State private var isShowingDeleteAccountMenu = false
+    @State private var isShowingSignOutAccountMenu = false
     @State private var isAnimating: Bool = false
     
     private var yOffset: CGFloat {
@@ -29,208 +30,76 @@ struct SettingsView: View {
                     .padding(8)
                 ScrollView(showsIndicators: false) {
                     
-                VStack(alignment: .leading, spacing: 12) {
-                    Text("settings".localized)
-                        .font(.montserratLightFont(size: 24))
-                        .foregroundColor(.white)
-                        .padding(4)
-                        // Notifications
-                        HStack {
-                            Image("NotificationIcon")
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                            Text("notifications_section".localized)
-                                .foregroundColor(.white)
-                                .font(.montserratRegularFont(size: 20))
-                                .padding(.leading, 4)
-                            Spacer()
-                            CustomSwitch(isOn: $viewModel.notificationsEnabled)
-                                .padding(.trailing, 8)
-                        }
-                        .padding(4)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("settings".localized)
+                            .font(.montserratLightFont(size: 24))
+                            .foregroundColor(.white)
+                            .padding(4)
+                        notificationsSection
+                        languageSection
                         
-                        // Language
-                        HStack {
-                            Image("LanguageIcon")
-                                .resizable()
-                                .frame(width: 40, height: 40)
-                            Text("language_section".localized)
-                                .foregroundColor(.white)
-                                .font(.montserratRegularFont(size: 20))
-                                .padding(.leading, 4)
-                            Spacer()
-                            Button(action: {
-                                withAnimation {
-                                    isShowingLanguageSelection.toggle()
-                                }
-                            }) {
-                                ZStack {
-                                    RoundedRectangle(cornerRadius: 15)
-                                        .fill(Color.purple)
-                                        .frame(width: 70, height: 30)
-                                    Text(viewModel.selectedLanguage.short)
-                                        .font(.montserratRegularFont(size: 16))
-                                        .foregroundColor(.white)
-                                }
-                            }
-                            .padding(.trailing, 8)
-                        }
-                        .padding(4)
                         
-                        if let user = viewModel.mainViewModel.user {
-                            // Email
-                            Button(action: { activeSheet = .addEmail }) {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    HStack {
-                                        Image("AtIcon")
-                                            .resizable()
-                                            .frame(width: 40, height: 40)
-                                        Text(user.email != nil ? "change_email".localized : "add_email".localized)
-                                            .minimumScaleFactor(0.8)
-                                            .lineLimit(1)
-                                            .foregroundColor(.white)
-                                            .font(.montserratRegularFont(size: 20))
-                                            .padding(.leading, 4)
-                                        Spacer()
-                                    }
-                                    if let email = user.email {
-                                        Text(viewModel.isVerified ? email : "not_verified_label".localized)
-                                            .font(.montserratRegularFont(size: 12))
-                                            .foregroundColor(.white)
-                                            .underline()
-                                            .padding(.leading, 50)
-                                    }
-                                }
-                                .padding(4)
-                            }
-                            
-                            // Phone Number
-                            Button(action: { activeSheet = .changePhoneNumber }) {
-                                VStack(alignment: .leading, spacing: 2) {
-                                    HStack {
-                                        Image("PhoneIcon")
-                                            .resizable()
-                                            .frame(width: 40, height: 40)
-                                        Text("change_phone_number_button".localized)
-                                            .minimumScaleFactor(0.8)
-                                            .lineLimit(1)
-                                            .foregroundColor(.white)
-                                            .font(.montserratRegularFont(size: 20))
-                                            .padding(.leading, 4)
-                                        Spacer()
-                                    }
-                                    Text(user.phone)
-                                        .font(.montserratRegularFont(size: 12))
-                                        .foregroundColor(.white)
-                                        .underline()
-                                        .padding(.leading, 50)
-                                }
-                                .padding(4)
-                            }
+                        if viewModel.mainViewModel.user != nil {
+                            emailSection
+                            phoneSection
                             
                             //Help
-                            Button(action: {
-                                //activeSheet = .help
-                                if let url = viewModel.helpUrl {
+                            IconAndTextItem(imageName: "HelpIcon", text: "help_section".localized) {
+                                if let url = Constants.helpUrl {
                                     UIApplication.shared.open(url)
                                 }
-                            }) {
-                                HStack {
-                                    Image("HelpIcon")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                    Text("help_section".localized)
-                                        .font(.montserratRegularFont(size: 20))
-                                        .foregroundColor(.white)
-                                        .padding(.leading, 4)
-                                }
-                                .padding(4)
                             }
                             
                             // Legal & Policies
-                            Button(action: {
-                                //activeSheet = .legalPolicies
-                                if let url = viewModel.agreementUrl {
+                            IconAndTextItem(imageName: "LicenseIcon", text: "agreement".localized) {
+                                if let url = Constants.agreementUrl {
                                     UIApplication.shared.open(url)
                                 }
-                            }) {
-                                HStack {
-                                    Image("LicenseIcon")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                    Text("agreement".localized)
-                                        .font(.montserratRegularFont(size: 20))
-                                        .foregroundColor(.white)
-                                        .padding(.leading, 4)
-                                }
-                                .padding(4)
                             }
                             
                             // Privacy & Safety
-                            Button(action: {
-                                //activeSheet = .privacySafety
-                                if let url = viewModel.privacyUrl {
+                            IconAndTextItem(imageName: "LockIcon", text: "privacy_section".localized) {
+                                if let url = Constants.privacyUrl {
                                     UIApplication.shared.open(url)
                                 }
-                            }) {
-                                HStack {
-                                    Image("LockIcon")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                    Text("privacy_section".localized)
-                                        .font(.montserratRegularFont(size: 20))
-                                        .foregroundColor(.white)
-                                        .multilineTextAlignment(.leading)
-                                        .minimumScaleFactor(0.8)
-                                        .padding(.leading, 4)
-                                }
-                                .padding(4)
                             }
                             
                             // Blacklist
-                            Button(action: { activeSheet = .blacklist }) {
-                                HStack {
-                                    Image("banIcon")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                    Text("blacklist_section".localized)
-                                        .font(.montserratRegularFont(size: 20))
-                                        .foregroundColor(.white)
-                                        .padding(.leading, 4)
-                                }
-                                .padding(4)
-                            }
+                            IconAndTextItem(imageName: "banIcon", text: "blacklist_section".localized, onTap: { activeSheet = .blacklist })
                             
                             // Delete Profile
-                            Button {
+                            IconAndTextItem(imageName: "BinIcon", text: "delete_profile_button".localized) {
                                 withAnimation {
                                     isShowingDeleteAccountMenu = true
                                 }
-                            } label: {
-                                HStack {
-                                    Image("BinIcon")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                    Text("delete_profile_button".localized)
-                                        .font(.montserratRegularFont(size: 20))
-                                        .foregroundColor(.white)
-                                        .padding(.leading, 4)
-                                }
-                                .padding(4)
                             }
-                            Button {
-                                viewModel.signOutBtnClicked()
-                            } label: {
-                                HStack {
-                                    Image("ExitIcon")
-                                        .resizable()
-                                        .frame(width: 40, height: 40)
-                                    Text("sign_out".localized)
-                                        .font(.montserratRegularFont(size: 20))
-                                        .foregroundColor(.white)
-                                        .padding(.leading, 4)
+                            .alert(isPresented: $isShowingDeleteAccountMenu) {
+                                Alert(
+                                    title: Text("confirm_delete_account".localized),
+                                    message: Text(""),
+                                    primaryButton: .destructive(Text("delete_button".localized.uppercased())) {
+                                        isShowingDeleteAccountMenu.toggle()
+                                    },
+                                    secondaryButton: .cancel()
+                                )
+                            }
+                            
+                            // SignOut
+                            IconAndTextItem(imageName: "ExitIcon", text: "sign_out".localized) {
+                                withAnimation {
+                                    isShowingSignOutAccountMenu = true
                                 }
-                                .padding(4)
+                            }
+                            .alert(isPresented: $isShowingSignOutAccountMenu) {
+                                Alert(
+                                    title: Text("you_sure_sign_out".localized),
+                                    message: Text(""),
+                                    primaryButton: .default(Text("sign_out".localized)) {
+                                        isShowingDeleteAccountMenu.toggle()
+                                        viewModel.signOutBtnClicked()
+                                    },
+                                    secondaryButton: .cancel()
+                                )
                             }
                         } else {
                             VStack(alignment: .center) {
@@ -244,22 +113,22 @@ struct SettingsView: View {
                     }
                 }
                 .padding(8)
-//                Spacer()
-//                if viewModel.mainViewModel.user != nil {
-//                    Button {
-//                        viewModel.signOutBtnClicked()
-//                    } label: {
-//                        Text("sign_out".localized.uppercased())
-//                            .font(.montserratRegularFont(size: 20))
-//                            .frame(maxWidth: .infinity)
-//                            .foregroundColor(.white)
-//                            .padding()
-//                            .background(Color.gradientPurple2)
-//                            .cornerRadius(20)
-//                    }
-//                    .padding()
-//                    .padding(.bottom, 16)
-//                }
+                //                Spacer()
+                //                if viewModel.mainViewModel.user != nil {
+                //                    Button {
+                //                        viewModel.signOutBtnClicked()
+                //                    } label: {
+                //                        Text("sign_out".localized.uppercased())
+                //                            .font(.montserratRegularFont(size: 20))
+                //                            .frame(maxWidth: .infinity)
+                //                            .foregroundColor(.white)
+                //                            .padding()
+                //                            .background(Color.gradientPurple2)
+                //                            .cornerRadius(20)
+                //                    }
+                //                    .padding()
+                //                    .padding(.bottom, 16)
+                //                }
             }
             .background(CustomColors.thirdGradient.edgesIgnoringSafeArea(.all))
         }
@@ -267,13 +136,14 @@ struct SettingsView: View {
         .cornerRadius(20, antialiased: true)
         .animation(.easeInOut, value: isShowing)
         .overlay(
-            (isShowingLanguageSelection || isShowingDeleteAccountMenu) ? Color.black.opacity(0.5)
+            (isShowingLanguageSelection || isShowingDeleteAccountMenu || isShowingSignOutAccountMenu) ? Color.black.opacity(0.5)
                 .edgesIgnoringSafeArea(.all)
                 .cornerRadius(20)
                 .onTapGesture {
                     withAnimation {
                         isShowingLanguageSelection = false
                         isShowingDeleteAccountMenu = false
+                        isShowingSignOutAccountMenu = false
                     }
                 } : nil)
         .offset(y: yOffset)
@@ -299,23 +169,161 @@ struct SettingsView: View {
             }
             .offset(x: 80, y: 30)
         }
-        if isShowingDeleteAccountMenu {
-            AlertMenu(alertText: "confirm_delete_account".localized, actionBtnText: "delete_button".localized.uppercased(),
-                      onCancel: {
+        //        if isShowingDeleteAccountMenu {
+        //            AlertMenu(alertText: "confirm_delete_account".localized, actionBtnText: "delete_button".localized.uppercased(),
+        //                      onCancel: {
+        //                withAnimation {
+        //                    isShowingDeleteAccountMenu.toggle()
+        //                }
+        //            }, onAction: {
+        //                withAnimation {
+        //                    isShowingDeleteAccountMenu.toggle()
+        //                }
+        //            })
+        //        }
+    }
+}
+
+private extension SettingsView {
+    var notificationsSection: some View {
+        HStack {
+            Image("NotificationIcon")
+                .resizable()
+                .frame(width: 40, height: 40)
+            Text("notifications_section".localized)
+                .foregroundColor(.white)
+                .font(.montserratRegularFont(size: 20))
+                .padding(.leading, 4)
+            Spacer()
+            CustomSwitch(isOn: $viewModel.notificationsEnabled) {
+                viewModel.toggleNotifications()
+            }
+            .padding(.trailing, 8)
+        }
+        .padding(4)
+    }
+}
+
+private extension SettingsView {
+    var languageSection: some View {
+        HStack {
+            Image("LanguageIcon")
+                .resizable()
+                .frame(width: 40, height: 40)
+            Text("language_section".localized)
+                .foregroundColor(.white)
+                .font(.montserratRegularFont(size: 20))
+                .padding(.leading, 4)
+            Spacer()
+            Button(action: {
                 withAnimation {
-                    isShowingDeleteAccountMenu.toggle()
+                    isShowingLanguageSelection.toggle()
                 }
-            }, onAction: {
-                withAnimation {
-                    isShowingDeleteAccountMenu.toggle()
+            }) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 15)
+                        .fill(Color.purple)
+                        .frame(width: 70, height: 30)
+                    Text(viewModel.selectedLanguage.short)
+                        .font(.montserratRegularFont(size: 16))
+                        .foregroundColor(.white)
                 }
-            })
+            }
+            .padding(.trailing, 8)
+        }
+        .padding(4)
+    }
+}
+
+private extension SettingsView {
+    var emailSection: some View {
+        VStack {
+            if let user = viewModel.mainViewModel.user {
+                Button(action: { activeSheet = .addEmail }) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack {
+                            Image("AtIcon")
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                            Text(user.email != nil ? "change_email".localized : "add_email".localized)
+                                .minimumScaleFactor(0.8)
+                                .lineLimit(1)
+                                .foregroundColor(.white)
+                                .font(.montserratRegularFont(size: 20))
+                                .padding(.leading, 4)
+                            Spacer()
+                        }
+                        if let email = user.email {
+                            Text(viewModel.isVerified ? email : "not_verified_label".localized)
+                                .font(.montserratRegularFont(size: 12))
+                                .foregroundColor(.white)
+                                .underline()
+                                .padding(.leading, 50)
+                        }
+                    }
+                    .padding(4)
+                }
+            }
         }
     }
 }
 
+private extension SettingsView {
+    var phoneSection: some View {
+        VStack {
+            if let user = viewModel.mainViewModel.user {
+                Button(action: { activeSheet = .changePhoneNumber }) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack {
+                            Image("PhoneIcon")
+                                .resizable()
+                                .frame(width: 40, height: 40)
+                            Text("change_phone_number_button".localized)
+                                .minimumScaleFactor(0.8)
+                                .lineLimit(1)
+                                .foregroundColor(.white)
+                                .font(.montserratRegularFont(size: 20))
+                                .padding(.leading, 4)
+                            Spacer()
+                        }
+                        Text(user.phone)
+                            .font(.montserratRegularFont(size: 12))
+                            .foregroundColor(.white)
+                            .underline()
+                            .padding(.leading, 50)
+                    }
+                    .padding(4)
+                }
+            }
+        }
+    }
+}
+
+struct IconAndTextItem: View {
+    let imageName: String
+    let text: String
+    let onTap: () -> Void
+    
+    var body: some View {
+        Button(action: onTap) {
+            HStack {
+                Image(imageName)
+                    .resizable()
+                    .frame(width: 40, height: 40)
+                Text(text)
+                    .font(.montserratRegularFont(size: 20))
+                    .foregroundColor(.white)
+                    .padding(.leading, 4)
+            }
+            .padding(4)
+        }
+    }
+    
+}
+
 struct CustomSwitch: View {
     @Binding var isOn: Bool
+    var onToggle: () -> Void
     
     var body: some View {
         ZStack {
@@ -343,6 +351,9 @@ struct CustomSwitch: View {
                         .foregroundColor(.white)
                         .padding(.trailing, 4)
                 }
+            }
+            .onChange(of: isOn) { _ in
+                onToggle()
             }
             .onTapGesture {
                 withAnimation {

@@ -9,6 +9,7 @@ import Foundation
 
 class NotificationsViewModel: ObservableObject {
     
+    @Published var mainViewModel: MainViewModel
     @Published var groupedNotifications: [(key: String, value: [NotificationModel])] = []
     @Published var notifications: [NotificationModel] = [] {
         didSet {
@@ -19,7 +20,7 @@ class NotificationsViewModel: ObservableObject {
     @Published private(set) var isLoading: Bool = false
     @Published private(set) var hasLoaded: Bool = false
     
-    @Published var mainViewModel: MainViewModel
+    @Published var selectedNotification: NotificationModel?
     
     private let notificationsSupabaseService = NotificationsSupabaseService()
     
@@ -43,7 +44,6 @@ class NotificationsViewModel: ObservableObject {
             let notificationsData = try await notificationsSupabaseService.fetchNotificationsByUserId(userId: userId)
             DispatchQueue.main.async {
                 self.notifications = notificationsData
-                print(notificationsData)
                 self.isLoading = false
                 self.hasLoaded = true
             }
@@ -64,7 +64,7 @@ class NotificationsViewModel: ObservableObject {
                 return calendar.date(from: components) ?? notification.createdAt
             }
             .map { (date, notifications) in
-                let formattedDate = self.formatDateForGrouping(date)
+                let formattedDate = self.formatDateForGrouping(date).capitalizedFirstLetter()
                 return (key: formattedDate, value: notifications.sorted { $0.createdAt > $1.createdAt })
             }
             .sorted { $0.key < $1.key }
@@ -80,6 +80,24 @@ class NotificationsViewModel: ObservableObject {
             let formatter = DateFormatter()
             formatter.dateFormat = "EEEE - dd.MM"
             return formatter.string(from: date)
+        }
+    }
+    
+    func deleteNotification() async {
+        if let selectedNotification {
+            do {
+                try await self.notificationsSupabaseService.delete(id: selectedNotification.id)
+                if let index = self.notifications.firstIndex(where: { $0.id == selectedNotification.id }) {
+                    DispatchQueue.main.async {
+                        self.notifications.remove(at: index)
+                    }
+                }
+            } catch {
+                print("An error occurred with deleting notification: \(error)")
+            }
+        }
+        DispatchQueue.main.async {
+            self.selectedNotification = nil
         }
     }
     

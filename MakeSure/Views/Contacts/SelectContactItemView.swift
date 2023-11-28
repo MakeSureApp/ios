@@ -11,6 +11,7 @@ struct SelectContactItemView: View {
     let image: UIImage?
     let date: Date?
     let contact: UserModel
+    let isEnabled: Bool
     @Binding var selectedContactIds: [UUID]?
 
     var isSelected: Bool {
@@ -57,20 +58,30 @@ struct SelectContactItemView: View {
             Spacer()
             
             Button(action: {
-                toggleSelection()
+                if isEnabled {
+                    toggleSelection()
+                }
             }) {
-                if isSelected {
+                if isEnabled {
+                    if isSelected {
+                        Image(systemName: "checkmark.circle.fill")
+                            .resizable()
+                            .frame(width: 20, height: 20)
+                            .font(.headline)
+                            .foregroundColor(.gradientDarkBlue)
+                    } else {
+                        Image(systemName: "circle")
+                            .resizable()
+                            .frame(width: 18, height: 18)
+                            .font(.headline)
+                            .foregroundColor(.gradientDarkBlue)
+                    }
+                } else {
                     Image(systemName: "checkmark.circle.fill")
                         .resizable()
                         .frame(width: 20, height: 20)
                         .font(.headline)
-                        .foregroundColor(.gradientDarkBlue)
-                } else {
-                    Image(systemName: "circle")
-                        .resizable()
-                        .frame(width: 18, height: 18)
-                        .font(.headline)
-                        .foregroundColor(.gradientDarkBlue)
+                        .foregroundColor(.gray)
                 }
             }
         }
@@ -79,7 +90,9 @@ struct SelectContactItemView: View {
         .cornerRadius(10)
         .contentShape(Rectangle())
         .onTapGesture {
-            toggleSelection()
+            if isEnabled {
+                toggleSelection()
+            }
         }
     }
     

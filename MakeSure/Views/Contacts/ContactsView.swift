@@ -20,9 +20,6 @@ struct ContactsView: View {
     @State private var isAnimatingMeetings: Bool = false
     @State private var topPadding: CGFloat = 0.0
     @State private var isShowingSharingTestView = false
-    @State private var isShowingBlockContactMenu = false
-    @State private var isShowingDeletingContactMenu = false
-    @State private var isShowingReportContactMenu = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -101,7 +98,6 @@ struct ContactsView: View {
                                                     showContact = true
                                                     selectedContact = contact
                                                     menuYOffset = geometry.frame(in: .global).minY + geometry.size.height
-                                                    print("click \(menuYOffset)")
                                                 }
                                             }
                                         }
@@ -128,11 +124,11 @@ struct ContactsView: View {
                             selectedContact = nil
                         }
                     } else {
-                        Spacer()
                         Text("no_contacts".localized)
-                            .font(.montserratBoldFont(size: 16))
-                            .foregroundColor(.black)
-                        Spacer()
+                            .font(.montserratRegularFont(size: 16))
+                            .foregroundColor(.gray)
+                            .padding()
+                            .padding(.top)
                         Spacer()
                     }
                 }
@@ -149,9 +145,6 @@ struct ContactsView: View {
                     selectedContact = nil
                     viewModel.showCalendar = false
                     viewModel.showContactCalendar = false
-                    isShowingBlockContactMenu = false
-                    isShowingDeletingContactMenu = false
-                    isShowingReportContactMenu = false
                 }) {
                     Rectangle()
                         .fill(Color.clear)
@@ -177,11 +170,30 @@ struct ContactsView: View {
                         contact: contact,
                         isEnabled: isEnabled,
                         showMenu: $showMenu,
-                        showBlockMenu: $isShowingBlockContactMenu,
-                        showDeleteMenu: $isShowingDeletingContactMenu,
                         showSharingTest: $isShowingSharingTestView,
-                        showReportMenu: $isShowingReportContactMenu,
-                        showContactCalendar: $viewModel.showContactCalendar
+                        showContactCalendar: $viewModel.showContactCalendar,
+                        onBlock: {
+                            withAnimation {
+                                showMenu = false
+                            }
+                            Task {
+                                await viewModel.addUserToBlacklist(id: contact.id)
+                            }
+                        }, onDelete: {
+                            withAnimation {
+                                showMenu = false
+                            }
+                            Task {
+                                await viewModel.deleteContact(id: contact.id)
+                            }
+                        }, onReport: { text in
+                            withAnimation {
+                                showMenu = false
+                            }
+                            Task {
+                                await viewModel.sendComplaintReport(text: text)
+                            }
+                        }
                     )
                     .environmentObject(viewModel)
                     .offset(y: menuYOffset)
@@ -200,50 +212,50 @@ struct ContactsView: View {
                             .padding(.bottom, 30)
                     }
                 }
-                if isShowingBlockContactMenu, let contact = selectedContact {
-                    AlertMenu(alertText: getBlockAlertText(contact.name), actionBtnText: "block_button".localized.uppercased(),
-                              onCancel: {
-                        withAnimation {
-                            isShowingBlockContactMenu.toggle()
-                        }
-                    }, onAction: {
-                        Task {
-                            await viewModel.addUserToBlacklist(id: contact.id)
-                        }
-                        withAnimation {
-                            isShowingBlockContactMenu.toggle()
-                        }
-                    })
-                }
-                if isShowingDeletingContactMenu, let contact = selectedContact {
-                    AlertMenu(alertText: getDeleteAlertText(contact.name), actionBtnText: "delete_button".localized.uppercased(),
-                              onCancel: {
-                        withAnimation {
-                            isShowingDeletingContactMenu.toggle()
-                        }
-                    }, onAction: {
-                        Task {
-                            await viewModel.deleteContact(id: contact.id)
-                        }
-                        withAnimation {
-                            isShowingDeletingContactMenu.toggle()
-                        }
-                    })
-                }
-                if isShowingReportContactMenu {
-                    AlertTextFieldMenu(alertText: "reason_for_complaint".localized, actionBtnText: "report_button".localized, placeholderText: "explain_situation".localized, onCancel: {
-                        withAnimation {
-                            isShowingReportContactMenu = false
-                        }
-                    }) { text in
-                        Task {
-                            await viewModel.sendComplaintReport(text: text)
-                        }
-                        withAnimation {
-                            isShowingReportContactMenu = false
-                        }
-                    }
-                }
+//                if isShowingBlockContactMenu, let contact = selectedContact {
+//                    AlertMenu(alertText: getBlockAlertText(contact.name), actionBtnText: "block_button".localized.uppercased(),
+//                              onCancel: {
+//                        withAnimation {
+//                            isShowingBlockContactMenu.toggle()
+//                        }
+//                    }, onAction: {
+//                        Task {
+//                            await viewModel.addUserToBlacklist(id: contact.id)
+//                        }
+//                        withAnimation {
+//                            isShowingBlockContactMenu.toggle()
+//                        }
+//                    })
+//                }
+//                if isShowingDeletingContactMenu, let contact = selectedContact {
+//                    AlertMenu(alertText: getDeleteAlertText(contact.name), actionBtnText: "delete_button".localized.uppercased(),
+//                              onCancel: {
+//                        withAnimation {
+//                            isShowingDeletingContactMenu.toggle()
+//                        }
+//                    }, onAction: {
+//                        Task {
+//                            await viewModel.deleteContact(id: contact.id)
+//                        }
+//                        withAnimation {
+//                            isShowingDeletingContactMenu.toggle()
+//                        }
+//                    })
+//                }
+//                if isShowingReportContactMenu {
+//                    AlertTextFieldMenu(alertText: "reason_for_complaint".localized, actionBtnText: "report_button".localized, placeholderText: "explain_situation".localized, onCancel: {
+//                        withAnimation {
+//                            isShowingReportContactMenu = false
+//                        }
+//                    }) { text in
+//                        Task {
+//                            await viewModel.sendComplaintReport(text: text)
+//                        }
+//                        withAnimation {
+//                            isShowingReportContactMenu = false
+//                        }
+//                    }
+//                }
             }
             .onAppear {
                 if geometry.safeAreaInsets.top > 0 {
@@ -269,13 +281,6 @@ struct ContactsView: View {
         }
     }
     
-    func getBlockAlertText(_ name: String) -> String {
-        return String(format: "you_sure_to_block_contact".localized, name)
-    }
-    
-    func getDeleteAlertText(_ name: String) -> String {
-        return String(format: "you_sure_to_delete_contact".localized, name)
-    }
 }
 
 extension VerticalAlignment {
@@ -556,11 +561,17 @@ struct ContactMenu: View {
     let contact: UserModel
     let isEnabled: Bool
     @Binding var showMenu: Bool
-    @Binding var showBlockMenu: Bool
-    @Binding var showDeleteMenu: Bool
     @Binding var showSharingTest: Bool
-    @Binding var showReportMenu: Bool
     @Binding var showContactCalendar: Bool
+    let onBlock: () -> Void
+    let onDelete: () -> Void
+    let onReport: (String) -> Void
+    
+    @State private var showBlockMenu: Bool = false
+    @State private var showDeleteMenu: Bool = false
+    @State private var showReportMenu: Bool = false
+    
+    @State private var reportText: String = ""
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -603,6 +614,16 @@ struct ContactMenu: View {
                         .padding(.horizontal)
                         .padding(.vertical, 3)
                 }
+                .alert(isPresented: $showDeleteMenu) {
+                    Alert(
+                        title: Text(getDeleteAlertText()),
+                        message: Text("user_will_disappear_from_contacts".localized),
+                        primaryButton: .destructive(Text("OK")) {
+                            onDelete()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
                 Divider()
                     .frame(width: 140)
                 Button(action: block) {
@@ -612,6 +633,16 @@ struct ContactMenu: View {
                         .padding(.horizontal)
                         .padding(.vertical, 3)
                 }
+                .alert(isPresented: $showBlockMenu) {
+                    Alert(
+                        title: Text(getBlockAlertText()),
+                        message: Text("user_will_disappear_from_contacts".localized),
+                        primaryButton: .destructive(Text("OK")) {
+                            onBlock()
+                        },
+                        secondaryButton: .cancel()
+                    )
+                }
                 Divider()
                     .frame(width: 140)
                 Button(action: report) {
@@ -620,6 +651,13 @@ struct ContactMenu: View {
                         .foregroundColor(Color(red: 1, green: 50.0/255.0, blue: 38.0/255.0))
                         .padding(.horizontal)
                         .padding(.vertical, 3)
+                }
+                .alert("reason_for_complaint".localized, isPresented: $showReportMenu) {
+                    Button("cancel_button".localized, role: .cancel, action: {})
+                    Button("complain".localized, role: .destructive) {
+                        onReport(reportText)
+                    }
+                    TextField("explain_situation".localized, text: $reportText)
                 }
             }
         }
@@ -631,6 +669,14 @@ struct ContactMenu: View {
         .onTapGesture {
             showMenu = false
         }
+    }
+    
+    private func getBlockAlertText() -> String {
+        return String(format: "you_sure_to_block_contact".localized, contact.name)
+    }
+    
+    private func getDeleteAlertText() -> String {
+        return String(format: "you_sure_to_delete_contact".localized, contact.name)
     }
 
     private func shareMyTest() {
@@ -653,14 +699,12 @@ struct ContactMenu: View {
 
     private func delete() {
         withAnimation {
-            showMenu = false
             showDeleteMenu.toggle()
         }
     }
 
     private func block() {
         withAnimation {
-            showMenu = false
             showBlockMenu.toggle()
         }
     }
@@ -668,9 +712,48 @@ struct ContactMenu: View {
     private func report() {
         // Implement report functionality
         withAnimation {
-            showMenu = false
             showReportMenu.toggle()
         }
+    }
+}
+
+struct ReportAlertView: View {
+    @State private var reportText: String = ""
+    @Binding var isPresented: Bool
+    let onReport: (String) -> Void
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Text("reason_for_complaint".localized)
+                .font(.headline)
+            
+            TextEditor(text: $reportText)
+                .frame(minHeight: 100)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray, lineWidth: 1)
+                )
+                .padding()
+            
+            Button("explain_situation".localized) {
+                onReport(reportText)
+                isPresented = false
+            }
+            .foregroundColor(.white)
+            .padding()
+            .background(Color.blue)
+            .cornerRadius(8)
+            
+            Button("cancel_button".localized) {
+                isPresented = false
+            }
+            .foregroundColor(.red)
+        }
+        .padding()
+        .frame(maxWidth: 300)
+        .background(Color.white)
+        .cornerRadius(12)
+        .shadow(radius: 10)
     }
 }
 

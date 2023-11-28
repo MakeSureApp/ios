@@ -16,7 +16,7 @@ class ViewModelFactory {
     private lazy var settingsViewModel = SettingsViewModel(mainViewModel: mainViewModel)
     private lazy var contactsViewModel = ContactsViewModel()
     private lazy var testsViewModel = TestsViewModel(mainViewModel: mainViewModel)
-    private lazy var scannerViewModel = ScannerViewModel()
+    private lazy var scannerViewModel = ScannerViewModel(mainViewModel: mainViewModel)
     private lazy var notificationsViewModel = NotificationsViewModel(mainViewModel: mainViewModel)
     private lazy var orderBoxViewModel = OrderBoxViewModel(mainViewModel: mainViewModel)
     
