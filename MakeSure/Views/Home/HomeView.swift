@@ -15,35 +15,39 @@ struct HomeView: View {
     @State private var isAnimatingImage: Bool = false
     
     var body: some View {
-        ScrollView(showsIndicators: false) {
-            VStack(alignment: .leading, spacing: 6) {
-                topCardView
-                    .task {
-                        await viewModel.getUserData()
-                        await withTaskGroup(of: Void.self) { group in
-                            group.addTask(priority: .userInitiated) {
-                                await viewModel.fetchTestsCount()
-                            }
-                            
-                            group.addTask(priority: .userInitiated) {
-                                await viewModel.loadImage()
+        GeometryReader { geometry in
+            ScrollView(showsIndicators: false) {
+                VStack(alignment: .leading, spacing: 6) {
+                    topCardView
+                        .task {
+                            await viewModel.getUserData()
+                            await withTaskGroup(of: Void.self) { group in
+                                group.addTask(priority: .userInitiated) {
+                                    await viewModel.fetchTestsCount()
+                                }
+                                
+                                group.addTask(priority: .userInitiated) {
+                                    await viewModel.loadImage()
+                                }
                             }
                         }
+                    secondCardView
+                    tipsSection
+                        .task {
+                            await viewModel.fetchTips()
+                        }
+                    if viewModel.hasLoadedTips {
+                        //cardList
+                        CustomGridLayoutView(width: geometry.size.width)
+                            .environmentObject(viewModel)
                     }
-                secondCardView
-                tipsSection
-                    .task {
-                        await viewModel.fetchTips()
-                    }
-                if viewModel.hasLoadedTips {
-                    cardList
                 }
+                .task {
+                    await viewModel.fetchUserData()
+                }
+                .padding(.horizontal)
+                .padding(.bottom, 30)
             }
-            .task {
-                await viewModel.fetchUserData()
-            }
-            .padding(.horizontal)
-            .padding(.bottom, 30)
         }
     }
 }
@@ -249,66 +253,16 @@ private extension HomeView {
 
 private extension HomeView {
     var cardList: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            ForEach(viewModel.filteredCards) { card in
-                GeometryReader { geometry in
-                    ZStack(alignment: .bottomLeading) {
-                        cardBackgroundImage(for: card.id)
-                        VStack(alignment: .leading, spacing: 5) {
-                            categoryImage(for: card.category)
-                                .fontWeight(.bold)
-                                .padding(.top, 12)
-                            Spacer()
-                            if let description = card.displayDescription {
-                                Text(description)
-                                    .font(.montserratRegularFont(size: 13))
-                                    .foregroundColor(.white)
-                            }
-                            Text(card.displayTitle)
-                                .font(.montserratMediumFont(size: 32))
-                                .foregroundColor(.white)
-                                .padding(.bottom, 10)
-                        }
-                        .padding(.leading, 10)
-                    }
-                    .frame(height: 200)
-                    .background(
-                        RoundedRectangle(cornerRadius: 10)
-                            .fill(Color.gray.opacity(0.1))
-                    )
-                    .onTapGesture {
-                        viewModel.openTipsDetails(card.displayUrl)
-                    }
-                    .contentShape(Rectangle())
-                    .onAppear {
-                        viewModel.loadImageIfNeeded(for: card)
-                    }
-                }
-                .frame(height: 200, alignment: .top)
-            }
-        }
-    }
-
-    func cardBackgroundImage(for id: UUID) -> some View {
-        Group {
-            if let image = viewModel.tipImages[id] {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 200)
-                    .clipped()
-                    .cornerRadius(18)
-                    .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.gray.opacity(0.1), lineWidth: 1))
-            } else {
-                Image("mockTipsImage2")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(height: 200)
-                    .clipped()
-                    .cornerRadius(18)
-                    .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color.gray.opacity(0.1), lineWidth: 1))
-            }
-        }
+        Spacer()
+//        VStack(alignment: .leading, spacing: 20) {
+//            ForEach(viewModel.filteredCards) { card in
+//                CardView(image: viewModel.tipImages[card.id], card: card) {
+//                    viewModel.loadImageIfNeeded(for: card)
+//                } onTap: {
+//                    viewModel.openTipsDetails(card.displayUrl)
+//                }
+//            }
+//        }
     }
 
     func categoryImage(for category: String) -> some View {
@@ -343,6 +297,174 @@ private extension HomeView {
                 .scaledToFit()
                 .frame(width: 20, height: 20)
                 .foregroundColor(.white)
+        }
+    }
+}
+
+struct CustomGridLayoutView: View {
+    @EnvironmentObject var viewModel: HomeViewModel
+    let width: CGFloat
+
+    var body: some View {
+        ScrollView {
+            LazyVStack {
+                    let fullWidth = width - 40
+                    let thirdWidth = fullWidth / 3
+                    let twoThirdsWidth = 2 * thirdWidth
+                    let fullHeigth = thirdWidth * 1.3
+                    
+                    let totalCards = viewModel.filteredCards.count
+                    let cards = viewModel.cards
+                    let spacing = 6.0
+                    
+                    if totalCards > 2 {
+                        HStack(spacing: spacing) {
+                            VStack(spacing: spacing + 4) {
+                                CardView(image: viewModel.tipImages[cards[0].id], card: cards[0], width: thirdWidth, height: thirdWidth, titleAligment: .topLeading, isSmallSize: true) {
+                                    viewModel.loadImageIfNeeded(for: cards[0])
+                                } onTap: {
+                                    viewModel.openTipsDetails(cards[0].displayUrl)
+                                }
+                                CardView(image: viewModel.tipImages[cards[1].id], card: cards[1], width: thirdWidth, height: thirdWidth, titleAligment: .bottomLeading, isSmallSize: true) {
+                                    viewModel.loadImageIfNeeded(for: cards[1])
+                                } onTap: {
+                                    viewModel.openTipsDetails(cards[1].displayUrl)
+                                }
+                            }
+                            CardView(image: viewModel.tipImages[cards[2].id], card: cards[2], width: twoThirdsWidth, height: (thirdWidth + spacing) * 2, titleAligment: .bottomLeading) {
+                                viewModel.loadImageIfNeeded(for: cards[2])
+                            } onTap: {
+                                viewModel.openTipsDetails(cards[2].displayUrl)
+                            }
+                        }
+                        .frame(height: (thirdWidth + spacing) * 2)
+                        
+                        if totalCards > 3 {
+                            if totalCards != 5 {
+                                CardView(image: viewModel.tipImages[cards[3].id], card: cards[3], width: fullWidth, height: fullHeigth, titleAligment: .topLeading) {
+                                    viewModel.loadImageIfNeeded(for: cards[3])
+                                } onTap: {
+                                    viewModel.openTipsDetails(cards[3].displayUrl)
+                                }
+                            }
+                            if totalCards == 5 || totalCards > 5 {
+                                let firstIndex = totalCards == 5 ? 3 : 4
+                                let secondIndex = totalCards == 5 ? 4 : 5
+                                HStack(spacing: spacing) {
+                                    CardView(image: viewModel.tipImages[cards[firstIndex].id], card: cards[firstIndex], width: fullWidth / 2, height: fullHeigth, titleAligment: .bottomLeading, isSmallSize: true) {
+                                        viewModel.loadImageIfNeeded(for: cards[firstIndex])
+                                    } onTap: {
+                                        viewModel.openTipsDetails(cards[firstIndex].displayUrl)
+                                    }
+                                    CardView(image: viewModel.tipImages[cards[secondIndex].id], card: cards[secondIndex], width: fullWidth / 2, height: fullHeigth, titleAligment: .topLeading, isSmallSize: true) {
+                                        viewModel.loadImageIfNeeded(for: cards[secondIndex])
+                                    } onTap: {
+                                        viewModel.openTipsDetails(cards[secondIndex].displayUrl)
+                                    }
+                                }
+                            }
+                            if totalCards > 6 {
+                                let remainingCards = Array(viewModel.filteredCards.dropFirst(6))
+                                ForEach(Array(remainingCards.enumerated()), id: \.element.id) { index, card in
+                                    let aligment: Alignment = index % 2 == 1 ? .topLeading : .bottomLeading
+                                    CardView(image: viewModel.tipImages[card.id], card: card, width: fullWidth, height: fullHeigth, titleAligment: aligment) {
+                                        viewModel.loadImageIfNeeded(for: card)
+                                    } onTap: {
+                                        viewModel.openTipsDetails(card.displayUrl)
+                                    }
+                                    
+                                }
+                            }
+                        }
+                    } else {
+                        ForEach(Array(viewModel.filteredCards.enumerated()), id: \.element.id) { index, card in
+                            CardView(image: viewModel.tipImages[card.id], card: card, width: fullWidth, height: fullHeigth, titleAligment: .top) {
+                                viewModel.loadImageIfNeeded(for: card)
+                            } onTap: {
+                                viewModel.openTipsDetails(card.displayUrl)
+                            }
+                        }
+                    }
+                }
+        }
+    }
+
+}
+
+
+
+struct CardView: View {
+    let image: UIImage?
+    var card: TipsModel
+    let width: CGFloat
+    let height: CGFloat
+    let titleAligment: Alignment
+    var isSmallSize: Bool = false
+    var loadImage: () -> Void
+    var onTap: () -> Void
+    
+    var body: some View {
+        VStack {
+            ZStack(alignment: titleAligment) {
+                cardBackgroundImage(for: card.id)
+                
+                VStack(alignment: .leading, spacing: 5) {
+                    if titleAligment == .bottomLeading {
+                        Spacer()
+                        if let description = card.displayDescription {
+                            Text(description)
+                                .font(.montserratRegularFont(size: isSmallSize ? 8 : 12))
+                                .foregroundColor(.white)
+                        }
+                        Text(card.displayTitle)
+                            .font(.montserratMediumFont(size: isSmallSize ? 12 : 16))
+                            .foregroundColor(.white)
+                            .padding(.bottom, 10)
+                    } else {
+                        Text(card.displayTitle)
+                            .font(.montserratMediumFont(size: isSmallSize ? 12 : 18))
+                            .foregroundColor(.white)
+                            .padding(.bottom, 10)
+                        if let description = card.displayDescription {
+                            Text(description)
+                                .font(.montserratRegularFont(size: isSmallSize ? 8 : 14))
+                                .foregroundColor(.white)
+                        }
+                        Spacer()
+                    }
+                }
+                .padding(.top, isSmallSize ? 10 : 18)
+                .padding(.horizontal, isSmallSize ? 8 : 20)
+            }
+            
+        }
+        .frame(width: width, height: height)
+        .cornerRadius(14)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            onTap()
+        }
+        .onAppear {
+            loadImage()
+        }
+    }
+    
+    
+    func cardBackgroundImage(for id: UUID) -> some View {
+        Group {
+            if let image {
+                Image(uiImage: image)
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: width, height: height)
+                    .clipped()
+            } else {
+                Image("mockTipsImage2")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: width, height: height)
+                    .clipped()
+            }
         }
     }
 }

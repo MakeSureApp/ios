@@ -37,7 +37,7 @@ struct SelectContactForDateView: View {
                 Text("sort_by_label".localized)
                     .font(.montserratRegularFont(size: 14))
                 Picker("sort_by_label".localized, selection: $viewModel.sortBy) {
-                    Text("date_followed_option".localized).tag(ContactsViewModel.SortBy.dateFollowed)
+                    Text("alphabetically".localized).tag(ContactsViewModel.SortBy.alphabetically)
                     Text("recent_dates_option".localized).tag(ContactsViewModel.SortBy.dateRecentMeetings)
                 }
                 .pickerStyle(MenuPickerStyle())
@@ -54,7 +54,14 @@ struct SelectContactForDateView: View {
                         let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
                         if isEnabled {
                             SelectContactItemView(
-                                image: viewModel.contactsImages[contact.id], date: viewModel.getLastDateWith(contact: contact), contact: contact, isEnabled: true, selectedContactIds: .constant([selectedContactIdForDate].compactMap { $0 })
+                                image: viewModel.contactsImages[contact.id],
+                                date: viewModel.getLastDateWith(contact: contact),
+                                contact: contact,
+                                isEnabled: true, singleSelection: true,
+                                selectedContactIds: Binding(
+                                    get: { [selectedContactIdForDate].compactMap { $0 } },
+                                    set: { ids in selectedContactIdForDate = ids?.first }
+                                )
                             )
                         }
                     }
@@ -78,8 +85,8 @@ struct SelectContactForDateView: View {
                             .shadow(color: .gray, radius: 2, x: 0, y: 1)
                     )
             }
-            .padding(.horizontal)
-            .disabled(viewModel.isAddingDate)
+            .padding(.horizontal, 20)
+            .disabled(viewModel.isAddingDate && selectedContactIdForDate == nil)
         }
         .contentShape(Rectangle())
         .onTapGesture {

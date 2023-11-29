@@ -67,7 +67,7 @@ struct PositiveTestContactsSelectionView: View {
                 ScrollView {
                     LazyVStack {
                         ForEach(viewModel.riskOfInfectionUsers) { user in
-                            SelectContactItemView(image: viewModel.riskOfInfectionUsersImages[user.user.id], date: contactsViewModel.getLastDateWith(contact: user.user), contact: user.user, isEnabled: !user.isHighRisk, selectedContactIds: $viewModel.selectedForNotificationContactsIds)
+                            SelectContactItemView(image: viewModel.riskOfInfectionUsersImages[user.user.id], date: contactsViewModel.getLastDateWith(contact: user.user), contact: user.user, isEnabled: !user.isHighRisk, singleSelection: false, selectedContactIds: $viewModel.selectedForNotificationContactsIds)
                                 .task {
                                     await viewModel.loadImage(user: user.user, for: .riskOfInfectionUser)
                                 }
@@ -116,6 +116,6 @@ struct PositiveTestContactsSelectionView_Previews: PreviewProvider {
     static var previews: some View {
         PositiveTestContactsSelectionView()
             .environmentObject(ContactsViewModel())
-            .environmentObject(ScannerViewModel())
+            .environmentObject(ScannerViewModel(mainViewModel: MainViewModel()))
     }
 }

@@ -91,7 +91,7 @@ struct PositiveTestNotificationsWrapperView: View {
 struct SendingNotificationsWrapperView_Previews: PreviewProvider {
     static var previews: some View {
         PositiveTestNotificationsWrapperView()
-            .environmentObject(ScannerViewModel())
+            .environmentObject(ScannerViewModel(mainViewModel: MainViewModel()))
             .environmentObject(ContactsViewModel())
     }
 }

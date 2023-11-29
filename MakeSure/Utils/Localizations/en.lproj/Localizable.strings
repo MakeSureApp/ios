@@ -92,6 +92,7 @@
 "my_contacts_section" = "My contacts";
 "sort_by_label" = "Sort by";
 "date_followed_option" = "Date followed";
+"alphabetically" = "Alphabetically";
 "recent_dates_option" = "Recent dates";
 "no_contacts" = "To add someone to your contacts, send him/her a one-time link. \n\nClick on 🔗 to copy the link to the clipboard.";
 "monday_short" = "Mon";

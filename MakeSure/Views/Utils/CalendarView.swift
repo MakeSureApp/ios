@@ -42,7 +42,7 @@ struct CustomCalendarView: View {
     @State private var isAddBtnClicked = false
     @State var selectedDate: Date?
     let contactId: UUID?
-    let calendar = Calendar.current
+    var calendar = Calendar.current
     let days = [
         "sunday_short".localized.uppercased(),
         "monday_short".localized.uppercased(),
@@ -60,6 +60,7 @@ struct CustomCalendarView: View {
         self.isFromContactView = isFromContactView
         self.contactId = contactId
         startDate = viewModel.startDateInCalendar
+        calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? calendar.timeZone
     }
     
     private func isSelectedDateInThePast() -> Bool {
@@ -84,35 +85,38 @@ struct CustomCalendarView: View {
                                 .foregroundColor(isNegativeTest ? .lightGreen : .orange)
                                 .zIndex(0)
                         }
-                        
-                        let contactsMetOnTheDay = viewModel.contactsMetOn(date: date)
-                        if !contactsMetOnTheDay.isEmpty {
-                            ForEach(Array(contactsMetOnTheDay.enumerated()), id: \.element.id) { (index, contact) in
-                                let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
-                                if let image = viewModel.contactsImages[contact.id] {
-                                    if isEnabled {
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 33, height: 33)
-                                            .clipShape(Circle())
-                                            .offset(x: CGFloat(index) * -4, y: 0)
-                                            .overlay {
-                                                Circle()
-                                                    .strokeBorder(.white.opacity(0.5), lineWidth: 1)
-                                            }
-                                    } else {
-                                        Image(systemName: "person.circle.fill")
-                                            .resizable()
-                                            .foregroundColor(.gray)
-                                            .scaledToFill()
-                                            .frame(width: 33, height: 33)
-                                            .clipShape(Circle())
-                                            .offset(x: CGFloat(index) * -4, y: 0)
-                                            .overlay {
-                                                Circle()
-                                                    .strokeBorder(.white.opacity(0.5), lineWidth: 1)
-                                            }
+                        let contactsMetOnTheDay = viewModel.contactsMetOn(date: date, withLimit: 2)
+                        if selectedDate != date {
+                            if !contactsMetOnTheDay.isEmpty {
+                                ForEach(Array(contactsMetOnTheDay.enumerated()), id: \.element.id) { (index, contact) in
+                                    let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
+                                    if let image = viewModel.contactsImages[contact.id] {
+                                        if isEnabled {
+                                            Image(uiImage: image)
+                                                .resizable()
+                                                .scaledToFill()
+                                                .frame(width: 33, height: 33)
+                                                .clipShape(Circle())
+                                                .offset(getOffsetForImage(contactsMetOnTheDay.count, index))
+                                                .overlay {
+                                                    Circle()
+                                                        .offset(getOffsetForImage(contactsMetOnTheDay.count, index))
+                                                        .strokeBorder(.white.opacity(0.5), lineWidth: 1)
+                                                }
+                                        } else {
+                                            Image(systemName: "person.circle.fill")
+                                                .resizable()
+                                                .foregroundColor(.gray)
+                                                .scaledToFill()
+                                                .frame(width: 33, height: 33)
+                                                .clipShape(Circle())
+                                                .offset(getOffsetForImage(contactsMetOnTheDay.count, index))
+                                                .overlay {
+                                                    Circle()
+                                                        .offset(getOffsetForImage(contactsMetOnTheDay.count, index))
+                                                        .strokeBorder(.white.opacity(0.5), lineWidth: 1)
+                                                }
+                                        }
                                     }
                                 }
                             }
@@ -149,6 +153,18 @@ struct CustomCalendarView: View {
             .frame(width: 40, height: 30)
         }
         .buttonStyle(PlainButtonStyle())
+    }
+    
+    private func getOffsetForImage(_ count: Int, _ index: Int) -> CGSize {
+        if count == 2 {
+            if index == 0 {
+                return CGSize(width: -5, height: -5)
+            } else {
+                return CGSize(width: 5, height: 5)
+            }
+        } else {
+            return CGSize(width: 0, height: 0)
+        }
     }
 
     private func navigateMonth(by value: Int) {
@@ -247,6 +263,37 @@ struct CustomCalendarView: View {
                     .frame(height: 44)
             }
             
+            if let date = selectedDate {
+                HStack {
+                    let contactsMetOnTheDay = viewModel.contactsMetOn(date: date)
+                    if !contactsMetOnTheDay.isEmpty {
+                        ForEach(Array(contactsMetOnTheDay.enumerated()), id: \.element.id) { (index, contact) in
+                            let isEnabled = !viewModel.checkIfContactBlockedMe(user: contact)
+                            if let image = viewModel.contactsImages[contact.id] {
+                                if isEnabled {
+                                    Image(uiImage: image)
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: 56, height: 56)
+                                        .clipShape(Circle())
+                                        .shadow(color: CustomColors.darkBlue, radius: 4)
+                                } else {
+                                    Image(systemName: "person.circle.fill")
+                                        .resizable()
+                                        .foregroundColor(.gray)
+                                        .scaledToFill()
+                                        .frame(width: 56, height: 56)
+                                        .clipShape(Circle())
+                                        .shadow(color: CustomColors.darkBlue, radius: 4)
+                                }
+                            }
+                        }
+                    }
+                }
+                .padding(.bottom)
+                .padding(.horizontal)
+            }
+            
             if isFromContactView {
                 Button {
                     isAddBtnClicked = true
@@ -298,9 +345,9 @@ struct CustomCalendarView: View {
         .padding()
     }
 }
-//
-//struct GraphicalDatePicker_Previews: PreviewProvider {
-//    static var previews: some View {
-//        GraphicalDatePicker(viewModel: ContactsViewModel(), currentMonth: Date(), isFromContactView: true)
-//    }
-//}
+
+struct GraphicalDatePicker_Previews: PreviewProvider {
+    static var previews: some View {
+        GraphicalDatePicker(viewModel: ContactsViewModel(), testsViewModel: TestsViewModel(mainViewModel: MainViewModel()), currentMonth: Date(), isFromContactView: true, contactId: UUID(uuidString: "79295454-e8f0-11ed-a05b-0242ac120003")!)
+    }
+}

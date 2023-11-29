@@ -12,7 +12,7 @@ import Combine
 class ContactsViewModel: MainViewModel {
     
     @Published var contacts: [UserModel] = []
-    @Published var sortBy: SortBy = .dateFollowed
+    @Published var sortBy: SortBy = .dateRecentMeetings
     @Published var blockedUsers: [UserModel] = []
     @Published var tests: [Test] = []
     @Published var showCalendar = false
@@ -129,6 +129,9 @@ class ContactsViewModel: MainViewModel {
                         self.hasLoadedContacts = true
                         self.isLoadingContacts = false
                     }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self.sortContacts(by: self.sortBy)
+                    }
                 }
             } else {
                 print("No contact user found with the specified ID")
@@ -186,7 +189,7 @@ class ContactsViewModel: MainViewModel {
         }
     }
     
-    func contactsMetOn(date: Date) -> [UserModel] {
+    func contactsMetOn(date: Date, withLimit: Int? = nil) -> [UserModel] {
         var ids: [UUID] = []
         let calendar = Calendar.current
         myDates.forEach { _id, _dates in
@@ -197,49 +200,43 @@ class ContactsViewModel: MainViewModel {
             }
         }
         if !ids.isEmpty {
-            return contacts.filter { contact in
-                if ids.contains(contact.id) {
-                    return true
-                }
-                return false
+            let filteredContacts = contacts.filter { contact in
+                ids.contains(contact.id)
             }
+            
+            if let limit = withLimit {
+                return Array(filteredContacts.prefix(limit))
+            }
+            return Array(filteredContacts)
         }
         return []
     }
     
     func getLastDateWith(contact: UserModel) -> Date? {
-        var dates: [Date] = []
-        for dic in myDates {
-            if dic.key == contact.id {
-                dic.value.forEach { date in
-                    dates.append(date)
-                }
-                break
-            }
-        }
-        let sortDates = dates.sorted {
-            $0 > $1
-        }
-        return sortDates.first
+        let dates = myDates[contact.id] ?? []
+        return dates.sorted(by: >).first
     }
     
     func sortContacts(by sortBy: SortBy) {
+        let sortedContacts: [UserModel]
         switch sortBy {
-        case .dateFollowed:
-            break
-            //contacts.sort { $0.followedDate > $1.followedDate }
+        case .alphabetically:
+            sortedContacts = contacts.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+            
         case .dateRecentMeetings:
-            contacts.sort {
-                if let date1 = getLastDateWith(contact: $0), let date2 = getLastDateWith(contact: $1) {
-                    return date1 > date2
-                }
-                return false
+            sortedContacts = contacts.sorted {
+                let date1 = getLastDateWith(contact: $0)
+                let date2 = getLastDateWith(contact: $1)
+                return date1 ?? Date.distantPast > date2 ?? Date.distantPast
             }
         }
+        contacts = sortedContacts
+        print("end sorting")
     }
     
     enum SortBy: String {
-        case dateFollowed
+        //case dateFollowed
+        case alphabetically
         case dateRecentMeetings
     }
     
@@ -276,6 +273,7 @@ class ContactsViewModel: MainViewModel {
         }
         do {
             let model = MeetingModel(userId: userId, date: date, partnerId: contactId)
+            print("model = \(model)")
             try await meetingsService.create(item: model)
             DispatchQueue.main.async {
                 self.hasAddedDate = true
@@ -283,13 +281,6 @@ class ContactsViewModel: MainViewModel {
                 self.updateMyDates()
                 self.selectedDate = nil
                 self.showContactCalendar = false
-                self.myDates.forEach { (key: UUID, value: [Date]) in
-                    print(key)
-                    value.forEach { date in
-                        print(date)
-                    }
-                    print("\n")
-                }
             }
         } catch {
             DispatchQueue.main.async {
@@ -503,6 +494,16 @@ class ContactsViewModel: MainViewModel {
 
     func loadImage(user: UserModel, for type: LoadImageFor) async {
         guard let urlStr = user.photoUrl, let url = URL(string: urlStr) else { return }
+        switch type {
+        case .blacklist:
+            if blacklistImages[user.id] != nil {
+                return
+            }
+        case .contact:
+            if contactsImages[user.id] != nil {
+                return
+            }
+        }
         do {
             let (data, _) = try await URLSession.shared.data(from: url)
             if let image = UIImage(data: data) {

@@ -12,6 +12,7 @@ struct SelectContactItemView: View {
     let date: Date?
     let contact: UserModel
     let isEnabled: Bool
+    let singleSelection: Bool
     @Binding var selectedContactIds: [UUID]?
 
     var isSelected: Bool {
@@ -97,12 +98,19 @@ struct SelectContactItemView: View {
     }
     
     func toggleSelection() {
-        guard var ids = selectedContactIds else { return }
+        var ids = selectedContactIds ?? []
         
-        if let index = ids.firstIndex(of: contact.id) {
-            ids.remove(at: index)
+        if singleSelection {
+            ids.removeAll()
+            if ids.firstIndex(of: contact.id) == nil {
+                ids.append(contact.id)
+            }
         } else {
-            ids.append(contact.id)
+            if let index = ids.firstIndex(of: contact.id) {
+                ids.remove(at: index)
+            } else {
+                ids.append(contact.id)
+            }
         }
         
         selectedContactIds = ids

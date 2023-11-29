@@ -25,7 +25,7 @@ struct ContactsView: View {
         GeometryReader { geometry in
             ZStack {
                 VStack {
-                    ContactsCalendarScrollView()
+                    ContactsCalendarScrollView(showMenu: $showMenu)
                         .environmentObject(viewModel)
                         .environmentObject(testsViewModel)
                     
@@ -47,10 +47,10 @@ struct ContactsView: View {
                         Text("sort_by_label".localized)
                             .font(.montserratRegularFont(size: 14))
                         Picker("sort_by_label".localized, selection: $viewModel.sortBy) {
-                            Text("date_followed_option".localized)
+                            Text("alphabetically".localized)
                                 .foregroundColor(.black)
                                 .font(.montserratBoldFont(size: 14))
-                                .tag(ContactsViewModel.SortBy.dateFollowed)
+                                .tag(ContactsViewModel.SortBy.alphabetically)
                             Text("recent_dates_option".localized)
                                 .foregroundColor(.black)
                                 .font(.montserratBoldFont(size: 10))
@@ -92,7 +92,9 @@ struct ContactsView: View {
                                         )
                                         .onTapGesture {
                                             if showMenu {
-                                                showMenu.toggle()
+                                                withAnimation {
+                                                    showMenu.toggle()
+                                                }
                                             } else {
                                                 withAnimation {
                                                     showContact = true
@@ -118,10 +120,12 @@ struct ContactsView: View {
                             }
                         }
                         .onTapGesture {
-                            viewModel.showCalendar = false
-                            viewModel.showContactCalendar = false
-                            showMenu = false
-                            selectedContact = nil
+                            withAnimation {
+                                viewModel.showCalendar = false
+                                viewModel.showContactCalendar = false
+                                showMenu = false
+                                selectedContact = nil
+                            }
                         }
                     } else {
                         Text("no_contacts".localized)
@@ -140,11 +144,13 @@ struct ContactsView: View {
                     }
                 }
                 Button(action: {
-                    showMenu = false
-                    showContact = false
-                    selectedContact = nil
-                    viewModel.showCalendar = false
-                    viewModel.showContactCalendar = false
+                    withAnimation {
+                        showMenu = false
+                        showContact = false
+                        selectedContact = nil
+                        viewModel.showCalendar = false
+                        viewModel.showContactCalendar = false
+                    }
                 }) {
                     Rectangle()
                         .fill(Color.clear)
@@ -387,20 +393,20 @@ struct ContactItemWithMenuView: View {
             Spacer()
             
             Button(action: {
-               // if !viewModel.showCalendar {
-                withAnimation {
-                    if !showMenu {
-                        selectedContact = contact
+                if !viewModel.showCalendar {
+                    withAnimation {
+                        if !showMenu {
+                            selectedContact = contact
+                        }
+                        showMenu.toggle()
                     }
-                    showMenu.toggle()
                 }
-                //}
             }) {
                 Image(systemName: "ellipsis")
                     .font(.headline)
                     .foregroundColor(.black)
+                    .padding()
             }
-            .padding(.trailing, 8)
         }
         .padding(.horizontal, 6)
         .padding(.vertical, 4)
@@ -409,10 +415,20 @@ struct ContactItemWithMenuView: View {
         .padding(.horizontal, 6)
         .contentShape(Rectangle())
         .onTapGesture {
-            if isEnabled {
-                selectedContact = contact
-                showMenu = false
-                showContact.toggle()
+            if showMenu {
+                withAnimation {
+                    showMenu = false
+                }
+            } else if viewModel.showCalendar {
+                withAnimation {
+                    viewModel.showCalendar = false
+                }
+            } else if isEnabled {
+                withAnimation {
+                    selectedContact = contact
+                    showMenu = false
+                    showContact.toggle()
+                }
             }
         }
     }
@@ -504,6 +520,7 @@ struct DayView: View {
 }
 
 struct ContactsCalendarScrollView: View {
+    @Binding var showMenu: Bool
     @EnvironmentObject var viewModel: ContactsViewModel
     @EnvironmentObject var testsViewModel: TestsViewModel
     let days = [
@@ -538,8 +555,12 @@ struct ContactsCalendarScrollView: View {
                                 .environmentObject(testsViewModel)
                                 .id("\(weeksAgo)-\(dayOffset)")
                                 .onTapGesture {
-                                    viewModel.dateToStartInCalendar = date
-                                    viewModel.showCalendar.toggle()
+                                    if !showMenu {
+                                        viewModel.dateToStartInCalendar = date
+                                        withAnimation {
+                                            viewModel.showCalendar.toggle()
+                                        }
+                                    }
                                 }
                         }
                     }
