@@ -11,6 +11,7 @@ import SwiftUI
 struct CodeSignUpView: View {
     @ObservedObject var viewModel: RegistrationViewModel
     @FocusState private var activeField: CodeFields?
+    @State private var underlineColor: Color = .gray
     @State private var remainingTime = 59
     @State private var isTimerRunning = false
     private let timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect()
@@ -18,33 +19,15 @@ struct CodeSignUpView: View {
     var body: some View {
         VStack {
             VStack(alignment: .leading, spacing: 8) {
-                Text("my_code_is".localized)
-                    .font(.rubicBoldFont(size: 44))
-                    .fontWeight(.bold)
+                Text("enter_code".localized)
+                    .font(.rubicBoldFont(size: 32))
+                    .foregroundStyle(CustomColors.darkBlue)
                 
                 HStack {
-                    Text(viewModel.phoneNumber)
+                    Text(viewModel.formattedPhoneNumber)
                         .font(.rubicRegularFont(size: 16))
-                        .foregroundColor(CustomColors.darkGray)
+                        .foregroundColor(.gray)
                         .padding(2)
-                    if isTimerRunning && remainingTime > 0 {
-                        Text(String(format: "resend_code_after".localized, remainingTime))
-                            .font(.rubicRegularFont(size: 16))
-                            .foregroundColor(.gray)
-                            .padding(2)
-                    } else {
-                        Button {
-                            startTimer()
-                            viewModel.resendCode()
-                            viewModel.codeFields = Array<String>(repeating: "", count: 6)
-                            activeField = .field1
-                        } label: {
-                            Text("resend_button".localized)
-                                .font(.rubicRegularFont(size: 16))
-                                .foregroundColor(.black)
-                                .padding(2)
-                        }
-                    }
                 }
                 .onAppear {
                     startTimer()
@@ -65,6 +48,27 @@ struct CodeSignUpView: View {
                 .padding()
             
             Spacer()
+            if isTimerRunning && remainingTime > 0 {
+                let seconds = appEnvironment.localizationManager.getLanguage() == .RU ? remainingTime.russianSecondsSuffix : remainingTime == 1 ? "second" : "seconds"
+                Text(String(format: "resend_code_after".localized, remainingTime, seconds))
+                    .font(.rubicRegularFont(size: 12))
+                    .foregroundColor(.gray)
+                    .padding(2)
+                    .padding(.bottom)
+            } else {
+                Button {
+                    startTimer()
+                    viewModel.resendCode()
+                    viewModel.codeFields = Array<String>(repeating: "", count: 6)
+                    activeField = .field1
+                } label: {
+                    Text("resend_button".localized)
+                        .font(.rubicRegularFont(size: 12))
+                        .foregroundStyle(CustomColors.darkBlue)
+                        .padding(2)
+                }
+                .padding(.bottom)
+            }
         }
         .contentShape(Rectangle())
         .onTapGesture {
@@ -85,22 +89,27 @@ struct CodeSignUpView: View {
     func CodeField() -> some View {
         HStack(spacing: 6) {
             ForEach(0..<6, id: \.self) { index in
-                CustomUnderlinedView(color: CustomColors.darkGray) {
-                    TextField("", text: $viewModel.codeFields[index])
-                        .font(.interLightFont(size: 48))
-                        .foregroundColor(.black)
-                        .keyboardType(.numberPad)
-                        .padding(.bottom, 2)
-                        .multilineTextAlignment(.center)
-                        .focused($activeField, equals: activeStateForIndex(index: index))
-                        .onAppear {
-                            DispatchQueue.main.async {
-                                activeField = activeStateForIndex(index: index)
-                            }
+                CustomUnderlinedView(color: underlineColor) {
+                    CustomTextField(text: $viewModel.codeFields[index], textSize: 32) {
+                        handleBackspace(at: index)
+                    }
+                    .frame(height: 50)
+                    .focused($activeField, equals: activeStateForIndex(index: index))
+                    .onAppear {
+                        DispatchQueue.main.async {
+                            activeField = activeStateForIndex(index: index)
                         }
+                    }
                 }
                 .padding(.horizontal, 2)
             }
+        }
+    }
+    
+    func handleBackspace(at index: Int) {
+        if index > 0 && viewModel.codeFields[index].isEmpty {
+            viewModel.codeFields[index - 1] = ""
+            activeField = activeStateForIndex(index: index - 1)
         }
     }
     
@@ -128,11 +137,11 @@ struct CodeSignUpView: View {
         }
 
         // moving back if the current is empty and the previous is not empty
-        for index in 1...5 {
-            if value[index].isEmpty && !value[index - 1].isEmpty {
-                activeField = activeStateForIndex(index: index - 1)
-            }
-        }
+//        for index in 1...5 {
+//            if value[index].isEmpty && !value[index - 1].isEmpty {
+//                activeField = activeStateForIndex(index: index - 1)
+//            }
+//        }
 
         // limiting only one text
         for index in 0..<6 {
@@ -142,6 +151,11 @@ struct CodeSignUpView: View {
         }
 
         viewModel.validateCode(value)
+        if value.joined().count == 6 && !viewModel.codeValidated {
+            underlineColor = .red
+        } else {
+            underlineColor = .gray
+        }
     }
 }
 

@@ -93,6 +93,8 @@ class MainViewModel: NSObject, ObservableObject {
     @Published var showOrderBoxView: Bool = false
     private var cancellables = Set<AnyCancellable>()
     
+    private let userService = UserSupabaseService()
+    
     override init() {
         super.init()
         setupObservers()
@@ -112,4 +114,23 @@ class MainViewModel: NSObject, ObservableObject {
             }
         }.store(in: &cancellables)
     }
+    
+    func fetchUserData() async {
+        guard let _ = user else {
+            print("User not available!")
+            return
+        }
+        do {
+            if let user = try await userService.fetchUserById(id: userId!) {
+                DispatchQueue.main.async {
+                    self.authService.authState = .isLoggedIn(user) // is not tested yet
+                }
+            } else {
+                print("No user found with the specified ID")
+            }
+        } catch {
+            print("An error occurred with fetching the user!")
+        }
+    }
+    
 }

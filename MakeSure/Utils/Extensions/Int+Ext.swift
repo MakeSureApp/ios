@@ -50,7 +50,39 @@ extension Int {
         } else {
             monthsString = "месяцев"
         }
+        
         return monthsString
-
     }
+    
+    var russianAgeSuffix: String {
+            switch self % 100 {
+            case 11...14:
+                return "лет"
+            default:
+                switch self % 10 {
+                case 1:
+                    return "год"
+                case 2...4:
+                    return "года"
+                default:
+                    return "лет"
+                }
+            }
+        }
+    
+    var russianSecondsSuffix: String {
+           switch self % 100 {
+           case 11...14:
+               return "секунд"
+           default:
+               switch self % 10 {
+               case 1:
+                   return "секунда"
+               case 2...4:
+                   return "секунды"
+               default:
+                   return "секунд"
+               }
+           }
+       }
 }

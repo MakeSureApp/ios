@@ -10,10 +10,10 @@ import SwiftUI
 
 struct CustomUnderlinedView<Content: View>: View {
     var content: Content
-    var color: Color = .black
-    var height: CGFloat = 3.0
+    var color: Color = .gray
+    var height: CGFloat = 2.0
 
-    init(color: Color = .black, height: CGFloat = 3.0, @ViewBuilder content: () -> Content) {
+    init(color: Color = .black, height: CGFloat = 2.0, @ViewBuilder content: () -> Content) {
         self.color = color
         self.height = height
         self.content = content()
@@ -22,6 +22,7 @@ struct CustomUnderlinedView<Content: View>: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             content
+                .zIndex(1)
             Rectangle()
                 .frame(height: height)
                 .foregroundColor(color)

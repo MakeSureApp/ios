@@ -112,25 +112,44 @@ class UserSupabaseService: SupabaseService<UserModel> {
     }
     
     func uploadUserImage(_ image: UIImage, userId: UUID) async throws -> String? {
-        guard let data = image.pngData() else {
+        guard let data = image.jpeg(.medium) else {
             throw ImageError.jpegConversionFailed
         }
         
-        let fileName = "test.png"
-        let filePath = "profile_photo/\(fileName)"
-        let file = File(name: fileName, data: data, fileName: fileName, contentType: "image/png")
+        let fileName = "\(userId.uuidString.prefix(8)).jpeg"
+        let file = File(name: fileName, data: data, fileName: fileName, contentType: "image/jpeg")
         let storageClient = await appEnvironment.networkManager.storageClient()
+        if storageClient == nil {
+            throw NSError(domain: "Coudln't initialize storageClient", code: 409)
+        }
+        do {
+            let _ = try await storageClient?.remove(paths: [fileName])
+        } catch {
+            print("Exception in deleting image from bucket: \(error.localizedDescription)")
+        }
         let result = try await storageClient?.upload(path: fileName, file: file, fileOptions: FileOptions(cacheControl: "3600"))
-        print("uploaded file = \(result ?? "empty")")
+        var imagePath: String? = nil
+        if let result = result as? [String: String] {
+            imagePath = result["Key"]
+            print("Key = \(imagePath ?? "Key not found")")
+        } else {
+            print("Result is not a valid dictionary")
+            throw NSError(domain: "result is null", code: 409)
+        }
         
-        let photoURL = fullImageURL(for: filePath)
-        
-        return photoURL
+        let url = fullImageURL(for: imagePath!)
+        return url
     }
     
-    func fullImageURL(for relativePath: String) -> String {
-        let baseURL = "https://profile_photo.supabase.co/storage/v1/object/public/"
-        return baseURL + relativePath
+    func fullImageURL(for path: String) -> String {
+        let token = Constants.supabaseServiceKey
+        var url = Constants.supabaseUrl.absoluteString
+        url.append("/storage/v1/object/public/")
+        url.append(path)
+        url.append("?token=")
+        url.append(token)
+        
+        return url
     }
 }
 
@@ -192,6 +211,15 @@ class NotificationsSupabaseService: SupabaseService<NotificationModel> {
     }
 }
 
+class SupportSupabaseService: SupabaseService<Complaint> {
+    init() {
+        super.init(tableName: "support")
+    }
+    
+    func fetchComplaintByUserId(userId: UUID) async throws -> [Complaint] {
+        return try await fetchById(columnName: "user_id", id: userId)
+    }
+}
 
 class AuthSupabaseService {
     

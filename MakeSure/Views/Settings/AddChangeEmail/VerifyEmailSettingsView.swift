@@ -35,7 +35,7 @@ struct VerifyEmailSettingsView: View {
 struct VerifyEmailSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         VerifyEmailSettingsView()
-            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel(), authService: AuthService()))
     }
 }
 

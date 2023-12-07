@@ -25,7 +25,7 @@ struct RegistrationWrapperView: View {
                 }
                 
                 HStack {
-                    BackButtonView(color: .black) {
+                    BackButtonView(color: CustomColors.darkBlue) {
                         viewModel.moveToPreviousStep()
                     }
                     Spacer()
@@ -34,7 +34,7 @@ struct RegistrationWrapperView: View {
                             viewModel.skipPage()
                         } label: {
                             Text("skip_button".localized)
-                                .font(.rubicRegularFont(size: 24))
+                                .font(.rubicRegularFont(size: 18))
                                 .foregroundColor(.gray)
                         }
                         
@@ -67,8 +67,8 @@ struct RegistrationWrapperView: View {
                 LinkAppleSignUpView(viewModel: viewModel)
             case .agreement:
                 TermsOfUseSignUpView(viewModel: viewModel)
-            case .congratulations:
-                CongratulationSignUpView(viewModel: viewModel)
+//            case .congratulations:
+//                CongratulationSignUpView(viewModel: viewModel)
             case .final:
                 VStack {
                     Spacer()

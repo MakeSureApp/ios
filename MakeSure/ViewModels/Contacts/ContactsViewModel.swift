@@ -31,6 +31,7 @@ class ContactsViewModel: MainViewModel {
     @Published var isAddingDate: Bool = false
     @Published var isAddingUserToContacts: Bool = false
     @Published var isAddingUserToBlacklist: Bool = false
+    @Published var isSendingComplaint: Bool = false
     @Published var contactsImages: [UUID: UIImage] = [:]
     @Published var blacklistImages: [UUID: UIImage] = [:]
     @Published private(set) var hasLoadedContacts: Bool = false
@@ -41,6 +42,7 @@ class ContactsViewModel: MainViewModel {
     @Published private(set) var hasAddedDate: Bool = false
     @Published private(set) var hasAddedUserToBlacklist: Bool = false
     @Published private(set) var hasAddedUserToContacts: Bool = false
+    @Published private(set) var hasSentComplaint: Bool = false
     
     private let blockedUsersQueue = DispatchQueue(label: "ru.turbopro.makesure.blockedUsersQueue", attributes: .concurrent)
     
@@ -53,6 +55,7 @@ class ContactsViewModel: MainViewModel {
     
     private let meetingsService = MeetingSupabaseService()
     private let userService = UserSupabaseService()
+    private let complaintsService = SupportSupabaseService()
     
     private var cancellables = Set<AnyCancellable>()
     
@@ -552,8 +555,34 @@ class ContactsViewModel: MainViewModel {
         }
     }
     
-    func sendComplaintReport(text: String) async {
-        print("complaint sent: \(text)")
+    func sendComplaintReport(text: String, reportedUserId: UUID) async {
+        guard let userId else {
+            print("User ID not available!")
+            return
+        }
+        DispatchQueue.main.async {
+            self.isSendingComplaint = true
+        }
+        do {
+            let model = Complaint(id: UUID(), createdAt: Date(), userId: reportedUserId, myUserId: userId, text: text)
+            try await complaintsService.create(item: model)
+            DispatchQueue.main.async {
+                withAnimation {
+                    self.isSendingComplaint = false
+                    self.hasSentComplaint = true
+                }
+            }
+        } catch {
+            DispatchQueue.main.async {
+                self.isSendingComplaint = false
+            }
+            print("Error sending complaint: \(error.localizedDescription)")
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+            withAnimation {
+                self.hasSentComplaint = false
+            }
+        }
     }
     
 }

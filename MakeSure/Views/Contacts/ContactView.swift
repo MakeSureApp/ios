@@ -94,8 +94,8 @@ struct ContactView: View {
                     
                     if testsViewModel.isLoadingContactTests {
                         RotatingShapesLoader(animate: $isAnimating)
+                            .frame(width: 100, height: 100)
                             .padding(.top, 50)
-                            .frame(width: 100)
                             .onAppear {
                                 isAnimating = true
                             }
@@ -119,17 +119,17 @@ struct ContactView: View {
                                     TestView(test: test)
                                 }
                             }
-                            HStack {
-                                Spacer()
-                                Button {
-                                    testsViewModel.learnMoreBtnClicked()
-                                } label: {
-                                    Text("learn_more_button".localized)
-                                        .font(.montserratLightFont(size: 14))
-                                        .foregroundColor(.gray)
-                                        .underline()
-                                }
-                            }
+//                            HStack {
+//                                Spacer()
+//                                Button {
+//                                    testsViewModel.learnMoreBtnClicked()
+//                                } label: {
+//                                    Text("learn_more_button".localized)
+//                                        .font(.montserratLightFont(size: 14))
+//                                        .foregroundColor(.gray)
+//                                        .underline()
+//                                }
+//                            }
                         } else {
                             Spacer()
                             Text("no_tests_for_contact".localized)

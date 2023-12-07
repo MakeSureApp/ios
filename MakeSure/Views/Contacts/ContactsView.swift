@@ -192,12 +192,12 @@ struct ContactsView: View {
                             Task {
                                 await viewModel.deleteContact(id: contact.id)
                             }
-                        }, onReport: { text in
+                        }, onReport: { text, userId in
                             withAnimation {
                                 showMenu = false
                             }
                             Task {
-                                await viewModel.sendComplaintReport(text: text)
+                                await viewModel.sendComplaintReport(text: text, reportedUserId: userId)
                             }
                         }
                     )
@@ -217,6 +217,32 @@ struct ContactsView: View {
                         GraphicalDatePicker(viewModel: viewModel, testsViewModel: testsViewModel, currentMonth: Date(), isFromContactView: true, contactId: contact.id)
                             .padding(.bottom, 30)
                     }
+                }
+                if viewModel.isSendingComplaint {
+                    RotatingShapesLoader(animate: $isAnimating, color: .black)
+                        .frame(maxWidth: 100)
+                        .padding(.top, 50)
+                        .onAppear {
+                            isAnimating = true
+                        }
+                        .onDisappear {
+                            isAnimating = false
+                        }
+                }
+                if viewModel.hasSentComplaint {
+                    VStack {
+                        Spacer()
+                        Text("complaint_has_been_sent".localized)
+                            .font(.montserratRegularFont(size: 14))
+                            .foregroundColor(.black)
+                            .padding(.horizontal)
+                            .padding(.vertical, 6)
+                            .background(.green.opacity(0.8))
+                            .cornerRadius(12)
+                            .shadow(color: .gray, radius: 10)
+                    }
+                    .padding()
+                    .padding(.bottom, 26)
                 }
 //                if isShowingBlockContactMenu, let contact = selectedContact {
 //                    AlertMenu(alertText: getBlockAlertText(contact.name), actionBtnText: "block_button".localized.uppercased(),
@@ -586,7 +612,7 @@ struct ContactMenu: View {
     @Binding var showContactCalendar: Bool
     let onBlock: () -> Void
     let onDelete: () -> Void
-    let onReport: (String) -> Void
+    let onReport: (String, UUID) -> Void
     
     @State private var showBlockMenu: Bool = false
     @State private var showDeleteMenu: Bool = false
@@ -676,7 +702,9 @@ struct ContactMenu: View {
                 .alert("reason_for_complaint".localized, isPresented: $showReportMenu) {
                     Button("cancel_button".localized, role: .cancel, action: {})
                     Button("complain".localized, role: .destructive) {
-                        onReport(reportText)
+                        if reportText.count > 7 {
+                            onReport(reportText, contact.id)
+                        }
                     }
                     TextField("explain_situation".localized, text: $reportText)
                 }
@@ -785,3 +813,4 @@ struct ContactsView_Previews: PreviewProvider {
             .environmentObject(TestsViewModel(mainViewModel: MainViewModel()))
     }
 }
+

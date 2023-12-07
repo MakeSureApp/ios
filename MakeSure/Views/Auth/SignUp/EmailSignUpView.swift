@@ -20,23 +20,24 @@ struct EmailSignUpView: View {
         VStack {
             // Title
             VStack(alignment: .leading, spacing: 8) {
-                Text("whats_your_email".localized)
-                    .font(.rubicBoldFont(size: 44))
+                Text("enter_email".localized)
+                    .font(.rubicBoldFont(size: 32))
+                    .foregroundStyle(CustomColors.darkBlue)
                     .fontWeight(.bold)
                 
-                Text("verify_email".localized)
+                Text("enter_email_continuation".localized)
                     .font(.interLightFont(size: 14))
-                    .foregroundColor(CustomColors.darkGray)
+                    .foregroundStyle(.gray)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
             .padding(.bottom, 40)
             
             // Email input
             CustomUnderlinedView {
-                TextField("enter_email_placeholder".localized, text: $viewModel.email)
-                    .font(.interRegularFont(size: 23))
-                    .foregroundColor(.black)
+                TextField("enter_email_placeholder".localized.lowercased(), text: $viewModel.email)
+                    .font(.rubicMediumFont(size: 20))
+                    .foregroundStyle(CustomColors.darkBlue)
+                    .tint(CustomColors.darkBlue)
                     .keyboardType(.emailAddress)
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 6)
@@ -49,10 +50,18 @@ struct EmailSignUpView: View {
                         viewModel.validateEmail()
                     }
             }
-            .padding(.horizontal, 30)
+            
+            HStack {
+                Text("verify_email_prompt".localized)
+                    .font(.interLightFont(size: 14))
+                    .foregroundStyle(.gray)
+                    .padding(.vertical, 12)
+                Spacer()
+            }
             
             Spacer()
         }
+        .padding(.horizontal, 30)
         .contentShape(Rectangle())
         .onTapGesture {
             focusedField = nil

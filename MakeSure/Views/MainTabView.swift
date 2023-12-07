@@ -50,6 +50,9 @@ struct MainTabView: View {
             tabView
             bottomNavigationBar
         }
+        .onReceive(viewModel.$currentTab) { _ in
+            print("tab changed")
+        }
         .contentShape(Rectangle())
         .background(.white)
         .overlay {
@@ -276,16 +279,7 @@ private extension MainTabView {
 private extension MainTabView {
     var tabView: some View {
         VStack {
-            switch viewModel.currentTab {
-            case .home:
-                viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
-            case .tests:
-                viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
-            case .scanner:
-                viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
-            case .contacts:
-                viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
-            }
+            viewModel.currentTab.destinationView(viewModelFactory: appEnvironment.viewModelFactory)
         }
         .padding(.vertical, viewModel.currentTab == .tests || viewModel.currentTab == .scanner ? 24 : 32)
         .zIndex(0)

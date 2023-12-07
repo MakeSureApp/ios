@@ -59,6 +59,7 @@ class HomeViewModel: NSObject, ObservableObject {
     @Published var isLoadingTests: Bool = false
     @Published var isLoadingImage: Bool = false
     @Published var isLoadingTips: Bool = false
+    @Published var isUploadingImage: Bool = false
     @Published var isGeneratingQRCode: Bool = false
     @Published private(set) var hasLoadedUser: Bool = false
     @Published private(set) var hasLoadedTests: Bool = false
@@ -291,6 +292,37 @@ class HomeViewModel: NSObject, ObservableObject {
         }
     }
     
+    func uploadUserImage() async {
+        guard let image, let userId = await mainViewModel.userId else { return }
+        var photoUrl: String? = nil
+        DispatchQueue.main.async {
+            self.isUploadingImage = true
+        }
+        do {
+            if let uploadedURL = try await userService.uploadUserImage(image, userId: userId) {
+                photoUrl = uploadedURL
+            }
+        } catch {
+            print("An error occurred while uploading image: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.isUploadingImage = false
+                self.image = nil
+            }
+            return
+        }
+        do {
+            try await userService.update(id: userId, fields: ["photo_URL": photoUrl])
+        } catch {
+            print("An error occurred while updating user image: \(error.localizedDescription)")
+            DispatchQueue.main.async {
+                self.image = nil
+            }
+        }
+        DispatchQueue.main.async {
+            self.isUploadingImage = false
+        }
+    }
+    
 }
 
 extension HomeViewModel: UIImagePickerControllerDelegate, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
@@ -359,6 +391,9 @@ extension HomeViewModel: UIImagePickerControllerDelegate, UINavigationController
                     DispatchQueue.main.async {
                         self.image = image
                     }
+                    Task {
+                        await self.uploadUserImage()
+                    }
                 }
             }
         }
@@ -375,6 +410,9 @@ extension HomeViewModel: UIImagePickerControllerDelegate, UINavigationController
         picker.dismiss(animated: true)
         if let image = info[.originalImage] as? UIImage {
             self.image = image
+            Task {
+                await uploadUserImage()
+            }
         }
     }
     

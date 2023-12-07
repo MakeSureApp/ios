@@ -28,7 +28,7 @@ enum RegistrationSteps: Int, CaseIterable {
 //    case profilePhoto
     case linkApple
     case agreement
-    case congratulations
+//    case congratulations
     case final
 }
 
@@ -40,6 +40,7 @@ enum RegistrationProgressBarSteps: Int, CaseIterable {
 //    case gender
 //    case profilePhoto
     case linkApple
+    case agreement
 }
 
 class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate, PHPickerViewControllerDelegate {
@@ -113,6 +114,25 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
         return countryCode.rawValue + partOfPhoneNumber
     }
     
+    var formattedPhoneNumber: String {
+        let numbers = partOfPhoneNumber.filter("0123456789".contains)
+        let formatted = numbers.enumerated().map { (index, character) -> String in
+            switch index {
+            case 0:
+                return " (\(character)"
+            case 2:
+                return "\(character)) "
+            case 5:
+                return "\(character) "
+            case 8, 10:
+                return "-\(character)"
+            default:
+                return String(character)
+            }
+        }.joined()
+        return "\(countryCode.rawValue) \(formatted)"
+    }
+    
     var birthdayDate: Date? {
         let dateStr = birthdayFields.joined().dateStringFromDateInput
         return dateStr.dateFromString
@@ -157,20 +177,22 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
 //            return .profilePhoto
         case .linkApple:
             return .linkApple
+        case .agreement:
+            return .agreement
         default:
             return .phoneNumber
         }
     }
     
     var isProgresBarShow: Bool {
-        if currentStep == .agreement || currentStep == .congratulations {
-            return false
-        }
+//        if currentStep == .agreement || currentStep == .congratulations {
+//            return false
+//        }
         return true
     }
     
     var isSkipButtonShow: Bool {
-        if currentStep == .email || currentStep == .linkApple {
+        if currentStep == .linkApple {
             return true
         }
         return false
@@ -189,7 +211,7 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
     func moveToNextStep() {
         currentStep = currentStep.next()
         if currentStep == .code {
-            //authService.sendSMS(to: phoneNumber)
+            authService.sendSMS(to: phoneNumber)
         }
     }
     
@@ -223,6 +245,7 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
         self.canSendCode = false
         guard phoneNumber.isPhoneNumber else {
             self.errorMessage = nil
+            self.canSendCode = true
             return
         }
         self.isLoading = true
@@ -244,7 +267,7 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
     func validateCode(_ code: Array<String>) {
         let strCode = code.joined()
         // Validate the phone code
-        if strCode.count == 6 {//&& authService.isCodeValid(strCode) {
+        if strCode.count == 6 && authService.isCodeValid(strCode) {
             codeValidated = true
         } else {
             codeValidated = false
@@ -252,7 +275,7 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
     }
     
     func resendCode() {
-        //authService.sendSMS(to: phoneNumber)
+        authService.sendSMS(to: phoneNumber)
     }
     
     func validateEmail() {

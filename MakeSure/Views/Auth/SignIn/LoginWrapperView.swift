@@ -15,7 +15,7 @@ struct LoginWrapperView: View {
     var body: some View {
         VStack {
             HStack {
-                BackButtonView(color: .black) {
+                BackButtonView(color: CustomColors.darkBlue) {
                     viewModel.moveToPreviousStep()
                 }
                 Spacer()

@@ -16,7 +16,7 @@ struct NumberSettingsWrapperView: View {
         VStack {
             if viewModel.phoneCurrentStep != .congratulations {
                 HStack {
-                    BackButtonView(color: .black) {
+                    BackButtonView(color: CustomColors.darkBlue) {
                         viewModel.phoneMoveToPreviousStep()
                     }
                     Spacer()
@@ -43,6 +43,7 @@ struct NumberSettingsWrapperView: View {
             RoundedGradientButton(text: "continue_button".localized.uppercased(), isEnabled: viewModel.phoneCanProceedToNextStep) {
                 viewModel.phoneMoveToNextStep()
             }
+            .padding(.horizontal, 30)
         }
         .background(.white)
     }

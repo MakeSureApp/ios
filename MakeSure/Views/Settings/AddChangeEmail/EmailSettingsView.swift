@@ -18,36 +18,25 @@ struct EmailSettingsView: View {
     
     var body: some View {
         VStack {
-            // Title
             VStack(alignment: .leading, spacing: 8) {
-                Text("whats_your_email".localized)
-                    .font(.rubicBoldFont(size: 44))
-                    .minimumScaleFactor(0.5)
+                Text("enter_email".localized)
+                    .font(.rubicBoldFont(size: 32))
+                    .foregroundStyle(CustomColors.darkBlue)
                     .fontWeight(.bold)
-                    .foregroundColor(.black)
                 
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .font(.interLightFont(size: 14))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(Color.red)
-                        .padding()
-                        .padding(.top, 20)
-                } else {
-                    Text("verify_email".localized)
-                        .font(.interLightFont(size: 14))
-                        .foregroundColor(CustomColors.darkGray)
-                }
+                Text("enter_email_continuation".localized)
+                    .font(.interLightFont(size: 14))
+                    .foregroundStyle(.gray)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
             .padding(.bottom, 40)
             
             // Email input
             CustomUnderlinedView {
-                TextField("enter_email_placeholder".localized, text: $viewModel.changingEmail)
-                    .font(.interRegularFont(size: 23))
-                    .foregroundColor(.black)
+                TextField("enter_email_placeholder".localized.lowercased(), text: $viewModel.changingEmail)
+                    .font(.rubicMediumFont(size: 20))
+                    .foregroundStyle(CustomColors.darkBlue)
+                    .tint(CustomColors.darkBlue)
                     .keyboardType(.emailAddress)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
@@ -62,7 +51,6 @@ struct EmailSettingsView: View {
                         viewModel.handleEmailChange(to: newValue)
                     }
             }
-            .padding(.horizontal, 30)
             
             if viewModel.isCheckingEmail {
                 RotatingShapesLoader(animate: $isAnimating, color: .black)
@@ -76,8 +64,17 @@ struct EmailSettingsView: View {
                 Spacer()
             }
             
+            HStack {
+                Text("verify_email_prompt".localized)
+                    .font(.interLightFont(size: 14))
+                    .foregroundStyle(.gray)
+                    .padding(.vertical, 12)
+                Spacer()
+            }
+            
             Spacer()
         }
+        .padding(.horizontal, 30)
         .overlay {
             if viewModel.isLoading {
                 RotatingShapesLoader(animate: $isAnimating, color: .black)
@@ -96,6 +93,6 @@ struct EmailSettingsView: View {
 struct EmailSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         EmailSettingsView()
-            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel(), authService: AuthService()))
     }
 }

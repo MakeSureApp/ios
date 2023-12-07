@@ -10,6 +10,7 @@ import SwiftUI
 struct CodeSettingsView: View {
     @EnvironmentObject var viewModel: SettingsViewModel
     @FocusState private var activeField: CodeFields?
+    @State private var underlineColor: Color = .gray
     @State private var isAnimating: Bool = false
     @State private var remainingTime = 59
     @State private var isTimerRunning = false
@@ -18,34 +19,16 @@ struct CodeSettingsView: View {
     var body: some View {
         VStack {
             VStack(alignment: .leading, spacing: 8) {
-                Text("My code is")
-                    .font(.rubicBoldFont(size: 44))
-                    .fontWeight(.bold)
-                    .foregroundColor(.black)
+                Text("enter_code".localized)
+                    .font(.rubicBoldFont(size: 32))
+                    .foregroundStyle(CustomColors.darkBlue)
                 
                 HStack {
-                    Text(viewModel.phoneNumber)
+                    Text(viewModel.formattedPhoneNumber)
                         .font(.rubicRegularFont(size: 16))
-                        .foregroundColor(CustomColors.darkGray)
+                        .foregroundColor(.gray)
                         .padding(2)
-                    if isTimerRunning && remainingTime > 0 {
-                        Text(String(format: "resend_code_after".localized, remainingTime))
-                            .font(.rubicRegularFont(size: 16))
-                            .foregroundColor(.gray)
-                            .padding(2)
-                    } else {
-                        Button {
-                            startTimer()
-                            viewModel.resendCode()
-                            viewModel.codeFields = Array<String>(repeating: "", count: 6)
-                            activeField = .field1
-                        } label: {
-                            Text("resend_button".localized)
-                                .font(.rubicRegularFont(size: 16))
-                                .foregroundColor(.black)
-                                .padding(2)
-                        }
-                    }
+                    Spacer()
                 }
                 .onAppear {
                     startTimer()
@@ -59,13 +42,42 @@ struct CodeSettingsView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding()
                 
                 CodeField()
                     .padding()
                 
                 Spacer()
+                if isTimerRunning && remainingTime > 0 {
+                    let seconds = appEnvironment.localizationManager.getLanguage() == .RU ? remainingTime.russianSecondsSuffix : remainingTime == 1 ? "second" : "seconds"
+                    HStack {
+                        Spacer()
+                        Text(String(format: "resend_code_after".localized, remainingTime, seconds))
+                            .font(.rubicRegularFont(size: 12))
+                            .foregroundColor(.gray)
+                            .padding(2)
+                            .padding(.bottom)
+                        Spacer()
+                    }
+                } else {
+                    HStack {
+                        Spacer()
+                        Button {
+                            startTimer()
+                            viewModel.resendCode()
+                            viewModel.codeFields = Array<String>(repeating: "", count: 6)
+                            activeField = .field1
+                        } label: {
+                            Text("resend_button".localized)
+                                .font(.rubicRegularFont(size: 12))
+                                .foregroundStyle(CustomColors.darkBlue)
+                                .padding(2)
+                        }
+                        .padding(.bottom)
+                        Spacer()
+                    }
+                }
             }
+            .padding(.horizontal, 30)
             .onChange(of: viewModel.codeFields) { newValue in
                 DOBConditions(value: newValue)
             }
@@ -94,13 +106,11 @@ struct CodeSettingsView: View {
     func CodeField() -> some View {
         HStack(spacing: 6) {
             ForEach(0..<6, id: \.self) { index in
-                CustomUnderlinedView(color: CustomColors.darkGray) {
-                    TextField("", text: $viewModel.codeFields[index])
-                        .font(.interLightFont(size: 48))
-                        .foregroundColor(.black)
-                        .keyboardType(.numberPad)
-                        .padding(.bottom, 2)
-                        .multilineTextAlignment(.center)
+                CustomUnderlinedView(color: underlineColor) {
+                    CustomTextField(text: $viewModel.codeFields[index]) {
+                        handleBackspace(at: index)
+                    }
+                    .frame(height: 50)
                         .focused($activeField, equals: activeStateForIndex(index: index))
                         .onAppear {
                             DispatchQueue.main.async {
@@ -110,6 +120,13 @@ struct CodeSettingsView: View {
                 }
                 .padding(.horizontal, 2)
             }
+        }
+    }
+    
+    func handleBackspace(at index: Int) {
+        if index > 0 && viewModel.codeFields[index].isEmpty {
+            viewModel.codeFields[index - 1] = ""
+            activeField = activeStateForIndex(index: index - 1)
         }
     }
     
@@ -151,12 +168,17 @@ struct CodeSettingsView: View {
         }
 
         viewModel.validateCode(value)
+        if value.joined().count == 6 && !viewModel.codeValidated {
+            underlineColor = .red
+        } else {
+            underlineColor = .gray
+        }
     }
 }
 
 struct CodeSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         CodeSettingsView()
-            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel(), authService: AuthService()))
     }
 }

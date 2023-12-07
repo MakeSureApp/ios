@@ -22,10 +22,11 @@ struct NumberSignInView: View {
         ZStack {
             VStack {
                 // Title
-                Text("my_number_is".localized)
-                    .font(.rubicBoldFont(size: 44))
+                Text("phone_number".localized)
+                    .font(.rubicBoldFont(size: 32))
+                    .foregroundStyle(CustomColors.darkBlue)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
+                    .padding(.bottom)
                 
                 // Country code and phone number input
                 HStack {
@@ -36,12 +37,12 @@ struct NumberSignInView: View {
                             HStack {
                                 Text(viewModel.countryCode.description)
                                     .font(.rubicRegularFont(size: 24))
-                                    .foregroundColor(.black)
+                                    .foregroundStyle(CustomColors.darkBlue)
                                 
                                 Image(systemName: "arrowtriangle.down.fill")
                                     .resizable()
                                     .frame(width: 12, height: 6)
-                                    .foregroundColor(.black)
+                                    .foregroundStyle(CustomColors.darkBlue)
                             }
                             .padding(.bottom, 8)
                         }
@@ -57,7 +58,8 @@ struct NumberSignInView: View {
                                 self.focusedField = .field
                             }
                             .keyboardType(.numberPad)
-                            .foregroundColor(.black)
+                            .foregroundStyle(CustomColors.darkBlue)
+                            .tint(CustomColors.darkBlue)
                             .padding(8)
                             .onChange(of: viewModel.partOfPhoneNumber) { newValue in
                                 viewModel.handlePhoneNumberChange(to: newValue)
@@ -66,21 +68,18 @@ struct NumberSignInView: View {
                     }
                     .padding(.leading, 4)
                 }
-                .padding(.horizontal)
                 
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.interLightFont(size: 14))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .foregroundColor(Color.red)
-                        .padding()
                         .padding(.top, 20)
                 } else {
                     Text("send_verification_code".localized)
                         .font(.interLightFont(size: 14))
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .foregroundColor(CustomColors.darkGray)
-                        .padding()
+                        .foregroundColor(.gray)
                         .padding(.top, 20)
                 }
                 
@@ -98,6 +97,7 @@ struct NumberSignInView: View {
                     Spacer()
                 }
             }
+            .padding(.horizontal, 30)
             .contentShape(Rectangle())
             .onTapGesture {
                 focusedField = nil

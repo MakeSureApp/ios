@@ -12,12 +12,13 @@ import SupabaseStorage
 
 class NetworkManager {
 
-    private let supabaseUrl = URL(string: "http://82.146.56.214:8000")!
-    private let supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE"
+    private let supabaseUrl = Constants.supabaseUrl
+    private let supabaseKey = Constants.supabaseKey
+    private let supabaseServiceKey = Constants.supabaseServiceKey
     let supabase: SupabaseClient
     let supabaseRealtime: RealtimeClient
     
-    private let serverUrl = URL(string: "http://82.146.56.214:3080")!
+    private let serverUrl = Constants.serverUrl
     private let serverTestResultEndpoint = "test_results_detection"
 //    private let workhorseUrl = URL(string: "http://82.146.56.214:3080")!
 
@@ -32,12 +33,14 @@ class NetworkManager {
         return url
     }
     
-    func storageClient(bucketName: String = "profile_photo") async -> StorageFileApi? {
-        let jwt = "gxg5daofx6hwxcZnp/NxPRiJ62EnbfOc4Uc9AVvRD+Vf+RgQYFXL9ttESFkqi1VMaSQEmlTwo/ZeKhDtj+PKeQ=="
+    func storageClient(bucketName: String = "user_images") async -> StorageFileApi? {
+//        guard let jwt = try? await supabase.auth.session.accessToken else {
+//            print("couldn't access auth")
+//            return nil}
         return SupabaseStorageClient(
-            url: "\(supabaseUrl)/storage/v1/object/public",
+            url: "\(supabaseUrl)/storage/v1",
             headers: [
-                "Authorization": "Bearer \(jwt)",
+                "Authorization": "Bearer \(supabaseServiceKey)",
                 "apikey": supabaseKey,
             ]
         ).from(id: bucketName)

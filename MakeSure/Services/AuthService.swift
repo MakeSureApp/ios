@@ -46,15 +46,16 @@ class AuthService: ObservableObject {
         .store(in: &cancellables)
     }
     
-    private let baseURL = "https://@gate.smsaero.ru/v2/sms/send"
+    private let baseURL = Constants.smsServiceUrl
     private var generatedCode: String?
     
-    private let email = "technical@makesure.app"
-    private let apiKey = "KlU96stD5nD66t2eJyxZFmqNw1aJ"
+    private let email = Constants.smsServiceEmail
+    private let apiKey = Constants.smsServiceApiKey
     
     func sendSMS(to number: String) {
         let code = generateRandomCode()
         generatedCode = code
+        print("generated code: \(code)")
         var formattedNumber = number
         formattedNumber.removePlusPrefix()
         

@@ -63,7 +63,7 @@ private extension HomeView {
                         if viewModel.hasLoadedUser {
                             // Photo section
                             Group {
-                                if viewModel.isLoadingImage, viewModel.image == nil {
+                                if viewModel.isLoadingImage || viewModel.isUploadingImage {
                                     // Loading animation
                                     Circle()
                                         .foregroundColor(.gradientDarkBlue)
@@ -101,10 +101,12 @@ private extension HomeView {
                                 }
                             }
                             .onTapGesture {
-                                viewModel.requestPhoto()
+                                if !viewModel.isUploadingImage {
+                                    viewModel.requestPhoto()
+                                }
                             }
                             .onLongPressGesture {
-                                if viewModel.image != nil, !viewModel.isLoadingImage {
+                                if viewModel.image != nil, !viewModel.isLoadingImage, !viewModel.isUploadingImage {
                                     withAnimation {
                                         viewModel.showPhoto.toggle()
                                     }
@@ -149,9 +151,15 @@ private extension HomeView {
                                     Text("\(viewModel.birthdate.getAge)")
                                         .font(.interRegularFont(size: 20))
                                         .foregroundColor(.white)
-                                    Text("years_old".localized)
-                                        .font(.interRegularFont(size: 12))
-                                        .foregroundColor(.white)
+                                    if appEnvironment.localizationManager.getLanguage() == .RU {
+                                        Text(viewModel.birthdate.getAge.russianAgeSuffix)
+                                            .font(.interRegularFont(size: 12))
+                                            .foregroundColor(.white)
+                                    } else {
+                                        Text("years_old".localized)
+                                            .font(.interRegularFont(size: 12))
+                                            .foregroundColor(.white)
+                                    }
                                 }
                                 .frame(width: 80)
                             }

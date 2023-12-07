@@ -16,14 +16,14 @@ struct LinkAppleSignUpView: View {
         VStack {
             VStack {
                 Text("link_apple".localized)
-                    .font(.rubicBoldFont(size: 44))
+                    .font(.rubicBoldFont(size: 32))
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
+                    .foregroundStyle(CustomColors.darkBlue)
+                    .padding(.bottom, 8)
                 Text("link_apple_description".localized)
                     .font(.interLightFont(size: 14))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .foregroundColor(CustomColors.darkGray)
-                    .padding()
             }
             Spacer()
             if viewModel.appleIdLinked {
@@ -33,7 +33,6 @@ struct LinkAppleSignUpView: View {
                         .foregroundColor(Color.secondGreen)
                         .frame(maxWidth: .infinity)
                         .multilineTextAlignment(.center)
-                        .padding()
                 }
             } else {
                 Button {
@@ -52,17 +51,17 @@ struct LinkAppleSignUpView: View {
                             .foregroundColor(Color.gradientDarkBlue)
                         Spacer()
                     }
-                    .padding()
                     .frame(maxWidth: .infinity)
                     .aspectRatio(3/4, contentMode: .fit)
                     .overlay(RoundedRectangle(cornerRadius: 50)
                         .stroke(CustomColors.secondGradient, lineWidth: 3))
                 }
-                .padding(.horizontal, 80)
+                .padding(.horizontal, 50)
             }
             Spacer()
             Spacer()
         }
+        .padding(.horizontal, 30)
         .overlay {
             if viewModel.isLoggingInWithApple || viewModel.isLoadingUser {
                 VStack {

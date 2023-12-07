@@ -59,35 +59,45 @@ struct BlacklistView: View {
                                 .foregroundColor(.white.opacity(0.6))
                             
                             ForEach(viewModel.blockedUsers, id: \.self) { user in
+                                let isEnabled = !viewModel.checkIfContactBlockedMe(user: user)
                                 HStack {
-                                    if let image = viewModel.blacklistImages[user.id] {
-                                        Image(uiImage: image)
-                                            .resizable()
-                                            .frame(width: 63, height: 63)
-                                            .clipShape(Circle())
-                                            .padding(.trailing, 10)
-                                            .shadow(radius: 10)
-                                    } else if user.photoUrl == nil {
+                                    if isEnabled {
+                                        if let image = viewModel.blacklistImages[user.id] {
+                                            Image(uiImage: image)
+                                                .resizable()
+                                                .frame(width: 63, height: 63)
+                                                .clipShape(Circle())
+                                                .padding(.trailing, 10)
+                                                .shadow(radius: 10)
+                                        } else if user.photoUrl == nil {
+                                            Image(systemName: "person.circle.fill")
+                                                .resizable()
+                                                .foregroundColor(.white)
+                                                .frame(width: 63, height: 63)
+                                                .clipShape(Circle())
+                                                .padding(.trailing, 10)
+                                        } else {
+                                            Circle()
+                                                .foregroundColor(.gradientDarkBlue)
+                                                .frame(width: 63, height: 63)
+                                                .overlay(
+                                                    RotatingShapesLoader(animate: $isAnimatingImage)
+                                                        .frame(maxWidth: 25)
+                                                        .onAppear {
+                                                            isAnimatingImage = true
+                                                        }
+                                                        .onDisappear {
+                                                            isAnimatingImage = false
+                                                        }
+                                                )
+                                        }
+                                    } else {
                                         Image(systemName: "person.circle.fill")
                                             .resizable()
-                                            .foregroundColor(.white)
+                                            .foregroundColor(.gray)
+                                            .scaledToFill()
                                             .frame(width: 63, height: 63)
                                             .clipShape(Circle())
-                                            .padding(.trailing, 10)
-                                    } else {
-                                        Circle()
-                                            .foregroundColor(.gradientDarkBlue)
-                                            .frame(width: 63, height: 63)
-                                            .overlay(
-                                                RotatingShapesLoader(animate: $isAnimatingImage)
-                                                    .frame(maxWidth: 25)
-                                                    .onAppear {
-                                                        isAnimatingImage = true
-                                                    }
-                                                    .onDisappear {
-                                                        isAnimatingImage = false
-                                                    }
-                                            )
                                     }
                                     Text(user.name)
                                         .font(.montserratBoldFont(size: 16))

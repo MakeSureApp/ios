@@ -9,14 +9,15 @@ import Foundation
 
 class LocalizationManager {
     
-    private var currentLanguage: String {
-        get {
-            return UserDefaults.standard.string(forKey: "AppLanguage") ?? "en"
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "AppLanguage")
+    @Published private var currentLanguage: String {
+        didSet {
+            UserDefaults.standard.set(currentLanguage, forKey: "AppLanguage")
             UserDefaults.standard.synchronize()
         }
+    }
+    
+    init() {
+        self.currentLanguage = UserDefaults.standard.string(forKey: "AppLanguage") ?? "en"
     }
     
     func getLanguage() -> AvailableLanguages {
@@ -41,5 +42,5 @@ class LocalizationManager {
         let bundle = Bundle(path: languageBundle ?? Bundle.main.path(forResource: "en", ofType: "lproj")!)
         return NSLocalizedString(key, bundle: bundle!, comment: "")
     }
-
+    
 }

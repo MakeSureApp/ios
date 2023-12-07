@@ -78,6 +78,7 @@ struct OTPResponse: Codable {
 
 enum ImageError: Error {
     case jpegConversionFailed
+    case pngConversionFailed
 }
 
 struct InfectionRiskUser: Identifiable {

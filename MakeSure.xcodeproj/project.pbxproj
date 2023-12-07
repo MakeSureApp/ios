@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		520203462B20C9460053F642 /* Complaint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520203452B20C9460053F642 /* Complaint.swift */; };
 		520972B12A4F0AFD00B69128 /* ServerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520972B02A4F0AFD00B69128 /* ServerService.swift */; };
 		520972B32A4F0DE700B69128 /* TestResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520972B22A4F0DE700B69128 /* TestResult.swift */; };
 		520972B52A4F1D0F00B69128 /* CameraPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520972B42A4F1D0F00B69128 /* CameraPreview.swift */; };
 		520972B72A4F42A700B69128 /* Data+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520972B62A4F42A700B69128 /* Data+Ext.swift */; };
 		520972B92A4F503B00B69128 /* View+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520972B82A4F503B00B69128 /* View+Ext.swift */; };
+		520FB9962B21DB4300068A25 /* BackspaceDetectingTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 520FB9952B21DB4300068A25 /* BackspaceDetectingTextField.swift */; };
 		52225D452AB88AE700173A87 /* PositiveTestNotificationsWrapperView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D442AB88AE700173A87 /* PositiveTestNotificationsWrapperView.swift */; };
 		52225D482AB88C1200173A87 /* PositiveTestWarningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D472AB88C1200173A87 /* PositiveTestWarningView.swift */; };
 		52225D4A2AB88C2D00173A87 /* PositiveTestTipsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52225D492AB88C2D00173A87 /* PositiveTestTipsView.swift */; };
@@ -216,11 +218,13 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		520203452B20C9460053F642 /* Complaint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Complaint.swift; sourceTree = "<group>"; };
 		520972B02A4F0AFD00B69128 /* ServerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerService.swift; sourceTree = "<group>"; };
 		520972B22A4F0DE700B69128 /* TestResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestResult.swift; sourceTree = "<group>"; };
 		520972B42A4F1D0F00B69128 /* CameraPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPreview.swift; sourceTree = "<group>"; };
 		520972B62A4F42A700B69128 /* Data+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Data+Ext.swift"; sourceTree = "<group>"; };
 		520972B82A4F503B00B69128 /* View+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Ext.swift"; sourceTree = "<group>"; };
+		520FB9952B21DB4300068A25 /* BackspaceDetectingTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackspaceDetectingTextField.swift; sourceTree = "<group>"; };
 		52225D442AB88AE700173A87 /* PositiveTestNotificationsWrapperView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestNotificationsWrapperView.swift; sourceTree = "<group>"; };
 		52225D472AB88C1200173A87 /* PositiveTestWarningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestWarningView.swift; sourceTree = "<group>"; };
 		52225D492AB88C2D00173A87 /* PositiveTestTipsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PositiveTestTipsView.swift; sourceTree = "<group>"; };
@@ -740,6 +744,7 @@
 				CE8DBC382A0F675A005D3A79 /* FriendLinkModel.swift */,
 				5246AF762A407CD40084D5CF /* NotificationModel.swift */,
 				520972B22A4F0DE700B69128 /* TestResult.swift */,
+				520203452B20C9460053F642 /* Complaint.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -866,6 +871,7 @@
 				CE2268642A08DB52004D1138 /* RefreshableScrollView.swift */,
 				529755E12B147A4500C0CBFC /* AlertMenu.swift */,
 				529755E32B148CA800C0CBFC /* AlertTextFieldMenu.swift */,
+				520FB9952B21DB4300068A25 /* BackspaceDetectingTextField.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -1145,6 +1151,7 @@
 				CE9166CE29F0F44700612933 /* BirthdaySignUpView.swift in Sources */,
 				CE27C8F929F92C80006ACFED /* CodeSettingsView.swift in Sources */,
 				52225D502AB88CF400173A87 /* PositiveTestVisitDoctorView.swift in Sources */,
+				520203462B20C9460053F642 /* Complaint.swift in Sources */,
 				5252E0032AFB816500198302 /* ContactItemView.swift in Sources */,
 				CE9166D029F0F4C700612933 /* GenderSignUpView.swift in Sources */,
 				5222FD732A3A07D4000C86DB /* AppleSignIn.swift in Sources */,
@@ -1155,6 +1162,7 @@
 				522E4FF52B15FABF001DFFA1 /* Constants.swift in Sources */,
 				CE8DBC3B2A0F74E1005D3A79 /* Image+Ext.swift in Sources */,
 				CEB10ABE2A02674600B7B5DF /* SupabaseService.swift in Sources */,
+				520FB9962B21DB4300068A25 /* BackspaceDetectingTextField.swift in Sources */,
 				CE9166C829F0F2D300612933 /* EmailSignUpView.swift in Sources */,
 				CE47D06729F3D4E700AEC9DA /* CustomFontsNames.swift in Sources */,
 				CE9166C229F05E8400612933 /* RegistrationProgressBarView.swift in Sources */,

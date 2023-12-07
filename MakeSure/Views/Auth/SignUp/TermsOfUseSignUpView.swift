@@ -15,11 +15,12 @@ struct TermsOfUseSignUpView: View {
         VStack {
             VStack(alignment: .leading, spacing: 8) {
                 Text("welcome_message".localized)
-                    .font(.rubicBoldFont(size: 23))
-                    .fontWeight(.bold)
+                    .font(.rubicBoldFont(size: 24))
+                    .foregroundStyle(CustomColors.darkBlue)
                 
                 Text("rules_heading".localized)
-                    .font(.interRegularFont(size: 17))
+                    .font(.rubicRegularFont(size: 14))
+                    .foregroundStyle(CustomColors.darkGray)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 30)
@@ -28,7 +29,9 @@ struct TermsOfUseSignUpView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     HStack {
-                        Image("checkmark")
+                        Image("logo")
+                            .resizable()
+                            .frame(width: 24, height: 24)
                             .padding(.leading, 0)
                             .padding(.bottom, -12)
                         Text("rule_1".localized)
@@ -40,12 +43,15 @@ struct TermsOfUseSignUpView: View {
                     Text("rule_2".localized)
                         .font(.interRegularFont(size: 13))
                         .multilineTextAlignment(.leading)
+                        .foregroundStyle(CustomColors.darkGray)
                 }
                 .padding(.vertical, 4)
                 
                 VStack(alignment: .leading) {
                     HStack {
-                        Image("checkmark")
+                        Image("logo")
+                            .resizable()
+                            .frame(width: 24, height: 24)
                             .padding(.leading, 0)
                             .padding(.bottom, -12)
                         Text("rule_3".localized)
@@ -57,12 +63,15 @@ struct TermsOfUseSignUpView: View {
                     Text("rule_4".localized)
                         .font(.interRegularFont(size: 13))
                         .multilineTextAlignment(.leading)
+                        .foregroundStyle(CustomColors.darkGray)
                 }
                 .padding(.vertical, 4)
                 
                 VStack(alignment: .leading) {
                     HStack {
-                        Image("checkmark")
+                        Image("logo")
+                            .resizable()
+                            .frame(width: 24, height: 24)
                             .padding(.leading, 0)
                             .padding(.bottom, -12)
                         Text("rule_5".localized)
@@ -74,12 +83,15 @@ struct TermsOfUseSignUpView: View {
                     Text("rule_6".localized)
                         .font(.interRegularFont(size: 13))
                         .multilineTextAlignment(.leading)
+                        .foregroundStyle(CustomColors.darkGray)
                 }
                 .padding(.vertical, 4)
                 
                 VStack(alignment: .leading) {
                     HStack {
-                        Image("checkmark")
+                        Image("logo")
+                            .resizable()
+                            .frame(width: 24, height: 24)
                             .padding(.leading, 0)
                             .padding(.bottom, -12)
                         Text("rule_7".localized)
@@ -91,6 +103,7 @@ struct TermsOfUseSignUpView: View {
                     Text("rule_8".localized)
                         .font(.interRegularFont(size: 13))
                         .multilineTextAlignment(.leading)
+                        .foregroundStyle(CustomColors.darkGray)
                 }
                 .padding(.vertical, 4)
             }

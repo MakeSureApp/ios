@@ -16,7 +16,7 @@ struct EmailSettingsWrapperView: View {
         VStack {
             if viewModel.emailCurrentStep != .congratulations {
                 HStack {
-                    BackButtonView(color: .black) {
+                    BackButtonView(color: CustomColors.darkBlue) {
                         viewModel.emailMoveToPreviousStep()
                     }
                     Spacer()
@@ -43,6 +43,7 @@ struct EmailSettingsWrapperView: View {
             RoundedGradientButton(text: "continue_button".localized.uppercased(), isEnabled: viewModel.emailCanProceedToNextStep) {
                 viewModel.emailMoveToNextStep()
             }
+            .padding(.horizontal, 30)
         }
         .background(.white)
     }

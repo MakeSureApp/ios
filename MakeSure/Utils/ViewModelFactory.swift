@@ -13,7 +13,7 @@ class ViewModelFactory {
     private lazy var homeViewModel = HomeViewModel(mainViewModel: mainViewModel)
     private lazy var loginViewModel = LoginViewModel(authService: authService)
     private lazy var registrationViewModel = RegistrationViewModel(authService: authService)
-    private lazy var settingsViewModel = SettingsViewModel(mainViewModel: mainViewModel)
+    private lazy var settingsViewModel = SettingsViewModel(mainViewModel: mainViewModel, authService: authService)
     private lazy var contactsViewModel = ContactsViewModel()
     private lazy var testsViewModel = TestsViewModel(mainViewModel: mainViewModel)
     private lazy var scannerViewModel = ScannerViewModel(mainViewModel: mainViewModel)

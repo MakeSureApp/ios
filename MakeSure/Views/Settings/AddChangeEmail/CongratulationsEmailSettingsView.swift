@@ -14,16 +14,15 @@ struct CongratulationsEmailSettingsView: View {
         VStack {
             // Title
             Text("new_email_linked_message".localized)
-                .font(.rubicBoldFont(size: 34))
+                .font(.rubicBoldFont(size: 24))
                 .fontWeight(.bold)
-                .foregroundColor(.black)
+                .foregroundStyle(CustomColors.darkBlue)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .padding(.top, 30)
 
             HStack {
                 Text(viewModel.emailAddress)
-                    .font(.rubicRegularFont(size: 26))
+                    .font(.rubicRegularFont(size: 20))
                     .foregroundColor(.gray)
                     .padding()
                 Spacer()
@@ -37,6 +36,6 @@ struct CongratulationsEmailSettingsView: View {
 struct CongratulationsEmailSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         CongratulationsEmailSettingsView()
-            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel(), authService: AuthService()))
     }
 }

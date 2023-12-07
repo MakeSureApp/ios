@@ -47,7 +47,7 @@ public struct RotatingShapesLoader: View {
 
     private func item(forIndex index: Int, in geometrySize: CGSize) -> some View {
         content
-            .scaleEffect(isAnimating ? animatingScale(forIndex: index) : 1 )
+            .scaleEffect(isAnimating ? animatingScale(forIndex: index) : 0)
             .offset(y: geometrySize.width/10 - geometrySize.height/2)
     }
 }

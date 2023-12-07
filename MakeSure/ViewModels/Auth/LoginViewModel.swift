@@ -67,6 +67,25 @@ class LoginViewModel: NSObject, ObservableObject {
         return countryCode.rawValue + partOfPhoneNumber
     }
     
+    var formattedPhoneNumber: String {
+        let numbers = partOfPhoneNumber.filter("0123456789".contains)
+        let formatted = numbers.enumerated().map { (index, character) -> String in
+            switch index {
+            case 0:
+                return " (\(character)"
+            case 2:
+                return "\(character)) "
+            case 5:
+                return "\(character)-"
+            case 8, 10:
+                return "-\(character)"
+            default:
+                return String(character)
+            }
+        }.joined()
+        return "\(countryCode.rawValue) \(formatted)"
+    }
+    
     init(authService: AuthService) {
         self.authService = authService
     }
@@ -84,6 +103,9 @@ class LoginViewModel: NSObject, ObservableObject {
     
     func moveToNextStep() {
         currentStep = currentStep.next()
+        if currentStep == .code {
+            authService.sendSMS(to: phoneNumber)
+        }
     }
     
     func moveToPreviousStep() {
@@ -106,6 +128,7 @@ class LoginViewModel: NSObject, ObservableObject {
         self.canSendCode = false
         guard phoneNumber.isPhoneNumber else {
             self.errorMessage = nil
+            self.canSendCode = true
             return
         }
         self.isLoading = true
@@ -127,20 +150,15 @@ class LoginViewModel: NSObject, ObservableObject {
     func validateCode(_ code: Array<String>) {
         let strCode = code.joined()
         // Validate the phone code
-        if strCode.count == 6 && isValidCode(strCode) {
+        if strCode.count == 6 && authService.isCodeValid(strCode) {
             codeValidated = true
         } else {
             codeValidated = false
         }
     }
-
-    private func isValidCode(_ code: String) -> Bool {
-        // Implement code validation logic
-        return true
-    }
     
     func resendCode() {
-        
+        authService.sendSMS(to: phoneNumber)
     }
     
     func resetAllData() {

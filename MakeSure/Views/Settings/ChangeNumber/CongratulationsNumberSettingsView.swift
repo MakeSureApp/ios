@@ -14,16 +14,14 @@ struct CongratulationsNumberSettingsView: View {
         VStack {
             // Title
             Text("new_number_linked_message".localized)
-                .font(.rubicBoldFont(size: 34))
-                .fontWeight(.bold)
-                .foregroundColor(.black)
+                .font(.rubicBoldFont(size: 24))
+                .foregroundStyle(CustomColors.darkBlue)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
-                .padding(.top, 30)
 
             HStack {
                 Text(viewModel.phoneNumber)
-                    .font(.rubicRegularFont(size: 26))
+                    .font(.rubicRegularFont(size: 20))
                     .foregroundColor(.gray)
                     .padding()
                 Spacer()
@@ -37,6 +35,6 @@ struct CongratulationsNumberSettingsView: View {
 struct CongratulationsNumberSettingsView_Previews: PreviewProvider {
     static var previews: some View {
         CongratulationsNumberSettingsView()
-            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel()))
+            .environmentObject(SettingsViewModel(mainViewModel: MainViewModel(), authService: AuthService()))
     }
 }

@@ -20,23 +20,22 @@ struct NameSignUpView: View {
         VStack {
             VStack(alignment: .leading, spacing: 8) {
                 // Title
-                Text("my_first_name_is".localized)
-                    .font(.rubicBoldFont(size: 44))
-                    .fontWeight(.bold)
+                Text("whats_your_name".localized)
+                    .font(.rubicBoldFont(size: 32))
+                    .foregroundStyle(CustomColors.darkBlue)
                 
                 Text("name_change_warning".localized)
                     .font(.interLightFont(size: 14))
-                    .foregroundColor(CustomColors.darkGray)
-                
+                    .foregroundStyle(.gray)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding()
-            
-            // First name input
+            .padding(.bottom, 30)
+
             CustomUnderlinedView {
-                TextField("first_name".localized, text: $viewModel.firstName)
-                    .font(.interRegularFont(size: 23))
-                    .foregroundColor(.black)
+                TextField("first_name".localized.lowercased(), text: $viewModel.firstName)
+                    .font(.rubicMediumFont(size: 20))
+                    .foregroundStyle(CustomColors.darkBlue)
+                    .tint(CustomColors.darkBlue)
                     .padding(4)
                     .focused($focusedField, equals: .field)
                     .onAppear {
@@ -46,10 +45,10 @@ struct NameSignUpView: View {
                         viewModel.validateName()
                     }
             }
-            .padding(.horizontal, 22)
             
             Spacer()
         }
+        .padding(.horizontal, 30)
         .contentShape(Rectangle())
         .onTapGesture {
             focusedField = nil

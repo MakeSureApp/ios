@@ -60,6 +60,7 @@ enum SettingsEmailSteps: Int, CaseIterable {
 class SettingsViewModel: ObservableObject {
     
     @Published var mainViewModel: MainViewModel
+    @ObservedObject var authService: AuthService
     @Published var notificationsEnabled = true
     @Published var selectedLanguage = appEnvironment.localizationManager.getLanguage() {
         didSet {
@@ -75,8 +76,9 @@ class SettingsViewModel: ObservableObject {
     
     private let localizationManager = appEnvironment.localizationManager
     
-    init(mainViewModel: MainViewModel) {
+    init(mainViewModel: MainViewModel, authService: AuthService) {
         self.mainViewModel = mainViewModel
+        self.authService = authService
     }
     
     func signOutBtnClicked() {
@@ -103,6 +105,25 @@ class SettingsViewModel: ObservableObject {
         return countryCode.rawValue + partOfPhoneNumber
     }
     
+    var formattedPhoneNumber: String {
+        let numbers = partOfPhoneNumber.filter("0123456789".contains)
+        let formatted = numbers.enumerated().map { (index, character) -> String in
+            switch index {
+            case 0:
+                return " (\(character)"
+            case 2:
+                return "\(character)) "
+            case 5:
+                return "\(character)-"
+            case 8, 10:
+                return "-\(character)"
+            default:
+                return String(character)
+            }
+        }.joined()
+        return "\(countryCode.rawValue) \(formatted)"
+    }
+    
     var phoneCanProceedToNextStep: Bool {
         switch phoneCurrentStep {
         case .phoneNumber:
@@ -116,15 +137,20 @@ class SettingsViewModel: ObservableObject {
     
     func phoneMoveToNextStep() {
         if phoneCurrentStep == .code {
-            Task {
-                await completeChangingPhoneNumber()
-                DispatchQueue.main.async {
-                    if self.isPhoneUpdated {
-                        self.phoneCurrentStep = self.phoneCurrentStep.next()
+            if codeValidated {
+                Task {
+                    await completeChangingPhoneNumber()
+                    DispatchQueue.main.async {
+                        if self.isPhoneUpdated {
+                            self.phoneCurrentStep = self.phoneCurrentStep.next()
+                        }
                     }
                 }
             }
         } else {
+            if phoneCurrentStep == .phoneNumber {
+                authService.sendSMS(to: phoneNumber)
+            }
             phoneCurrentStep = phoneCurrentStep.next()
         }
     }
@@ -146,7 +172,7 @@ class SettingsViewModel: ObservableObject {
     }
     
     private func validatePhoneNumber() async {
-        guard let userId = await mainViewModel.userId else {
+        guard let userId = mainViewModel.userId else {
             print("User ID not available!")
             return
         }
@@ -154,6 +180,7 @@ class SettingsViewModel: ObservableObject {
         guard phoneNumber.isPhoneNumber else {
             DispatchQueue.main.async {
                 self.errorMessage = nil
+                self.canSendCode = false
             }
             return
         }
@@ -185,8 +212,7 @@ class SettingsViewModel: ObservableObject {
     
     func validateCode(_ code: Array<String>) {
         let strCode = code.joined()
-        // Validate the phone code
-        if strCode.count == 6 {//&& authService.isCodeValid(strCode)
+        if strCode.count == 6 && authService.isCodeValid(strCode) {
             codeValidated = true
         } else {
             codeValidated = false
@@ -194,7 +220,7 @@ class SettingsViewModel: ObservableObject {
     }
     
     func resendCode() {
-        //authService.sendSMS(to: phoneNumber)
+        authService.sendSMS(to: phoneNumber)
     }
     
     func phoneResetAllData() {
@@ -213,7 +239,7 @@ class SettingsViewModel: ObservableObject {
     }
     
     func completeChangingPhoneNumber() async {
-        guard let userId = await mainViewModel.userId else {
+        guard let userId = mainViewModel.userId else {
             print("User ID not available!")
             return
         }
@@ -226,6 +252,7 @@ class SettingsViewModel: ObservableObject {
                 self.isLoading = false
                 self.isPhoneUpdated = true
             }
+            await mainViewModel.fetchUserData()
         } catch {
             print("An error occurred while updating phone number: \(error)")
             DispatchQueue.main.async {
@@ -254,11 +281,13 @@ class SettingsViewModel: ObservableObject {
     
     func emailMoveToNextStep() {
         if emailCurrentStep == .email {
-            Task {
-                await completeChangingEmail()
-                DispatchQueue.main.async {
-                    if self.isEmailUpdated {
-                        self.emailCurrentStep = self.emailCurrentStep.next()
+            if emailValidated {
+                Task {
+                    await completeChangingEmail()
+                    DispatchQueue.main.async {
+                        if self.isEmailUpdated {
+                            self.emailCurrentStep = self.emailCurrentStep.next()
+                        }
                     }
                 }
             }
@@ -284,13 +313,14 @@ class SettingsViewModel: ObservableObject {
     }
     
     private func validateEmail() async {
-        guard let userId = await mainViewModel.userId else {
+        guard let userId = mainViewModel.userId else {
             print("User ID not available!")
             return
         }
         guard changingEmail.isValidEmail else {
             DispatchQueue.main.async {
                 self.errorMessage = nil
+                self.emailValidated = false
             }
             return
         }
@@ -321,7 +351,7 @@ class SettingsViewModel: ObservableObject {
     }
     
     func completeChangingEmail() async {
-        guard let userId = await mainViewModel.userId else {
+        guard let userId = mainViewModel.userId else {
             print("User ID not available!")
             return
         }
@@ -334,6 +364,7 @@ class SettingsViewModel: ObservableObject {
                 self.isLoading = false
                 self.isEmailUpdated = true
             }
+            await mainViewModel.fetchUserData()
         } catch {
             print("An error occurred while updating email: \(error)")
             DispatchQueue.main.async {
