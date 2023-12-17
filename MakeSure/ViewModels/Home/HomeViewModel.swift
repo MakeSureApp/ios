@@ -186,6 +186,9 @@ class HomeViewModel: NSObject, ObservableObject {
     }
     
     func loadImage() async {
+        guard image == nil else {
+            return
+        }
         DispatchQueue.main.async {
             self.isLoadingImage = true
         }

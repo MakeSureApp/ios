@@ -35,7 +35,7 @@ struct SettingsView: View {
                             .font(.montserratLightFont(size: 24))
                             .foregroundColor(.white)
                             .padding(4)
-                        notificationsSection
+                        //notificationsSection
                         languageSection
                         
                         

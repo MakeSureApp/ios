@@ -95,16 +95,20 @@ struct ContactsView: View {
                                                 withAnimation {
                                                     showMenu.toggle()
                                                 }
+                                            } else if viewModel.showCalendar {
+                                                withAnimation {
+                                                    viewModel.showCalendar.toggle()
+                                                }
                                             } else {
                                                 withAnimation {
-                                                    showContact = true
                                                     selectedContact = contact
+                                                    showContact = true
                                                     menuYOffset = geometry.frame(in: .global).minY + geometry.size.height
                                                 }
                                             }
                                         }
                                         .onLongPressGesture {
-                                            if !showMenu {
+                                            if !showMenu && !viewModel.showCalendar {
                                                 withAnimation {
                                                     showMenu = true
                                                     selectedContact = contact

@@ -5,6 +5,7 @@
 "agree_button" = "Согласен";
 "my_code_is" = "Мой код";
 "enter_code" = "Введи код";
+"your_code_is" = "Ваш код подтверждения: %ld";
 "resend_button" = "Отправить код повторно";
 "resend_code_after" = "Вы можете запросить код повторно через %ld %@";
 "back_button" = "Назад";

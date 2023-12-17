@@ -233,6 +233,7 @@ struct ContactView: View {
         }
         .onDisappear {
             testsViewModel.removeContactData()
+            viewModel.showContactCalendar = false
         }
     }
     

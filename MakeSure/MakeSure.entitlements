@@ -10,7 +10,7 @@
 	</array>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.ru.turbopro.MakeSure.onesignal</string>
+		<string>group.ru.turbopro.makesure</string>
 	</array>
 </dict>
 </plist>

@@ -5,6 +5,7 @@
 "agree_button" = "Agree";
 "my_code_is" = "My code is";
 "enter_code" = "Enter code";
+"your_code_is" = "Your confirmation code: %ld";
 "resend_code_after" = "You can request the code again after %ld %@";
 "resend_button" = "Send the code again";
 "back_button" = "Back";

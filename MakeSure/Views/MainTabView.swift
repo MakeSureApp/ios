@@ -51,7 +51,8 @@ struct MainTabView: View {
             bottomNavigationBar
         }
         .onReceive(viewModel.$currentTab) { _ in
-            print("tab changed")
+            contactsViewModel.showContactCalendar = false
+            contactsViewModel.showCalendar = false
         }
         .contentShape(Rectangle())
         .background(.white)

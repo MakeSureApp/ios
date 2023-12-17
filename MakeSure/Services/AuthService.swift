@@ -59,8 +59,10 @@ class AuthService: ObservableObject {
         var formattedNumber = number
         formattedNumber.removePlusPrefix()
         
+        let text = String(format: "your_code_is".localized, code)
+        
         let encodedNumber = formattedNumber.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
-        let encodedText = code.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+        let encodedText = text.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         let encodedSign = "SMS Aero".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
         
         guard let url = URL(string: "\(baseURL)?number=\(encodedNumber)&text=\(encodedText)&sign=\(encodedSign)") else {

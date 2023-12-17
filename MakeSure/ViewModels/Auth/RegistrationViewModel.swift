@@ -211,7 +211,7 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
     func moveToNextStep() {
         currentStep = currentStep.next()
         if currentStep == .code {
-            authService.sendSMS(to: phoneNumber)
+            //authService.sendSMS(to: phoneNumber)
         }
     }
     
@@ -245,7 +245,7 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
         self.canSendCode = false
         guard phoneNumber.isPhoneNumber else {
             self.errorMessage = nil
-            self.canSendCode = true
+            self.canSendCode = false
             return
         }
         self.isLoading = true
@@ -267,7 +267,7 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
     func validateCode(_ code: Array<String>) {
         let strCode = code.joined()
         // Validate the phone code
-        if strCode.count == 6 && authService.isCodeValid(strCode) {
+        if strCode.count == 6 {//&& authService.isCodeValid(strCode) {
             codeValidated = true
         } else {
             codeValidated = false
@@ -275,7 +275,7 @@ class RegistrationViewModel: NSObject, ObservableObject, UIImagePickerController
     }
     
     func resendCode() {
-        authService.sendSMS(to: phoneNumber)
+        //authService.sendSMS(to: phoneNumber)
     }
     
     func validateEmail() {

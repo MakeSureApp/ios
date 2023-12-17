@@ -104,7 +104,7 @@ class LoginViewModel: NSObject, ObservableObject {
     func moveToNextStep() {
         currentStep = currentStep.next()
         if currentStep == .code {
-            authService.sendSMS(to: phoneNumber)
+            //authService.sendSMS(to: phoneNumber)
         }
     }
     
@@ -128,7 +128,7 @@ class LoginViewModel: NSObject, ObservableObject {
         self.canSendCode = false
         guard phoneNumber.isPhoneNumber else {
             self.errorMessage = nil
-            self.canSendCode = true
+            self.canSendCode = false
             return
         }
         self.isLoading = true
@@ -150,7 +150,7 @@ class LoginViewModel: NSObject, ObservableObject {
     func validateCode(_ code: Array<String>) {
         let strCode = code.joined()
         // Validate the phone code
-        if strCode.count == 6 && authService.isCodeValid(strCode) {
+        if strCode.count == 6 {//&& authService.isCodeValid(strCode) {
             codeValidated = true
         } else {
             codeValidated = false

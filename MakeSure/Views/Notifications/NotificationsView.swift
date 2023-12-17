@@ -13,8 +13,10 @@ struct NotificationsView: View {
     @EnvironmentObject var homeViewModel: HomeViewModel
     @State private var isAnimating: Bool = false
     private let userService = UserSupabaseService()
+    @State private var selectedItemPosition: CGRect = .zero
     
     var body: some View {
+        
         VStack {
             HStack {
                 Button {
@@ -49,30 +51,23 @@ struct NotificationsView: View {
                     }
                 Spacer()
             } else if viewModel.hasLoaded {
-                
                 ScrollView {
                     VStack {
                         ForEach(viewModel.groupedNotifications, id: \.key) { (formattedDate, notifications) in
                             Section(header:
                                         Text(formattedDate)
-                                            .font(.montserratBoldFont(size: 14))
-                                            .foregroundStyle(CustomColors.darkBlue)
-                                            .padding(.top, 12)
+                                .font(.montserratBoldFont(size: 14))
+                                .foregroundStyle(CustomColors.darkBlue)
+                                .padding(.top, 30)
                             ) {
                                 ForEach(notifications) { notification in
-                                    NotificationItemView(notification: notification, userService: userService, tappedItem: $viewModel.selectedNotification) {
-                                        Task {
-                                            await viewModel.deleteNotification()
-                                        }
-//                                        withAnimation {
-//                                            
-//                                        }
-                                    }
+                                    NotificationItemView(notification: notification, userService: userService, tappedItem: $viewModel.selectedNotification, selectedItemPosition: $selectedItemPosition)
                                 }
                             }
                         }
                     }
                 }
+                .scrollDisabled(viewModel.selectedNotification != nil)
             } else {
                 VStack {
                     Spacer()
@@ -83,7 +78,8 @@ struct NotificationsView: View {
                 }
             }
         }
-        .background(viewModel.selectedNotification != nil ? .black.opacity(0.6) : .clear)
+        .blur(radius: viewModel.selectedNotification != nil ? 10 : 0)
+        .overlay(selectedItemOverlay)
         .background(.white)
         .onTapGesture {
             withAnimation {
@@ -94,7 +90,39 @@ struct NotificationsView: View {
             Task {
                 await viewModel.fetchNotifications()
             }
+            
         }
+    }
+    
+    private var selectedItemOverlay: some View {
+            VStack {
+                if let selectedNotification = viewModel.selectedNotification {
+                    NotificationItemView(notification: selectedNotification, userService: userService, tappedItem: $viewModel.selectedNotification, selectedItemPosition: $selectedItemPosition)
+
+                    .frame(width: selectedItemPosition.width + 30, height: selectedItemPosition.height)
+                    //.fixedSize()
+                    
+                    HStack {
+                        Button(action: {
+                            Task {
+                                await viewModel.deleteNotification()
+                            }
+                        }, label: {
+                            Text("delete_button".localized)
+                                .font(.montserratBoldFont(size: 16))
+                                .foregroundStyle(.red)
+                                .padding(.vertical, 8)
+                                .padding(.horizontal, 20)
+                                .background(.black.opacity(0.1))
+                                .cornerRadius(14)
+                                .shadow(color: .white, radius: 4)
+                        })
+                        Spacer()
+                    }
+                    .padding(30)
+                }
+            }
+            .position(x: selectedItemPosition.midX - 16, y: selectedItemPosition.minY + 16)
     }
 
 }
@@ -103,19 +131,40 @@ struct NotificationItemView: View {
     var notification: NotificationModel
     var userService: UserSupabaseService
     @Binding var tappedItem: NotificationModel?
-    var onDelete: () -> Void
+    @Binding var selectedItemPosition: CGRect
     
     var body: some View {
         VStack {
-            HStack(alignment: .bottom) {
-                notification.getIcon(userService: userService)
-                    .overlay {
-                        if let item = tappedItem, item.id != notification.id {
-                            Color.black.opacity(0.6)
-                                .frame(width: 45, height: 45)
-                                .clipShape(Circle())
+            GeometryReader { geometry in
+                HStack(alignment: .bottom) {
+                    notification.getIcon(userService: userService)
+                        .onTapGesture {
+                            if let item = tappedItem, item.id != notification.id {
+                                withAnimation {
+                                    tappedItem = nil
+                                }
+                            }
+                        }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(notification.title)
+                            .font(.montserratBoldFont(size: 14))
+                            .foregroundStyle(CustomColors.darkBlue)
+                        Text(notification.description ?? "")
+                            .font(.montserratRegularFont(size: 14))
+                            .frame(height: geometry.size.height - 12)
+                            .foregroundStyle(CustomColors.darkBlue)
+                        HStack {
+                            Spacer()
+                            Text(getTime(notification.createdAt))
+                                .font(.montserratRegularFont(size: 12))
+                                .foregroundStyle(.gray)
                         }
                     }
+                    .padding()
+                    .background(Color(red: 240/255.0, green: 240/255.0, blue: 240/255.0))
+                    .cornerRadius(20, corners: [.topLeft, .topRight, .bottomRight])
+                    .cornerRadius(4, corners: [.bottomLeft])
                     .onTapGesture {
                         if let item = tappedItem, item.id != notification.id {
                             withAnimation {
@@ -123,30 +172,12 @@ struct NotificationItemView: View {
                             }
                         }
                     }
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(notification.title)
-                        .font(.montserratBoldFont(size: 14))
-                        .foregroundStyle(CustomColors.darkBlue)
-                    Text(notification.description ?? "")
-                        .font(.montserratRegularFont(size: 14))
-                        .foregroundStyle(CustomColors.darkBlue)
-                    HStack {
-                        Spacer()
-                        Text(getTime(notification.createdAt))
-                            .font(.montserratRegularFont(size: 12))
-                            .foregroundStyle(.gray)
-                    }
-                }
-                .padding()
-                .background(Color(red: 240/255.0, green: 240/255.0, blue: 240/255.0))
-                .cornerRadius(20, corners: [.topLeft, .topRight, .bottomRight])
-                .cornerRadius(4, corners: [.bottomLeft])
-                .overlay {
-                    if let item = tappedItem, item.id != notification.id {
-                        Color.black.opacity(0.6)
-                            .cornerRadius(20, corners: [.topLeft, .topRight, .bottomRight])
-                            .cornerRadius(4, corners: [.bottomLeft])
+                    .onLongPressGesture {
+                        withAnimation {
+                            let frame = geometry.frame(in: .global)
+                            selectedItemPosition = frame
+                            tappedItem = notification
+                        }
                     }
                 }
                 .onTapGesture {
@@ -156,40 +187,12 @@ struct NotificationItemView: View {
                         }
                     }
                 }
-                .onLongPressGesture {
-                    withAnimation {
-                        tappedItem = notification
-                    }
-                }
-            }
-            .onTapGesture {
-                if let item = tappedItem, item.id != notification.id {
-                    withAnimation {
-                        tappedItem = nil
-                    }
-                }
-            }
-            .padding(.horizontal, 20)
-            .padding(.vertical, 4)
-            
-            if let tappedItem, notification.id == tappedItem.id {
-                HStack {
-                    Button(action: onDelete, label: {
-                        Text("delete_button".localized)
-                            .font(.montserratBoldFont(size: 16))
-                            .foregroundStyle(.red)
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 20)
-                            .background(.white)
-                            .cornerRadius(14)
-                            .shadow(color: .white, radius: 4)
-                    })
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 4)
+                .frame(width: geometry.size.width, height: geometry.size.height)
             }
         }
+        .frame(minHeight: 60)
+        .padding(.horizontal, 20)
+        .padding(.vertical, 30)
         .onTapGesture {
             if let item = tappedItem, item.id != notification.id {
                 withAnimation {
@@ -198,6 +201,7 @@ struct NotificationItemView: View {
             }
         }
     }
+    
     
     func getTime(_ date: Date) -> String {
         let formatter = DateFormatter()
@@ -258,11 +262,19 @@ struct UserIconView: View {
     }
 }
 
+struct NotificationAnchorKey: PreferenceKey {
+    typealias Value = [UUID: Anchor<CGRect>]
+    static var defaultValue: Value = [:]
+
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value.merge(nextValue(), uniquingKeysWith: { $1 })
+    }
+}
 
 
 struct NotificationsView_Previews: PreviewProvider {
     static var previews: some View {
-        NotificationItemView(notification: NotificationModel(id: UUID(), userId: UUID(), title: "Hello", description: "some description...", createdAt: Date(), isNotified: false, author: nil), userService: UserSupabaseService(), tappedItem: .constant(nil), onDelete: {})
+        NotificationItemView(notification: NotificationModel(id: UUID(), userId: UUID(), title: "Hello", description: "some description...", createdAt: Date(), isNotified: false, author: nil), userService: UserSupabaseService(), tappedItem: .constant(nil), selectedItemPosition: .constant(.zero))
 //        NotificationsView()
 //            .environmentObject(NotificationsViewModel(mainViewModel: MainViewModel()))
 //            .environmentObject(HomeViewModel(mainViewModel: MainViewModel()))
